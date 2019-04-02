@@ -29,21 +29,17 @@ public class EventMonitor {
         stop()
     }
     //  CGEventTapProxy, CGEventType, CGEvent, UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>?
-    let eventCallback: CGEventTapCallBack = { (proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) in
+    let eventCallback: CGEventTapCallBack = { (proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>?  in
+        print("event callback")
         
-        let event: CGEvent = event
-        
-        //   print(event1.get)
-        //      return Unmanaged.passRetained(event)
-        
-        
-        if(event.getIntegerValueField(.scrollWheelEventIsContinuous) == 0){
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil, userInfo: ["event": event])
+    let evt = event.copy()!
+
+        if(evt.getIntegerValueField(.scrollWheelEventIsContinuous) == 0){
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil, userInfo: ["event": evt])
             
             return nil
         } else {
-            
-            return Unmanaged.passRetained(event)
+            return Unmanaged.passRetained(evt)
         }
         
     }

@@ -20,19 +20,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     var eventMonitor: EventMonitor?
     var startTimestamp: TimeInterval?
-    var scrollDuration = 300 //ms
+    var scrollDuration = 200 //ms
     var framesLeft = 0
     var maxFrames = 0
-    var useSystemDamping = true;
-    var damperLevel = 30 //1 - 100
-    var amplifierSensitivityLevel = 40 // ms
+    var useSystemDamping = false;
+    var damperLevel = 20 //1 - 100
+    var amplifierSensitivityLevel = 80 // ms
     
     var stepSize: Int64 {
         get {
             return Int64(self.scheduledPixelsToScroll / (self.framesLeft))
         }
     }
-    var pixelsToScrollTextField = 100
+    var pixelsToScrollTextField = 50
     var maxScheduledPixelsToScroll = 0
     
     private var resetAmplifierTask: DispatchWorkItem? = nil
@@ -51,8 +51,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             
         }
     }
-    var maxAmplifierLevel = 5.0
+    var maxAmplifierLevel = 4.0
     var amplifierStep = 2.0
+    var damperFramesLeft = 0
     
     var scheduledPixelsToScroll: Int = 0{
         didSet {
@@ -62,16 +63,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    private var _deltaY: Int64 = 0
-    var deltaY: Int64 {
+    private var _deltaY: Double = 0
+    var deltaY: Double {
         get {
-            return Int64(Int(self._deltaY) * direction)
+            return Double(Int(self._deltaY) * direction)
         }
         set(val) {
             self._deltaY = abs(val)
         }
     }
-    var prevDeltaY: Int64 = 0
+    var prevDeltaY: Double = 0
     
     var currentLocation: CGPoint?
     var isShiftPressed = false;
@@ -96,20 +97,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func onSystemScrollEvent(notification:Notification)
     {
         let event: CGEvent = notification.userInfo!["event"] as! CGEvent
-        
         self.direction = event.getIntegerValueField(.scrollWheelEventPointDeltaAxis1) < 0 ? -1 : 1
+        self.damperFramesLeft = self.damperLevel
         
         if self.currentPhase == 1{
             // self.framesLeft = self.maxFrames - 2
             self.framesLeft = self.maxFrames
             if (UInt64(DispatchTime.now().uptimeNanoseconds) - lastScrollWheelTime) / 1_000_000 < self.amplifierSensitivityLevel {
                 if self.amplifier < self.maxAmplifierLevel {
-                    self.amplifier += self.amplifierStep
+                    self.amplifier += log2(self.amplifier + self.amplifierStep)
                 }
             }
             self.lastScrollWheelTime = DispatchTime.now().uptimeNanoseconds
         } else if self.currentPhase == 2{
-            //  self.framesLeft = self.maxFrames - 3
             self.framesLeft = self.maxFrames
             self.currentPhase = 1
             self.currentSubphase = 11
@@ -122,7 +122,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func runInterval() {
+        
         accessQueue.async {
+           
             guard let location = self.currentLocation, self.framesLeft > 0 else {
                 self.scheduledPixelsToScroll = 0
                 return
@@ -135,23 +137,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 self.deltaY = 0
                 self.prevDeltaY = 0
             } else {
-                self.deltaY = self.stepSize
+                self.deltaY = Double(self.stepSize)
                 
                 if self.framesLeft == Int(Double(self.maxFrames) / 2) {
                     self.currentPhase = 2
                     self.deltaY = self.prevDeltaY
                 } else if self.framesLeft < Int(Double(self.maxFrames) / 2) {
+                    print("self.framesLeft < Int(Double(self.maxFrames) / 2)")
                     self.currentPhase = 2
                     
                     if absPrevDeltaY > 1 {
-                        if absPrevDeltaY < self.damperLevel {
-                            let prevDeltaY = Double(absPrevDeltaY)
-                            self.deltaY = Int64(prevDeltaY - log10(prevDeltaY))
+                        let prevDeltaY = Double(absPrevDeltaY)
+                        if Int(absPrevDeltaY) < self.damperLevel {
+                            self.deltaY = prevDeltaY - log10(prevDeltaY)
                         } else {
-                            self.deltaY = absPrevDeltaY - Int64(Int(round(Double(absPrevDeltaY) / Double(self.framesLeft))))
+                          //  self.deltaY = absPrevDeltaY - Double(absPrevDeltaY) / Double(self.framesLeft)
+                            self.deltaY = prevDeltaY - log2(prevDeltaY)
                         }
+                        
                     } else {
-                        self.deltaY = 1
+                        self.deltaY = 0
                     }
                 } else {
                     // acceleration
@@ -161,7 +166,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
                 self.prevDeltaY = self.deltaY
             }
-            
+       
             let ev = CGEvent.init(source: nil)
             ev?.type = .scrollWheel
             ev?.setDoubleValueField(.scrollWheelEventIsContinuous, value: 1)
@@ -169,6 +174,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             ev?.setIntegerValueField(.eventSourceUserData, value: 1)
             
             print("self.currentPhase = ", self.currentPhase)
+            print("self.currentSubphase = ", self.currentSubphase)
             
             if !self.useSystemDamping && self.framesLeft == 1 {
                 ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 3)
@@ -183,6 +189,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 1)
                     self.currentSubphase = 12
                 } else if self.currentSubphase == 12 {
+//                    self.deltaY = round(abs(self.deltaY) + log2(abs(self.deltaY)))
+//                    self.prevDeltaY = self.deltaY
+                    print("abs(self.deltaY) + log2(abs(self.deltaY)) ", abs(self.deltaY) + log2(abs(self.deltaY)))
+                    print("abs(self.deltaY) + log2(abs(self.deltaY)) ", self.deltaY)
                     ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 2)
                 } else {
                     self.currentSubphase = 12
@@ -202,14 +212,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
             print("deltaY - ", self.deltaY)
             
-            ev?.setIntegerValueField(self.isShiftPressed
+            ev?.setDoubleValueField(self.isShiftPressed
                 ? .scrollWheelEventPointDeltaAxis2
                 : .scrollWheelEventPointDeltaAxis1, value: self.deltaY)
             
             // scroll in launchpad
-            ev?.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis1, value: self.deltaY)
+            ev?.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis1, value: Int64(self.deltaY))
             
             ev?.post(tap:.cghidEventTap)
+            
             if self.scheduledPixelsToScroll >= abs(Int(self.deltaY)) {
                 self.scheduledPixelsToScroll -= abs(Int(self.deltaY))
             }
