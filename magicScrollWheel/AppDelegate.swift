@@ -23,8 +23,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var scrollDuration = 200 //ms
     var framesLeft = 0
     var maxFrames = 0
-    var useSystemDamping = false;
-    var damperLevel = 20 //1 - 100
+    var useSystemDamping = true;
+    var damperLevel = 5 //1 - 100
     var amplifierSensitivityLevel = 80 // ms
     
     var stepSize: Int64 {
@@ -51,7 +51,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             
         }
     }
-    var maxAmplifierLevel = 4.0
+    var maxAmplifierLevel = 6.0
     var amplifierStep = 2.0
     var damperFramesLeft = 0
     
@@ -79,7 +79,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var direction = 1 {
         willSet{
             if newValue != direction {
-                print("direction changed ", direction)
+              //  print("direction changed ", direction)
                 self.amplifier = 1
                 self.currentPhase = 1
                 self.currentSubphase = 11
@@ -143,7 +143,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     self.currentPhase = 2
                     self.deltaY = self.prevDeltaY
                 } else if self.framesLeft < Int(Double(self.maxFrames) / 2) {
-                    print("self.framesLeft < Int(Double(self.maxFrames) / 2)")
+                   // print("self.framesLeft < Int(Double(self.maxFrames) / 2)")
                     self.currentPhase = 2
                     
                     if absPrevDeltaY > 1 {
@@ -173,8 +173,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             ev?.location = location
             ev?.setIntegerValueField(.eventSourceUserData, value: 1)
             
-            print("self.currentPhase = ", self.currentPhase)
-            print("self.currentSubphase = ", self.currentSubphase)
+//            print("self.currentPhase = ", self.currentPhase)
+//            print("self.currentSubphase = ", self.currentSubphase)
             
             if !self.useSystemDamping && self.framesLeft == 1 {
                 ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 3)
@@ -191,8 +191,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 } else if self.currentSubphase == 12 {
 //                    self.deltaY = round(abs(self.deltaY) + log2(abs(self.deltaY)))
 //                    self.prevDeltaY = self.deltaY
-                    print("abs(self.deltaY) + log2(abs(self.deltaY)) ", abs(self.deltaY) + log2(abs(self.deltaY)))
-                    print("abs(self.deltaY) + log2(abs(self.deltaY)) ", self.deltaY)
                     ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 2)
                 } else {
                     self.currentSubphase = 12
@@ -210,7 +208,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
                 
             }
-            print("deltaY - ", self.deltaY)
+          //  print("deltaY - ", self.deltaY)
             
             ev?.setDoubleValueField(self.isShiftPressed
                 ? .scrollWheelEventPointDeltaAxis2

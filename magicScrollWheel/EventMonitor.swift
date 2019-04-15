@@ -30,7 +30,7 @@ public class EventMonitor {
     }
     //  CGEventTapProxy, CGEventType, CGEvent, UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>?
     let eventCallback: CGEventTapCallBack = { (proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>?  in
-        print("event callback")
+      //  print("event callback")
         
     let evt = event.copy()!
 
