@@ -17,7 +17,7 @@ public class EventMonitor {
     var delegate: AppDelegate?
     
     
-    private var eventQueue = DispatchQueue(label: "eventQueue")
+    private var eventQueue = DispatchQueue(label: "eventQueue", qos: .background, attributes: .concurrent)
     
     public init(mask: NSEvent.EventTypeMask, handler: @escaping (NSEvent?) -> Void) {
         self.mask = mask
@@ -32,13 +32,26 @@ public class EventMonitor {
     let eventCallback: CGEventTapCallBack = { (proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>?  in
       //  print("event callback")
         
-    let evt = event.copy()!
+        
+        let evt: CGEvent = event.copy()!
+  
+//        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil, userInfo: ["event": evt])
+//
+//        print( evt)
+
+//        print(evt.getDoubleValueField(.mouseEventDeltaY))
+//        print(evt.getDoubleValueField(.scrollWheelEventDeltaAxis1))
+//        print(evt.getDoubleValueField(.scrollWheelEventPointDeltaAxis1))
+//        print(evt.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1))
+     //   return Unmanaged.passRetained(evt)
 
         if(evt.getIntegerValueField(.scrollWheelEventIsContinuous) == 0){
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil, userInfo: ["event": evt])
             
             return nil
         } else {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "magicScrollEventNotification"), object: nil, userInfo: ["event": evt])
+            
             return Unmanaged.passRetained(evt)
         }
         
@@ -49,9 +62,9 @@ public class EventMonitor {
     public func start() {
         monitor = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: handler)
         
-        eventQueue.sync {
+      //  eventQueue.async {
             let eventMask: CGEventMask = (1 << CGEventType.scrollWheel.rawValue)
-            guard let eventTap = CGEvent.tapCreate(tap: .cghidEventTap, place: .headInsertEventTap, options: .defaultTap, eventsOfInterest: eventMask, callback: self.eventCallback, userInfo: nil) else {
+            guard let eventTap = CGEvent.tapCreate(tap: .cghidEventTap, place: .tailAppendEventTap, options: .defaultTap, eventsOfInterest: eventMask, callback: self.eventCallback, userInfo: nil) else {
                 print("Couldn't create event tap!");
                 return
             }
@@ -59,7 +72,7 @@ public class EventMonitor {
             CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
             CGEvent.tapEnable(tap: eventTap, enable: true)
             CFRunLoopRun()
-        }
+     //   }
         
     }
     
