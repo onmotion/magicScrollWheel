@@ -20,12 +20,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     var eventMonitor: EventMonitor?
     var startTimestamp: TimeInterval?
-    var scrollDuration = 360 //ms
+    var scrollDuration = 260 //ms
     var framesLeft = 0
     var maxFrames = 0
     var useSystemDamping = false;
-    var damperLevel = 10 //1 - 100
+    var damperLevel = 30 //1 - 100
     var amplifierSensitivityLevel = 80 // ms
+    var log10Remainder = 0.0
     
     var displayLink: DisplayLink? = nil
     
@@ -112,7 +113,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @objc func onSystemScrollEvent(notification:Notification)
     {
-        print("sys ", (UInt64(DispatchTime.now().uptimeNanoseconds) - lastTime) / 1_000_00)
+       // print("sys ", (UInt64(DispatchTime.now().uptimeNanoseconds) - lastTime) / 1_000_00)
         self.lastTime = DispatchTime.now().uptimeNanoseconds
         //        return
         
@@ -145,7 +146,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func onMagicScrollEvent(notification:Notification) {
-        print((UInt64(DispatchTime.now().uptimeNanoseconds) - lastTime) / 1_000_00)
+      //  print((UInt64(DispatchTime.now().uptimeNanoseconds) - lastTime) / 1_000_00)
         self.lastTime = DispatchTime.now().uptimeNanoseconds
         //       sendEvent(ev: notification.userInfo!["event"] as! CGEvent)
         self.scrollEvent = notification.userInfo!["event"] as! CGEvent
@@ -162,27 +163,43 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
             self.deltaY = self.stepSize
             let absPrevDeltaY = abs(self.prevDeltaY)
-            let absDeltaY = abs(self.deltaY)
+   
             
             if self.framesLeft == 1 {
                 self.deltaY = 0
                 self.prevDeltaY = 0
             } else {
-                
-                
+
                 if self.framesLeft == Int(Double(self.maxFrames) / 2) {
                     self.currentPhase = 2
                     self.deltaY = self.prevDeltaY
                 } else if self.framesLeft < Int(Double(self.maxFrames) / 2) { // deceleration
                     self.currentPhase = 2
                     
-                    if absPrevDeltaY > 1 {
+                    if absPrevDeltaY >= 1 {
                         let prevDeltaY = Double(absPrevDeltaY)
                         if absPrevDeltaY < self.damperLevel {
-                            self.deltaY = Int(round(prevDeltaY - log10(prevDeltaY).rounded(.up)))
+                            var log_10 = 0.0
+                         //   print(prevDeltaY)
+                            if prevDeltaY <= 1 {
+                                 log_10 = 0.3
+                            } else {
+                                 log_10 = log10(prevDeltaY)
+                            }
+                            
+                            self.log10Remainder += log_10
+                         //   print(self.log10Remainder)
+                            if self.log10Remainder < 1 {
+                                self.deltaY = Int(prevDeltaY)
+                            } else {
+                                self.deltaY = Int(prevDeltaY - self.log10Remainder.rounded())
+                                self.log10Remainder = 0
+                            }
+                         
+                           // self.deltaY = Int(round(prevDeltaY - log10(prevDeltaY).rounded(.up)))
                         } else {
                             //  self.deltaY = absPrevDeltaY - Double(absPrevDeltaY) / Double(self.framesLeft)
-                            self.deltaY = Int(round(prevDeltaY - log2(prevDeltaY).rounded(.up)))
+                            self.deltaY = Int(round(prevDeltaY - log2(prevDeltaY).rounded()))
                         }
                         
                     } else {
@@ -191,13 +208,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     }
                 } else {
                     // acceleration
-                    if absPrevDeltaY > absDeltaY {
+                    if absPrevDeltaY > abs(self.deltaY) {
                         self.deltaY = self.prevDeltaY
                     } else {
-                        if absDeltaY <= 0 {
+                        if abs(self.deltaY) <= 0 {
                             self.deltaY = 0
                         } else {
-                            self.deltaY = absDeltaY + Int(round(log10(Double(absDeltaY)).rounded(.up)) * self.amplifier)
+                            self.deltaY = abs(self.deltaY) + Int(round(log10(Double(abs(self.deltaY))).rounded()) * self.amplifier)
                         }
                         
                         
@@ -226,7 +243,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 self.currentSubphase = 11
             } else if self.currentPhase == 1 {
                 if self.currentSubphase == 11 {
-                    self.deltaY = absDeltaY + 1
+                    self.deltaY = abs(self.deltaY) + 1
                     ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 1)
                     self.currentSubphase = 12
                 } else if self.currentSubphase == 12 {
@@ -238,23 +255,38 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             } else {
                 if self.currentSubphase == 12 {
                      // let endEvent = ev?.copy()
-                    ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 4)
-                    ev?.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 0)
-                    self.deltaY = 0
-                      self.postEvent(event: ev!)
-                    ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
-                    ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 1)
-                    self.deltaY = self.prevDeltaY
+                    
                     
                     self.currentSubphase = 22
-                    
-                }  else {
+                    return
+                } else if self.currentSubphase == 22 {
+                    ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 4)
+                    ev?.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 0)
+                   // self.deltaY = 0
+                    self.postEvent(event: ev!)
+                    ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
+                    ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 1)
+                   // self.deltaY = self.prevDeltaY
+                    self.currentSubphase = 23
+                } else {
                     ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 2)
                 }
                 
             }
             //  print("deltaY - ", self.deltaY)
             
+            if self.scheduledPixelsToScroll >= Int(abs(self.deltaY)) {
+                self.scheduledPixelsToScroll -= Int(abs(self.deltaY))
+            }
+            
+            if !(self.framesLeft == 2 && abs(self.deltaY) > 1) {
+                
+                if self.deltaY == 0 && self.framesLeft > 1 { //TODO ad-hoc
+                    self.deltaY = 1
+                }
+                self.framesLeft -= 1
+            }
+       
             
             //
             ev?.setDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1, value: Double(self.deltaY) * 0.1)
@@ -266,12 +298,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             // scroll in launchpad
             //  ev?.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis1, value: Int64(self.deltaY))
             
-            if self.scheduledPixelsToScroll >= Int(absDeltaY) {
-                self.scheduledPixelsToScroll -= Int(absDeltaY)
-            }
-            if !(self.framesLeft == 2 && absDeltaY > 1) {
-                self.framesLeft -= 1
-            }
+            
             
             self.postEvent(event: ev!, delay: 0)
     

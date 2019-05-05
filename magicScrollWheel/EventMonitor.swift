@@ -35,7 +35,7 @@ public class EventMonitor {
         
         let evt: CGEvent = event.copy()!
   
-//        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil, userInfo: ["event": evt])
+   //     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil, userInfo: ["event": evt])
 //
 //        print( evt)
 
@@ -43,11 +43,11 @@ public class EventMonitor {
 //        print(evt.getDoubleValueField(.scrollWheelEventDeltaAxis1))
 //        print(evt.getDoubleValueField(.scrollWheelEventPointDeltaAxis1))
 //        print(evt.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1))
-    //    return Unmanaged.passRetained(evt)
+   //     return Unmanaged.passRetained(evt)
 
         if(evt.getIntegerValueField(.scrollWheelEventIsContinuous) == 0){
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil, userInfo: ["event": evt])
-            
+          //  return Unmanaged.passRetained(evt)
             return nil
         } else {
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "magicScrollEventNotification"), object: nil, userInfo: ["event": evt])
