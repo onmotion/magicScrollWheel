@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		885CCF86227EF43300B27620 /* DisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 885CCF85227EF43300B27620 /* DisplayLink.swift */; };
 		88D361A22251408700426432 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D361A12251408700426432 /* AppDelegate.swift */; };
 		88D361A42251408700426432 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D361A32251408700426432 /* ViewController.swift */; };
 		88D361A62251408700426432 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88D361A52251408700426432 /* Assets.xcassets */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		885CCF85227EF43300B27620 /* DisplayLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLink.swift; sourceTree = "<group>"; };
 		88D3619E2251408700426432 /* magicScrollWheel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = magicScrollWheel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		88D361A12251408700426432 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		88D361A32251408700426432 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 				88D361A72251408700426432 /* Main.storyboard */,
 				88D361AA2251408700426432 /* Info.plist */,
 				88D361AB2251408700426432 /* magicScrollWheel.entitlements */,
+				885CCF85227EF43300B27620 /* DisplayLink.swift */,
 			);
 			path = magicScrollWheel;
 			sourceTree = "<group>";
@@ -146,6 +149,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				885CCF86227EF43300B27620 /* DisplayLink.swift in Sources */,
 				88D361B2225140C200426432 /* EventMonitor.swift in Sources */,
 				88D361A42251408700426432 /* ViewController.swift in Sources */,
 				88D361A22251408700426432 /* AppDelegate.swift in Sources */,

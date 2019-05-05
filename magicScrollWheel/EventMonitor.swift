@@ -17,7 +17,7 @@ public class EventMonitor {
     var delegate: AppDelegate?
     
     
-    private var eventQueue = DispatchQueue(label: "eventQueue", qos: .background, attributes: .concurrent)
+    private var eventQueue = DispatchQueue(label: "eventQueue", qos: .userInteractive, attributes: .concurrent)
     
     public init(mask: NSEvent.EventTypeMask, handler: @escaping (NSEvent?) -> Void) {
         self.mask = mask
@@ -43,7 +43,7 @@ public class EventMonitor {
 //        print(evt.getDoubleValueField(.scrollWheelEventDeltaAxis1))
 //        print(evt.getDoubleValueField(.scrollWheelEventPointDeltaAxis1))
 //        print(evt.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1))
-     //   return Unmanaged.passRetained(evt)
+    //    return Unmanaged.passRetained(evt)
 
         if(evt.getIntegerValueField(.scrollWheelEventIsContinuous) == 0){
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil, userInfo: ["event": evt])
