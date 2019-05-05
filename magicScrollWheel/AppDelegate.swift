@@ -20,20 +20,42 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     var eventMonitor: EventMonitor?
     var startTimestamp: TimeInterval?
-    var scrollDuration = 260 //ms
+    var scrollDuration = 360 //ms
     var framesLeft = 0
     var maxFrames = 0
     var useSystemDamping = false;
     var damperLevel = 30 //1 - 100
     var amplifierSensitivityLevel = 80 // ms
     var log10Remainder = 0.0
+    var prevEasingT = 0.0
+    var prevT = 0.0
     
     var displayLink: DisplayLink? = nil
     
     var stepSize: Int {
         get {
+            let t = Double((self.maxFrames - self.framesLeft) + 1)/Double(self.maxFrames)
+           // var curEasingT = t * (2 - t)
+            let curEasingT = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+         print("t ", t)
+            print("framesLeft ", framesLeft)
+//            print("curEasingT ", curEasingT)
+            let easingDeltaT =  (curEasingT - prevEasingT)
+            prevEasingT = curEasingT
+            let deltaT = t - prevT
+            prevT = t
+            var easingCoeff = easingDeltaT / deltaT
             
-            return Int(round(Double(self.scheduledPixelsToScroll)) / Double(self.framesLeft))
+            if !easingCoeff.isFinite {
+                easingCoeff = 1
+            }
+//            print("easingDeltaT ", easingDeltaT)
+//            print("deltaT ", deltaT)
+            print("\n easingCoeff ", easingCoeff)
+  //  print("- ", (Double(self.scheduledPixelsToScroll) / Double(self.framesLeft)))
+            
+
+            return Int( ((Double(self.scheduledPixelsToScroll) / Double(self.framesLeft))  * easingCoeff ).rounded())
         }
     }
     var pixelsToScrollTextField = 60
@@ -113,6 +135,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @objc func onSystemScrollEvent(notification:Notification)
     {
+        print("onSystemScrollEvent")
        // print("sys ", (UInt64(DispatchTime.now().uptimeNanoseconds) - lastTime) / 1_000_00)
         self.lastTime = DispatchTime.now().uptimeNanoseconds
         //        return
@@ -122,6 +145,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.direction = self.scrollEvent.getIntegerValueField(.scrollWheelEventPointDeltaAxis1) < 0 ? -1 : 1
         self.damperFramesLeft = self.damperLevel
         
+        self.prevT = 0
         if self.currentPhase == 1{
             // self.framesLeft = self.maxFrames - 2
             self.framesLeft = self.maxFrames
@@ -132,6 +156,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
             self.lastScrollWheelTime = DispatchTime.now().uptimeNanoseconds
         } else if self.currentPhase == 2{
+            self.prevEasingT = 0
+            self.prevT = 0
             self.framesLeft = self.maxFrames
             self.currentPhase = 1
             self.currentSubphase = 11
@@ -139,6 +165,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.framesLeft = self.maxFrames
             self.currentPhase = 1
         }
+        
+        
         
         self.scheduledPixelsToScroll += self.pixelsToScrollTextField
         
@@ -162,6 +190,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 return
             }
             self.deltaY = self.stepSize
+  
             let absPrevDeltaY = abs(self.prevDeltaY)
    
             
@@ -192,14 +221,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                             if self.log10Remainder < 1 {
                                 self.deltaY = Int(prevDeltaY)
                             } else {
-                                self.deltaY = Int(prevDeltaY - self.log10Remainder.rounded())
+                              //  self.deltaY = Int(prevDeltaY - self.log10Remainder.rounded())
                                 self.log10Remainder = 0
                             }
                          
                            // self.deltaY = Int(round(prevDeltaY - log10(prevDeltaY).rounded(.up)))
                         } else {
                             //  self.deltaY = absPrevDeltaY - Double(absPrevDeltaY) / Double(self.framesLeft)
-                            self.deltaY = Int(round(prevDeltaY - log2(prevDeltaY).rounded()))
+                           // self.deltaY = Int(round(prevDeltaY - log2(prevDeltaY).rounded()))
                         }
                         
                     } else {
@@ -209,12 +238,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 } else {
                     // acceleration
                     if absPrevDeltaY > abs(self.deltaY) {
-                        self.deltaY = self.prevDeltaY
+                
+                //        self.deltaY = self.prevDeltaY
                     } else {
                         if abs(self.deltaY) <= 0 {
                             self.deltaY = 0
                         } else {
-                            self.deltaY = abs(self.deltaY) + Int(round(log10(Double(abs(self.deltaY))).rounded()) * self.amplifier)
+                          //  self.deltaY = abs(self.deltaY) + Int(round(log10(Double(abs(self.deltaY))).rounded()) * self.amplifier)
                         }
                         
                         
@@ -279,13 +309,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 self.scheduledPixelsToScroll -= Int(abs(self.deltaY))
             }
             
-            if !(self.framesLeft == 2 && abs(self.deltaY) > 1) {
-                
-                if self.deltaY == 0 && self.framesLeft > 1 { //TODO ad-hoc
-                    self.deltaY = 1
-                }
-                self.framesLeft -= 1
-            }
+//            if !(self.framesLeft == 2 && abs(self.deltaY) > 1) {
+//
+////                if self.deltaY == 0 && self.framesLeft > 1 { //TODO ad-hoc
+////                    self.deltaY = 1
+////                }
+//                self.framesLeft -= 1
+//            }
+            
+            self.framesLeft -= 1
        
             
             //
