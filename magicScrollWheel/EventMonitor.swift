@@ -17,22 +17,21 @@ public class EventMonitor {
     var delegate: AppDelegate?
     
     
-    private var eventQueue = DispatchQueue(label: "eventQueue", qos: .userInteractive, attributes: .concurrent)
+    private var eventQueue = DispatchQueue(label: "eventQueue", qos: .userInteractive)
     
     public init(mask: NSEvent.EventTypeMask, handler: @escaping (NSEvent?) -> Void) {
         self.mask = mask
         self.handler = handler
+        print("init EventMonitor\n")
     }
     
     deinit {
-        print("deinit\n")
+        print("deinit EventMonitor\n")
         stop()
     }
     //  CGEventTapProxy, CGEventType, CGEvent, UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>?
     let eventCallback: CGEventTapCallBack = { (proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>?  in
       //  print("event callback")
-        
-        
         let evt: CGEvent = event.copy()!
   
    //     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil, userInfo: ["event": evt])
@@ -61,18 +60,19 @@ public class EventMonitor {
     
     public func start() {
         monitor = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: handler)
-        
-      //  eventQueue.async {
+       
+        eventQueue.async {
             let eventMask: CGEventMask = (1 << CGEventType.scrollWheel.rawValue)
             guard let eventTap = CGEvent.tapCreate(tap: .cghidEventTap, place: .tailAppendEventTap, options: .defaultTap, eventsOfInterest: eventMask, callback: self.eventCallback, userInfo: nil) else {
                 print("Couldn't create event tap!");
                 return
             }
             let runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
+            print(qos_class_self())
             CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
             CGEvent.tapEnable(tap: eventTap, enable: true)
             CFRunLoopRun()
-     //   }
+        }
         
     }
     
