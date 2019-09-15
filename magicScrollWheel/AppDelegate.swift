@@ -51,11 +51,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         
+        
+    }
+    
+    func toggleMagicScroll() -> Bool {
         if magicScrollController != nil {
             self.stopMagicScroll()
         } else {
             self.startMagicScroll()
         }
+        return magicScrollController != nil
     }
     
     func applicationWillTerminate(_ aNotification: Notification) {

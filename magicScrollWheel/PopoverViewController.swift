@@ -10,6 +10,16 @@ import Cocoa
 
 class PopoverViewController: NSViewController {
 
+    
+    @IBAction func quitButtonPressed(_ sender: NSButton) {
+        NSApplication.shared.terminate(self)
+    }
+    
+    @IBAction func pauseButtonPressed(_ sender: NSButton) {
+        let appDelegate = NSApplication.shared.delegate as! AppDelegate
+        let isRunned = appDelegate.toggleMagicScroll()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do view setup here.
