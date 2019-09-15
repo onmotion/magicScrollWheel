@@ -12,12 +12,11 @@ import IOKit.hid
 import Cocoa
 import CoreGraphics
 
-
-
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
     
     let statusItem = NSStatusBar.system.statusItem(withLength:NSStatusItem.squareLength)
+    let popover = NSPopover()
     var magicScrollController: MagicScrollController?
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
@@ -26,18 +25,37 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             button.image = NSImage(named:NSImage.Name("StatusBarButtonImage"))
             button.action = #selector(showMenuPopup)
         }
-        
+        popover.contentViewController = PopoverViewController.freshController()
+        self.startMagicScroll()
+    }
+    
+    func startMagicScroll() {
+        magicScrollController = MagicScrollController()
         magicScrollController?.run()
     }
     
-    override init() {
-        magicScrollController = MagicScrollController()
+    func stopMagicScroll() {
+        magicScrollController?.stop()
+        magicScrollController = nil
     }
     
     @objc func showMenuPopup() {
         print("menu should be showed")
-        magicScrollController?.stop()
-        magicScrollController = nil
+        
+        if popover.isShown {
+            popover.performClose(self)
+        } else {
+            if let button = statusItem.button {
+                popover.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
+            }
+        }
+        
+        
+        if magicScrollController != nil {
+            self.stopMagicScroll()
+        } else {
+            self.startMagicScroll()
+        }
     }
     
     func applicationWillTerminate(_ aNotification: Notification) {

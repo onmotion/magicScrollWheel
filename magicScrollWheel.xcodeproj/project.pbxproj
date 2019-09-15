@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		88566AC122A4069F0048AA50 /* TimingFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88566AC022A4069F0048AA50 /* TimingFunction.swift */; };
 		885CCF86227EF43300B27620 /* DisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 885CCF85227EF43300B27620 /* DisplayLink.swift */; };
-		88A2693E232E259F00AD7DCE /* TEst.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A2693D232E259F00AD7DCE /* TEst.swift */; };
+		88A26941232E9D2000AD7DCE /* PopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A2693F232E9D2000AD7DCE /* PopoverViewController.swift */; };
 		88D361A22251408700426432 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D361A12251408700426432 /* AppDelegate.swift */; };
 		88D361A42251408700426432 /* MagicScrollController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D361A32251408700426432 /* MagicScrollController.swift */; };
 		88D361A62251408700426432 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88D361A52251408700426432 /* Assets.xcassets */; };
@@ -20,7 +20,7 @@
 /* Begin PBXFileReference section */
 		88566AC022A4069F0048AA50 /* TimingFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimingFunction.swift; sourceTree = "<group>"; };
 		885CCF85227EF43300B27620 /* DisplayLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLink.swift; sourceTree = "<group>"; };
-		88A2693D232E259F00AD7DCE /* TEst.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TEst.swift; sourceTree = "<group>"; };
+		88A2693F232E9D2000AD7DCE /* PopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverViewController.swift; sourceTree = "<group>"; };
 		88D3619E2251408700426432 /* magicScrollWheel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = magicScrollWheel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		88D361A12251408700426432 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		88D361A32251408700426432 /* MagicScrollController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicScrollController.swift; sourceTree = "<group>"; };
@@ -70,7 +70,7 @@
 				88D361AB2251408700426432 /* magicScrollWheel.entitlements */,
 				885CCF85227EF43300B27620 /* DisplayLink.swift */,
 				88566AC022A4069F0048AA50 /* TimingFunction.swift */,
-				88A2693D232E259F00AD7DCE /* TEst.swift */,
+				88A2693F232E9D2000AD7DCE /* PopoverViewController.swift */,
 			);
 			path = magicScrollWheel;
 			sourceTree = "<group>";
@@ -158,8 +158,8 @@
 				88566AC122A4069F0048AA50 /* TimingFunction.swift in Sources */,
 				885CCF86227EF43300B27620 /* DisplayLink.swift in Sources */,
 				88D361B2225140C200426432 /* EventMonitor.swift in Sources */,
-				88A2693E232E259F00AD7DCE /* TEst.swift in Sources */,
 				88D361A42251408700426432 /* MagicScrollController.swift in Sources */,
+				88A26941232E9D2000AD7DCE /* PopoverViewController.swift in Sources */,
 				88D361A22251408700426432 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
