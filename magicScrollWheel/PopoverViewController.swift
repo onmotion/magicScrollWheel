@@ -17,7 +17,7 @@ class PopoverViewController: NSViewController {
     
     @IBAction func pauseButtonPressed(_ sender: NSButton) {
         let appDelegate = NSApplication.shared.delegate as! AppDelegate
-        let isRunned = appDelegate.toggleMagicScroll()
+         let isRunned = appDelegate.toggleMagicScroll()
     }
     
     override func viewDidLoad() {
@@ -27,8 +27,8 @@ class PopoverViewController: NSViewController {
     
     // Storyboard instantiation
     static func freshController() -> PopoverViewController {
-        let storyboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Main"), bundle: nil)
-        let identifier = NSStoryboard.SceneIdentifier(rawValue: "PopoverViewController")
+        let storyboard = NSStoryboard(name: "Main", bundle: nil)
+        let identifier = NSStoryboard.SceneIdentifier("PopoverViewController")
         guard let vc = storyboard.instantiateController(withIdentifier: identifier) as? PopoverViewController else {
             fatalError("Why cant i find QuotesViewController? - Check Main.storyboard")
         }

@@ -121,7 +121,7 @@ public class MagicScrollController {
             }
         }
     }
-    var maxAmplifierLevel = 8.0
+    var maxAmplifierLevel = 10.0
     var amplifierStep = 0.5
     
     var scheduledPixelsToScroll: Int = 0{
@@ -319,11 +319,12 @@ public class MagicScrollController {
 
             
             
-            //  ev?.setIntegerValueField(.scrollWheelEventScrollCount, value: 10)
-              // ev?.setIntegerValueField(.eventSourceUserData, value: 1)
+           //   ev?.setIntegerValueField(.scrollWheelEventScrollCount, value: 22)
+             //  ev?.setIntegerValueField(.eventSourceUserData, value: 1)
             //  ev?.setDoubleValueField(.scrollWheelEventDeltaAxis1, value: Double(self.direction) * Double(self.deltaY / 10))
           //  ev?.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: Int64(self.deltaY))
             ev?.setDoubleValueField(.scrollWheelEventIsContinuous, value: 1)
+            //ev?.setIntegerValueField(.mouseEventSubtype, value: 1)
             ev?.setIntegerValueField(self.isShiftPressed
                 ? .scrollWheelEventPointDeltaAxis2
                 : .scrollWheelEventPointDeltaAxis1, value: Int64(self.deltaY))
@@ -332,6 +333,7 @@ public class MagicScrollController {
               ev?.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis1, value: Int64(self.deltaY))
             
             self.framesLeft -= 1
+      
             if self.scheduledPixelsToScroll >= Int(abs(self.deltaY)) {
                 self.scheduledPixelsToScroll -= Int(abs(self.deltaY))
             }
@@ -345,22 +347,16 @@ public class MagicScrollController {
     }
     
     func mouseEventHandler(event: NSEvent?) {
-        
-        if (event?.type == .mouseMoved) {
-            currentLocation = event?.cgEvent?.location
-            return
-        }
+     
+        currentLocation = event?.cgEvent?.location
         isShiftPressed = (event?.modifierFlags.contains(.shift))!
-        print("_____________________________________________\n")
-        print(event!)
-        //   print(self.scheduledPixelsToScroll)
+        if (event?.type == .scrollWheel) {
+            print("_____________________________________________\n")
+            print(event!)
+        }
+        
     }
     
-//    override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?) {
-//        self.tf = TimingFunction(controlPoint1: bezierControlPoint1, controlPoint2: self.bezierControlPoint2, duration: 1.0)
-//        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-//
-//    }
     
     init() {
         print("init MagicScrollController")
@@ -378,7 +374,7 @@ public class MagicScrollController {
         NotificationCenter.default.addObserver(self, selector: #selector(onMagicScrollEvent(notification:)), name: NSNotification.Name(rawValue: "magicScrollEventNotification"), object: nil)
         
         self.maxFrames = Int(self.scrollDuration / 16)
-        eventMonitor = EventMonitor(mask: [.scrollWheel, .mouseMoved],  handler: mouseEventHandler)
+        eventMonitor = EventMonitor(mask: [.scrollWheel, .mouseMoved, .leftMouseDragged, .rightMouseDragged, .otherMouseDragged],  handler: mouseEventHandler)
         eventMonitor?.start()
     }
     

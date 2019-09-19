@@ -48,9 +48,24 @@ public class EventMonitor {
         if(evt.getDoubleValueField(.scrollWheelEventDeltaAxis1) != 0){
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil, userInfo: ["event": evt])
           //  return Unmanaged.passRetained(evt)
+            print("""
+                mouseEventSubtype: \(evt.getIntegerValueField(.mouseEventSubtype))
+            mouseEventNumber: \(evt.getDoubleValueField(.mouseEventNumber))
+            mouseEventClickState: \(evt.getDoubleValueField(.mouseEventClickState))
+            mouseEventPressure: \(evt.getDoubleValueField(.mouseEventPressure))
+            mouseEventButtonNumber: \(evt.getDoubleValueField(.mouseEventButtonNumber))
+            mouseEventDeltaX: \(evt.getDoubleValueField(.mouseEventDeltaX))
+            mouseEventDeltaY: \(evt.getDoubleValueField(.mouseEventDeltaY))
+            mouseEventInstantMouser: \(evt.getDoubleValueField(.mouseEventInstantMouser))
+            mouseEventSubtype: \(evt.getDoubleValueField(.mouseEventSubtype))
+            mouseEventWindowUnderMousePointer: \(evt.getDoubleValueField(.mouseEventWindowUnderMousePointer))
+            mouseEventWindowUnderMousePointerThatCanHandleThisEvent: \(evt.getDoubleValueField(.mouseEventWindowUnderMousePointerThatCanHandleThisEvent))
+            """)
+            
             return nil
         } else {
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "magicScrollEventNotification"), object: nil, userInfo: ["event": evt])
+            print("mouseEventSubtype: \(evt.getIntegerValueField(.mouseEventSubtype))")
             return Unmanaged.passRetained(evt)
         }
         
