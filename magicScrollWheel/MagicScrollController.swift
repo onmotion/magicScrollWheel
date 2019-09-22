@@ -349,6 +349,7 @@ public class MagicScrollController {
     func mouseEventHandler(event: NSEvent?) {
      
         currentLocation = event?.cgEvent?.location
+        print(event!)
         isShiftPressed = (event?.modifierFlags.contains(.shift))!
         if (event?.type == .scrollWheel) {
             print("_____________________________________________\n")

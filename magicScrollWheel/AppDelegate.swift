@@ -25,6 +25,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             button.image = NSImage(named:NSImage.Name("StatusBarButtonImage"))
             button.action = #selector(showMenuPopup)
         }
+        popover.behavior = NSPopover.Behavior.transient;
         popover.contentViewController = PopoverViewController.freshController()
         self.startMagicScroll()
     }

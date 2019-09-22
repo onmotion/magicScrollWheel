@@ -26,7 +26,6 @@ public class EventMonitor {
     
     deinit {
         print("deinit EventMonitor\n")
-      //  stop()
     }
 
     let eventCallback: CGEventTapCallBack = { (proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>?  in
@@ -35,7 +34,7 @@ public class EventMonitor {
   
    //     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil, userInfo: ["event": evt])
 //
-//        print( evt)
+    //    print( NSEvent.init(cgEvent: evt))
 
 //        print(evt.getDoubleValueField(.mouseEventDeltaY))
      //   print(evt.getDoubleValueField(.scrollWheelEventIsContinuous))

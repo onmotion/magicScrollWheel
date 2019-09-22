@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		881F232E2337808A008DA53A /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 881F232D2337808A008DA53A /* RoundedTextField.swift */; };
+		883D770523376E3E00D66A8D /* BezierView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883D770423376E3E00D66A8D /* BezierView.swift */; };
 		88566AC122A4069F0048AA50 /* TimingFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88566AC022A4069F0048AA50 /* TimingFunction.swift */; };
 		885CCF86227EF43300B27620 /* DisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 885CCF85227EF43300B27620 /* DisplayLink.swift */; };
 		88A26941232E9D2000AD7DCE /* PopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A2693F232E9D2000AD7DCE /* PopoverViewController.swift */; };
@@ -18,6 +20,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		881F232D2337808A008DA53A /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
+		883D770423376E3E00D66A8D /* BezierView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BezierView.swift; sourceTree = "<group>"; };
 		88566AC022A4069F0048AA50 /* TimingFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimingFunction.swift; sourceTree = "<group>"; };
 		885CCF85227EF43300B27620 /* DisplayLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLink.swift; sourceTree = "<group>"; };
 		88A2693F232E9D2000AD7DCE /* PopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverViewController.swift; sourceTree = "<group>"; };
@@ -42,6 +46,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		883D770323376E0700D66A8D /* View */ = {
+			isa = PBXGroup;
+			children = (
+				883D770423376E3E00D66A8D /* BezierView.swift */,
+				881F232D2337808A008DA53A /* RoundedTextField.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		88D361952251408700426432 = {
 			isa = PBXGroup;
 			children = (
@@ -61,6 +74,7 @@
 		88D361A02251408700426432 /* magicScrollWheel */ = {
 			isa = PBXGroup;
 			children = (
+				883D770323376E0700D66A8D /* View */,
 				88D361A12251408700426432 /* AppDelegate.swift */,
 				88D361A32251408700426432 /* MagicScrollController.swift */,
 				88D361B1225140C200426432 /* EventMonitor.swift */,
@@ -158,8 +172,10 @@
 				88566AC122A4069F0048AA50 /* TimingFunction.swift in Sources */,
 				885CCF86227EF43300B27620 /* DisplayLink.swift in Sources */,
 				88D361B2225140C200426432 /* EventMonitor.swift in Sources */,
+				881F232E2337808A008DA53A /* RoundedTextField.swift in Sources */,
 				88D361A42251408700426432 /* MagicScrollController.swift in Sources */,
 				88A26941232E9D2000AD7DCE /* PopoverViewController.swift in Sources */,
+				883D770523376E3E00D66A8D /* BezierView.swift in Sources */,
 				88D361A22251408700426432 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
