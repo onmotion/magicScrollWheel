@@ -14,7 +14,7 @@ public class EventMonitor {
     private let mask: NSEvent.EventTypeMask
     private let handler: (NSEvent?) -> Void
     private var runLoopSource: CFRunLoopSource?
-    let runLoop = CFRunLoopGetCurrent()
+    private let runLoop = CFRunLoopGetCurrent()
     
     private var eventQueue = DispatchQueue(label: "eventQueue", qos: .userInteractive)
     
@@ -76,19 +76,33 @@ public class EventMonitor {
         /// Handling mouse events with masks such as: [.scrollWheel, .mouseMoved, .leftMouseDragged, .rightMouseDragged, .otherMouseDragged]
         monitor = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: handler)
         
+        /// Run Loop for scrollWheel event
+        let eventMask: CGEventMask = (1 << CGEventType.scrollWheel.rawValue)
         DispatchQueue.main.async {
             //   eventQueue.async {
-            
-            let eventMask: CGEventMask = (1 << CGEventType.scrollWheel.rawValue)
             guard let eventTap = CGEvent.tapCreate(tap: .cgSessionEventTap, place: .headInsertEventTap, options: .defaultTap, eventsOfInterest: eventMask, callback: self.eventCallback, userInfo: nil) else {
                 print("Couldn't create event tap!");
+                let alert = NSAlert()
+                alert.alertStyle = NSAlert.Style.critical
+                alert.informativeText = "You must grant accessibility control for this app"
+                alert.messageText = "Couldn't create event tap"
+                alert.addButton(withTitle: "Open Preferences")
+                alert.addButton(withTitle: "Cancel")
+                
+                let modalAction = alert.runModal()
+                if (modalAction == NSApplication.ModalResponse.alertFirstButtonReturn) {
+                    let prefpaneUrl = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
+                    NSWorkspace.shared.open(prefpaneUrl)
+                }
                 return
             }
+            
+            
             self.runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
             CFRunLoopAddSource(self.runLoop, self.runLoopSource, .commonModes)
             CGEvent.tapEnable(tap: eventTap, enable: true)
+            print("CFRunLoopRun")
             CFRunLoopRun()
-            print("CFRunLoopStop")
         }
         
     }

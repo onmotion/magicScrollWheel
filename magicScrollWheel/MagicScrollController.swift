@@ -150,8 +150,6 @@ public class MagicScrollController {
     private var currentSubphase: Subphase = .start
     
     
-    
-    
     init() {
         print("init MagicScrollController")
         self.tf = TimingFunction(controlPoint1: bezierControlPoint1, controlPoint2: self.bezierControlPoint2, duration: 1.0)
@@ -166,7 +164,10 @@ public class MagicScrollController {
         event.post(tap: .cgSessionEventTap)
     }
     
-    @objc func onSystemScrollEvent(notification:Notification)
+    /// Raised when real scroll has occurred
+    ///
+    /// - Parameter notification: <#notification description#>
+    @objc func onSystemScrollEvent(notification: Notification)
     {
         print("🌴onSystemScrollEvent🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴")
         scrolledPixelsBuffer = 0
@@ -176,14 +177,11 @@ public class MagicScrollController {
         self.scheduledPixelsToScroll += Int(Double(self.pixelsToScrollTextField) * self.amplifier)
         self.isSyncNeeded = true
         
-        if self.currentPhase == .acceleration {
-            if self.framesLeft ==  0 {
-                self.framesLeft = self.maxFrames
-            }
-        } else if self.currentPhase == .deceleration{
-            self.currentPhase = .acceleration
-            self.currentSubphase = .start
-        } else {
+        if self.framesLeft == 0 {
+            self.framesLeft = self.maxFrames
+        }
+        
+        if self.currentPhase == .deceleration {
             self.currentSubphase = .start
             self.currentPhase = .acceleration
         }
@@ -281,8 +279,7 @@ public class MagicScrollController {
 
     
     @objc func onMagicScrollEvent(notification:Notification) {
-        //       sendEvent(ev: notification.userInfo!["event"] as! CGEvent)
-      //  self.scrollEvent = notification.userInfo!["event"] as! CGEvent
+       
     }
     
     public func run() {
@@ -291,6 +288,7 @@ public class MagicScrollController {
         displayLink?.callback = sendEvent
         displayLink?.start()
         
+        /// Raised when real scroll has occurred
         NotificationCenter.default.addObserver(self, selector: #selector(onSystemScrollEvent(notification:)), name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(onMagicScrollEvent(notification:)), name: NSNotification.Name(rawValue: "magicScrollEventNotification"), object: nil)
         

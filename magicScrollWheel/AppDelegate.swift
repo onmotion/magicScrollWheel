@@ -50,9 +50,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 popover.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
             }
         }
-        
-        
-        
     }
     
     func toggleMagicScroll() -> Bool {
@@ -66,8 +63,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
-     //   magicScrollController?.stop()
-     //   displayLink?.cancel() // TODO
     }
     
     
