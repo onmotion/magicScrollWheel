@@ -18,6 +18,7 @@
 		88D361A92251408700426432 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 88D361A72251408700426432 /* Main.storyboard */; };
 		88D361B2225140C200426432 /* EventMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D361B1225140C200426432 /* EventMonitor.swift */; };
 		88E7EEA22340EF1100151D57 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E7EEA12340EF1100151D57 /* Enums.swift */; };
+		88E7EEA42341129300151D57 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E7EEA32341129300151D57 /* Logger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,7 @@
 		88D361AB2251408700426432 /* magicScrollWheel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = magicScrollWheel.entitlements; sourceTree = "<group>"; };
 		88D361B1225140C200426432 /* EventMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMonitor.swift; sourceTree = "<group>"; };
 		88E7EEA12340EF1100151D57 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		88E7EEA32341129300151D57 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 				88566AC022A4069F0048AA50 /* TimingFunction.swift */,
 				88A2693F232E9D2000AD7DCE /* PopoverViewController.swift */,
 				88E7EEA12340EF1100151D57 /* Enums.swift */,
+				88E7EEA32341129300151D57 /* Logger.swift */,
 			);
 			path = magicScrollWheel;
 			sourceTree = "<group>";
@@ -177,6 +180,7 @@
 				88D361B2225140C200426432 /* EventMonitor.swift in Sources */,
 				881F232E2337808A008DA53A /* RoundedTextField.swift in Sources */,
 				88D361A42251408700426432 /* MagicScrollController.swift in Sources */,
+				88E7EEA42341129300151D57 /* Logger.swift in Sources */,
 				88A26941232E9D2000AD7DCE /* PopoverViewController.swift in Sources */,
 				883D770523376E3E00D66A8D /* BezierView.swift in Sources */,
 				88E7EEA22340EF1100151D57 /* Enums.swift in Sources */,
