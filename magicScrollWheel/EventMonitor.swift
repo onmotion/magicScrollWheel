@@ -27,44 +27,44 @@ public class EventMonitor {
     deinit {
         print("deinit EventMonitor\n")
     }
-
+    
     let eventCallback: CGEventTapCallBack = { (proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>?  in
-      //  print("event callback")
+        //  print("event callback")
         let evt: CGEvent = event.copy()!
-  
-   //     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil, userInfo: ["event": evt])
-//
-    //    print( NSEvent.init(cgEvent: evt))
-
-//        print(evt.getDoubleValueField(.mouseEventDeltaY))
-     //   print(evt.getDoubleValueField(.scrollWheelEventIsContinuous))
-//        print(evt.getDoubleValueField(.scrollWheelEventDeltaAxis1))
-//        print(evt.getDoubleValueField(.scrollWheelEventPointDeltaAxis1))
-//        print(evt.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1))
-//
-//        return Unmanaged.passRetained(evt)
-
-        if(evt.getDoubleValueField(.scrollWheelEventDeltaAxis1) != 0){
+        
+        //     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil, userInfo: ["event": evt])
+        //
+        //    print( NSEvent.init(cgEvent: evt))
+        
+        //        print(evt.getDoubleValueField(.mouseEventDeltaY))
+        //   print(evt.getDoubleValueField(.scrollWheelEventIsContinuous))
+        //        print(evt.getDoubleValueField(.scrollWheelEventDeltaAxis1))
+        //        print(evt.getDoubleValueField(.scrollWheelEventPointDeltaAxis1))
+        //        print(evt.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1))
+        //
+        //        return Unmanaged.passRetained(evt)
+        
+        if(evt.getDoubleValueField(.scrollWheelEventIsContinuous) != 1){
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil, userInfo: ["event": evt])
-          //  return Unmanaged.passRetained(evt)
+            //  return Unmanaged.passRetained(evt)
             print("""
                 mouseEventSubtype: \(evt.getIntegerValueField(.mouseEventSubtype))
-            mouseEventNumber: \(evt.getDoubleValueField(.mouseEventNumber))
-            mouseEventClickState: \(evt.getDoubleValueField(.mouseEventClickState))
-            mouseEventPressure: \(evt.getDoubleValueField(.mouseEventPressure))
-            mouseEventButtonNumber: \(evt.getDoubleValueField(.mouseEventButtonNumber))
-            mouseEventDeltaX: \(evt.getDoubleValueField(.mouseEventDeltaX))
-            mouseEventDeltaY: \(evt.getDoubleValueField(.mouseEventDeltaY))
-            mouseEventInstantMouser: \(evt.getDoubleValueField(.mouseEventInstantMouser))
-            mouseEventSubtype: \(evt.getDoubleValueField(.mouseEventSubtype))
-            mouseEventWindowUnderMousePointer: \(evt.getDoubleValueField(.mouseEventWindowUnderMousePointer))
-            mouseEventWindowUnderMousePointerThatCanHandleThisEvent: \(evt.getDoubleValueField(.mouseEventWindowUnderMousePointerThatCanHandleThisEvent))
-            """)
+                mouseEventNumber: \(evt.getDoubleValueField(.mouseEventNumber))
+                mouseEventClickState: \(evt.getDoubleValueField(.mouseEventClickState))
+                mouseEventPressure: \(evt.getDoubleValueField(.mouseEventPressure))
+                mouseEventButtonNumber: \(evt.getDoubleValueField(.mouseEventButtonNumber))
+                mouseEventDeltaX: \(evt.getDoubleValueField(.mouseEventDeltaX))
+                mouseEventDeltaY: \(evt.getDoubleValueField(.mouseEventDeltaY))
+                mouseEventInstantMouser: \(evt.getDoubleValueField(.mouseEventInstantMouser))
+                mouseEventSubtype: \(evt.getDoubleValueField(.mouseEventSubtype))
+                mouseEventWindowUnderMousePointer: \(evt.getDoubleValueField(.mouseEventWindowUnderMousePointer))
+                mouseEventWindowUnderMousePointerThatCanHandleThisEvent: \(evt.getDoubleValueField(.mouseEventWindowUnderMousePointerThatCanHandleThisEvent))
+                """)
             
             return nil
         } else {
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "magicScrollEventNotification"), object: nil, userInfo: ["event": evt])
-            print("mouseEventSubtype: \(evt.getIntegerValueField(.mouseEventSubtype))")
+            //   NotificationCenter.default.post(name: NSNotification.Name(rawValue: "magicScrollEventNotification"), object: nil, userInfo: ["event": evt])
+            
             return Unmanaged.passRetained(evt)
         }
         
@@ -73,12 +73,14 @@ public class EventMonitor {
     
     
     public func start() {
+        /// Handling mouse events with masks such as: [.scrollWheel, .mouseMoved, .leftMouseDragged, .rightMouseDragged, .otherMouseDragged]
         monitor = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: handler)
-       DispatchQueue.main.async {
-     //   eventQueue.async {
-       
+        
+        DispatchQueue.main.async {
+            //   eventQueue.async {
+            
             let eventMask: CGEventMask = (1 << CGEventType.scrollWheel.rawValue)
-            guard let eventTap = CGEvent.tapCreate(tap: .cghidEventTap, place: .headInsertEventTap, options: .defaultTap, eventsOfInterest: eventMask, callback: self.eventCallback, userInfo: nil) else {
+            guard let eventTap = CGEvent.tapCreate(tap: .cgSessionEventTap, place: .headInsertEventTap, options: .defaultTap, eventsOfInterest: eventMask, callback: self.eventCallback, userInfo: nil) else {
                 print("Couldn't create event tap!");
                 return
             }

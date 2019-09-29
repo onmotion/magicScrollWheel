@@ -104,12 +104,12 @@ class DisplayLink
         source.cancel()
     }
     
-    deinit
-    {
-        print("deinit DisplayLink")
-        if running
-        {
-            cancel()
-        }
-    }
+//    deinit
+//    {
+//        print("deinit DisplayLink")
+//        if running
+//        {
+//            cancel()
+//        }
+//    }
 }
