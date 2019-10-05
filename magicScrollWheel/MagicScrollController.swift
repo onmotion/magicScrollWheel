@@ -115,7 +115,7 @@ public class MagicScrollController {
     var useSystemDamping = true;
     var pixelsToScrollTextField = 60
     var amplifierSensitivityLevel = 80 // ms
-    var amplifierMultiplier = 2.0
+    var amplifierMultiplier = 3.0
     var maxAmplifierLevel = 10.0
     //    var bezierControlPoint1 = CGPoint.init(x: 0.4, y: 0.8)
     //    var bezierControlPoint2 = CGPoint.init(x: 0.5, y: 1)
@@ -172,7 +172,7 @@ public class MagicScrollController {
         print("🌴onSystemScrollEvent🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴")
         scrolledPixelsBuffer = 0
         
-        self.scrollEvent = notification.userInfo!["event"] as! CGEvent
+        self.scrollEvent = (notification.userInfo!["event"] as! CGEvent)
         self.direction = self.scrollEvent.getIntegerValueField(.scrollWheelEventPointDeltaAxis1) < 0 ? -1 : 1
         self.scheduledPixelsToScroll += Int(Double(self.pixelsToScrollTextField) * self.amplifier)
         self.isSyncNeeded = true

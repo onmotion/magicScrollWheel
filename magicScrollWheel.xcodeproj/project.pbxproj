@@ -27,7 +27,7 @@
 		88566AC022A4069F0048AA50 /* TimingFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimingFunction.swift; sourceTree = "<group>"; };
 		885CCF85227EF43300B27620 /* DisplayLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLink.swift; sourceTree = "<group>"; };
 		88A2693F232E9D2000AD7DCE /* PopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverViewController.swift; sourceTree = "<group>"; };
-		88D3619E2251408700426432 /* magicScrollWheel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = magicScrollWheel.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		88D3619E2251408700426432 /* Magic Scroll Wheel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Magic Scroll Wheel.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		88D361A12251408700426432 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		88D361A32251408700426432 /* MagicScrollController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicScrollController.swift; sourceTree = "<group>"; };
 		88D361A52251408700426432 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -70,7 +70,7 @@
 		88D3619F2251408700426432 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				88D3619E2251408700426432 /* magicScrollWheel.app */,
+				88D3619E2251408700426432 /* Magic Scroll Wheel.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -112,7 +112,7 @@
 			);
 			name = magicScrollWheel;
 			productName = magicScrollWheel;
-			productReference = 88D3619E2251408700426432 /* magicScrollWheel.app */;
+			productReference = 88D3619E2251408700426432 /* Magic Scroll Wheel.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -324,7 +324,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = onmotion.magicScrollWheel;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Magic Scroll Wheel";
 				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
@@ -341,7 +341,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = onmotion.magicScrollWheel;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Magic Scroll Wheel";
 				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
