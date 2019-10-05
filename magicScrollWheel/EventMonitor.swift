@@ -11,42 +11,24 @@ import Cocoa
 
 public class EventMonitor {
     private var monitor: Any?
-    private let mask: NSEvent.EventTypeMask
-    private let handler: (NSEvent?) -> Void
-    private var runLoopSource: CFRunLoopSource?
+    
+    var scrollEventHandler: ((CGEvent) -> ())?
+    var mouseMoveEventHandler: ((CGEvent) -> ())?
+    private var scrollRunLoopSource: CFRunLoopSource?
+    private var mouseMoveRunLoopSource: CFRunLoopSource?
     private let runLoop = CFRunLoopGetCurrent()
     
-    private var eventQueue = DispatchQueue(label: "eventQueue", qos: .userInteractive)
+    private var eventQueue = DispatchQueue(label: "eventQueue", qos: .userInitiated)
     
-    public init(mask: NSEvent.EventTypeMask, handler: @escaping (NSEvent?) -> Void) {
-        self.mask = mask
-        self.handler = handler
-        print("init EventMonitor\n")
-    }
     
-    deinit {
-        print("deinit EventMonitor\n")
-    }
     
-    let eventCallback: CGEventTapCallBack = { (proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>?  in
-        //  print("event callback")
+    private let scrollEventRunLoopCallback: CGEventTapCallBack = { (proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>?  in
+        
+        print("eventCallback")
         let evt: CGEvent = event.copy()!
         
-        //     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil, userInfo: ["event": evt])
-        //
-        //    print( NSEvent.init(cgEvent: evt))
-        
-        //        print(evt.getDoubleValueField(.mouseEventDeltaY))
-        //   print(evt.getDoubleValueField(.scrollWheelEventIsContinuous))
-        //        print(evt.getDoubleValueField(.scrollWheelEventDeltaAxis1))
-        //        print(evt.getDoubleValueField(.scrollWheelEventPointDeltaAxis1))
-        //        print(evt.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1))
-        //
-        //        return Unmanaged.passRetained(evt)
-        
         if(evt.getDoubleValueField(.scrollWheelEventIsContinuous) != 1){
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil, userInfo: ["event": evt])
-            //  return Unmanaged.passRetained(evt)
+            MagicScrollController.shared.systemScrollEventHandler(event: evt)
             print("""
                 mouseEventSubtype: \(evt.getIntegerValueField(.mouseEventSubtype))
                 mouseEventNumber: \(evt.getDoubleValueField(.mouseEventNumber))
@@ -63,47 +45,68 @@ public class EventMonitor {
             
             return nil
         } else {
-            //   NotificationCenter.default.post(name: NSNotification.Name(rawValue: "magicScrollEventNotification"), object: nil, userInfo: ["event": evt])
-            
             return Unmanaged.passRetained(evt)
         }
         
     }
     
+    let mouseMoveEventRunLoopCallback: CGEventTapCallBack = { (proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>?  in
+        
+        let evt: CGEvent = event.copy()!
+    MagicScrollController.shared.mouseEventHandler(event: evt)
+       // NotificationCenter.default.post(name: NSNotification.Name(rawValue: "mouseMovedEventNotification"), object: nil, userInfo: ["event": evt])
+        return Unmanaged.passRetained(evt)
+        
+    }
+    
+    private func createEvantTap(forEventMask eventMask: CGEventMask, withOptions options: CGEventTapOptions = .defaultTap, callback: @escaping CGEventTapCallBack) -> CFMachPort? {
+
+        guard let eventTap = CGEvent.tapCreate(tap: .cgSessionEventTap, place: .tailAppendEventTap, options: options, eventsOfInterest: eventMask, callback: callback, userInfo: nil) else {
+            print("Couldn't create event tap!");
+            let alert = NSAlert()
+            alert.alertStyle = NSAlert.Style.critical
+            alert.informativeText = "You must grant accessibility control for this app"
+            alert.messageText = "Couldn't create event tap"
+            alert.addButton(withTitle: "Open Preferences")
+            alert.addButton(withTitle: "Cancel")
+            
+            let modalAction = alert.runModal()
+            if (modalAction == NSApplication.ModalResponse.alertFirstButtonReturn) {
+                let prefpaneUrl = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
+                NSWorkspace.shared.open(prefpaneUrl)
+            }
+            return nil
+        }
+        
+        return eventTap
+    }
     
     
     public func start() {
         /// Handling mouse events with masks such as: [.scrollWheel, .mouseMoved, .leftMouseDragged, .rightMouseDragged, .otherMouseDragged]
-        monitor = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: handler)
+        //    monitor = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: handler)
         
-        /// Run Loop for scrollWheel event
-        let eventMask: CGEventMask = (1 << CGEventType.scrollWheel.rawValue)
-        DispatchQueue.main.async {
-            //   eventQueue.async {
-            guard let eventTap = CGEvent.tapCreate(tap: .cgSessionEventTap, place: .headInsertEventTap, options: .defaultTap, eventsOfInterest: eventMask, callback: self.eventCallback, userInfo: nil) else {
-                print("Couldn't create event tap!");
-                let alert = NSAlert()
-                alert.alertStyle = NSAlert.Style.critical
-                alert.informativeText = "You must grant accessibility control for this app"
-                alert.messageText = "Couldn't create event tap"
-                alert.addButton(withTitle: "Open Preferences")
-                alert.addButton(withTitle: "Cancel")
-                
-                let modalAction = alert.runModal()
-                if (modalAction == NSApplication.ModalResponse.alertFirstButtonReturn) {
-                    let prefpaneUrl = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
-                    NSWorkspace.shared.open(prefpaneUrl)
-                }
-                return
-            }
-            
-            
-            self.runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
-            CFRunLoopAddSource(self.runLoop, self.runLoopSource, .commonModes)
-            CGEvent.tapEnable(tap: eventTap, enable: true)
-            print("CFRunLoopRun")
-            CFRunLoopRun()
+        /// Run Loop for mouse events
+        let scrollEventMask: CGEventMask = (1 << CGEventType.scrollWheel.rawValue)
+        let mouseMoveEventMask: CGEventMask = (1 << CGEventType.mouseMoved.rawValue)
+            ^ (1 << CGEventType.leftMouseDragged.rawValue)
+            ^ (1 << CGEventType.rightMouseDragged.rawValue)
+            ^ (1 << CGEventType.otherMouseDragged.rawValue)
+
+        
+        if let scrollEventTap = self.createEvantTap(forEventMask: scrollEventMask, callback: scrollEventRunLoopCallback) {
+            self.scrollRunLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, scrollEventTap, 0)
+            CFRunLoopAddSource(self.runLoop, self.scrollRunLoopSource, .commonModes)
+            CGEvent.tapEnable(tap: scrollEventTap, enable: true)
         }
+        if let mouseMoveEventTap = self.createEvantTap(forEventMask: mouseMoveEventMask, withOptions: .listenOnly, callback: mouseMoveEventRunLoopCallback) {
+            self.mouseMoveRunLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, mouseMoveEventTap, 0)
+            CFRunLoopAddSource(self.runLoop, self.mouseMoveRunLoopSource, .commonModes)
+            CGEvent.tapEnable(tap: mouseMoveEventTap, enable: true)
+        }
+        
+        //  print("CFRunLoopRun")
+        //  CFRunLoopRun()
         
     }
     
@@ -114,10 +117,20 @@ public class EventMonitor {
             monitor = nil
         }
         DispatchQueue.main.async {
-            CFRunLoopRemoveSource(CFRunLoopGetCurrent(), self.runLoopSource, .commonModes)
+            if self.scrollRunLoopSource != nil {
+                CFRunLoopRemoveSource(self.runLoop, self.scrollRunLoopSource, .commonModes)
+            }
+            if self.mouseMoveRunLoopSource != nil {
+                CFRunLoopRemoveSource(self.runLoop, self.mouseMoveRunLoopSource, .commonModes)
+            }
+         
             CFRunLoopStop(self.runLoop)
         }
         
+    }
+    
+    deinit {
+        print("deinit EventMonitor\n")
     }
 }
 

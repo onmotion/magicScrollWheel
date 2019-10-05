@@ -32,13 +32,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func startMagicScroll() {
-        magicScrollController = MagicScrollController()
-        magicScrollController?.run()
+        MagicScrollController.shared.run()
     }
     
     func stopMagicScroll() {
-        magicScrollController?.stop()
-        magicScrollController = nil
+        MagicScrollController.shared.stop()
     }
     
     @objc func showMenuPopup() {
