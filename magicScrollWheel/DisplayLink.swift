@@ -13,23 +13,18 @@ import AppKit
  */
 class DisplayLink
 {
-    let timer  : CVDisplayLink
-    let source : DispatchSourceUserDataAdd
+    var timer  : CVDisplayLink?
+    var source : DispatchSourceUserDataAdd?
     
     var callback : Optional<() -> ()> = nil
     
-    var running : Bool { return CVDisplayLinkIsRunning(timer) }
+    var running : Bool { return timer != nil ? CVDisplayLinkIsRunning(timer!) : false }
+    var queue: DispatchQueue = DispatchQueue.main
     
-    /**
-     Creates a new DisplayLink that gets executed on the given queue
-     
-     - Parameters:
-     - queue: Queue which will receive the callback calls
-     */
-    init?(onQueue queue: DispatchQueue = DispatchQueue.main)
-    {
+    
+    private func createSource() -> DispatchSourceUserDataAdd? {
         // Source
-        source = DispatchSource.makeUserDataAddSource(queue: queue)
+        let source = DispatchSource.makeUserDataAddSource(queue: queue)
         
         // Timer
         var timerRef : CVDisplayLink? = nil
@@ -40,20 +35,19 @@ class DisplayLink
         if let timer = timerRef
         {
             // Set Output
-            successLink = CVDisplayLinkSetOutputCallback(timer,
-                                                         {
-                                                            (timer : CVDisplayLink, currentTime : UnsafePointer<CVTimeStamp>, outputTime : UnsafePointer<CVTimeStamp>, _ : CVOptionFlags, _ : UnsafeMutablePointer<CVOptionFlags>, sourceUnsafeRaw : UnsafeMutableRawPointer?) -> CVReturn in
-                                                            
-                                                            // Un-opaque the source
-                                                            if let sourceUnsafeRaw = sourceUnsafeRaw
-                                                            {
-                                                                // Update the value of the source, thus, triggering a handle call on the timer
-                                                                let sourceUnmanaged = Unmanaged<DispatchSourceUserDataAdd>.fromOpaque(sourceUnsafeRaw)
-                                                                sourceUnmanaged.takeUnretainedValue().add(data: 1)
-                                                            }
-                                                            
-                                                            return kCVReturnSuccess
-                                                            
+            successLink = CVDisplayLinkSetOutputCallback(timer, {
+                (timer : CVDisplayLink, currentTime : UnsafePointer<CVTimeStamp>, outputTime : UnsafePointer<CVTimeStamp>, _ : CVOptionFlags, _ : UnsafeMutablePointer<CVOptionFlags>, sourceUnsafeRaw : UnsafeMutableRawPointer?) -> CVReturn in
+                
+                // Un-opaque the source
+                if let sourceUnsafeRaw = sourceUnsafeRaw
+                {
+                    // Update the value of the source, thus, triggering a handle call on the timer
+                    let sourceUnmanaged = Unmanaged<DispatchSourceUserDataAdd>.fromOpaque(sourceUnsafeRaw)
+                    sourceUnmanaged.takeUnretainedValue().add(data: 1)
+                }
+                
+                return kCVReturnSuccess
+                
             }, Unmanaged.passUnretained(source).toOpaque())
             
             guard successLink == kCVReturnSuccess else
@@ -84,24 +78,46 @@ class DisplayLink
             {
                 [weak self] in self?.callback?()
         })
+        
+        return source
+    }
+    
+    /**
+     Creates a new DisplayLink that gets executed on the given queue
+     
+     - Parameters:
+     - queue: Queue which will receive the callback calls
+     */
+    init?(onQueue queue: DispatchQueue = DispatchQueue.main)
+    {
+        self.queue = queue
     }
     
     /// Starts the timer
     func start()
     {
         guard !running else { return }
-        
-        CVDisplayLinkStart(timer)
-        source.resume()
+        source = createSource()
+        CVDisplayLinkStart(timer!)
+        source?.resume()
     }
+    
+//    func pause()
+//    {
+//        guard running else { return }
+//
+//        CVDisplayLinkStop(timer)
+//        source?.suspend()
+//    }
     
     /// Cancels the timer, can be restarted aftewards
     func cancel()
     {
         guard running else { return }
         
-        CVDisplayLinkStop(timer)
-        source.cancel()
+        CVDisplayLinkStop(timer!)
+        source?.cancel()
+        self.source = nil
     }
     
 //    deinit
