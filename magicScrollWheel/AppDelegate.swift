@@ -18,7 +18,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     let statusItem = NSStatusBar.system.statusItem(withLength:NSStatusItem.squareLength)
     let popover = NSPopover()
-    var magicScrollController: MagicScrollController?
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
@@ -52,12 +51,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func toggleMagicScroll() -> Bool {
-        if magicScrollController != nil {
+        if MagicScrollController.shared.isRunning {
             self.stopMagicScroll()
         } else {
             self.startMagicScroll()
         }
-        return magicScrollController != nil
+        return MagicScrollController.shared.isRunning
     }
     
     func applicationWillTerminate(_ aNotification: Notification) {

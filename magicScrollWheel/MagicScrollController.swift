@@ -11,6 +11,12 @@ import Cocoa
 public class MagicScrollController {
     
     static let shared: MagicScrollController = MagicScrollController()
+    private var _isRunning = false
+    var isRunning: Bool {
+        get {
+            return _isRunning
+        }
+    }
     
     private var magicScrollSerialQueue = DispatchQueue(label: "magicScrollSerialQueue", qos: .userInteractive)
     
@@ -22,6 +28,9 @@ public class MagicScrollController {
     private var framesLeft = 0 {
         didSet {
             if framesLeft == 0 {
+     
+                self.displayLink?.cancel()
+          
                 self.currentPhase = .acceleration
                 self.currentSubphase = .start
                 scrolledPixelsBuffer = 0
@@ -202,46 +211,46 @@ public class MagicScrollController {
     }
     
     @objc func sendEvent() {
-     
-            guard let ev = self.scrollEvent else { return }
-            //  let ev = CGEvent.init(source: nil)!
-            
-            guard self.framesLeft > 0 else {
-                self.scheduledPixelsToScroll = 0
-                return
-            }
-            self.deltaY = self.stepSize
-            
-            if self.framesLeft <= self.maxFrames - Int(Double(self.maxFrames) / 2) { // deceleration
-                self.currentPhase = .deceleration
-            }
-            
-            if self.useSystemDamping {
-                self.addSystemDumping(ev: ev)
-            }
-            
-            //  ev?.setIntegerValueField(.eventSourceUserData, value: 1)
-            ev.type = .scrollWheel
-            ev.setDoubleValueField(.scrollWheelEventIsContinuous, value: 1)
-            if self.isShiftPressed {
-                ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis2, value: Int64(self.deltaY))
-                ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 0)
-                //     ev.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis2, value: Int64(self.direction))
-            } else {
-                // vertical scroll
-                ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: Int64(self.deltaY))
-                //   ev.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis1, value: Int64(self.direction))
-            }
-            
-            
-            self.framesLeft -= 1
-            
-            if self.scheduledPixelsToScroll >= Int(self.absDeltaY) {
-                self.scheduledPixelsToScroll -= Int(self.absDeltaY)
-            }
-            
-            self.postEvent(event: ev, delay: 0)
-    
+        
+        guard let ev = self.scrollEvent else { return }
+        //  let ev = CGEvent.init(source: nil)!
+        
+        guard self.framesLeft > 0 else {
+            self.scheduledPixelsToScroll = 0
+            return
+        }
+        self.deltaY = self.stepSize
+        
+        if self.framesLeft <= self.maxFrames - Int(Double(self.maxFrames) / 2) { // deceleration
+            self.currentPhase = .deceleration
+        }
+        
+        if self.useSystemDamping {
+            self.addSystemDumping(ev: ev)
+        }
+        
+        //  ev?.setIntegerValueField(.eventSourceUserData, value: 1)
+        ev.type = .scrollWheel
+        ev.setDoubleValueField(.scrollWheelEventIsContinuous, value: 1)
+        if self.isShiftPressed {
+            ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis2, value: Int64(self.deltaY))
+            ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 0)
+            //     ev.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis2, value: Int64(self.direction))
+        } else {
+            // vertical scroll
+            ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: Int64(self.deltaY))
+            //   ev.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis1, value: Int64(self.direction))
+        }
+        
+        
+        self.framesLeft -= 1
+        
+        if self.scheduledPixelsToScroll >= Int(self.absDeltaY) {
+            self.scheduledPixelsToScroll -= Int(self.absDeltaY)
+        }
+        
+        self.postEvent(event: ev, delay: 0)
+        
     }
     
     /// Raised when real scroll has occurred
@@ -260,6 +269,7 @@ public class MagicScrollController {
         self.isSyncNeeded = true
         
         if self.framesLeft == 0 {
+            self.displayLink?.start()
             self.framesLeft = self.maxFrames
         }
         
@@ -272,41 +282,27 @@ public class MagicScrollController {
         
     }
     
-    /// Raised on mouse event with mask: [.scrollWheel, .mouseMoved, .leftMouseDragged, .rightMouseDragged, .otherMouseDragged]
+    /// Raised on mouse event with mask: [.mouseMoved, .leftMouseDragged, .rightMouseDragged, .otherMouseDragged, .flagsChanged]
     ///
     /// - Parameter event: mouse NSEvent?
     func mouseEventHandler(event: CGEvent) {
-        print("mouseEventHandler")
-      
         self.currentLocation = event.location
         if event.type == .flagsChanged {
             isShiftPressed = event.flags.contains(.maskShift)
         }
     }
     
-    
-//    @objc func onMouseMovedEventNotification(notification:Notification) {
-//        guard notification.userInfo?["event"] != nil else {
-//            print("an event is not provided in the notification.userInfo")
-//            return
-//        }
-//
-//        let event = notification.userInfo?["event"] as! CGEvent
-//        print("onMouseMovedEventNotification \(event)")
-//        self.currentLocation = event.location
-//    }
-    
     public func run() {
         print("run MagicScrollController")
-      //  self.displayLink = DisplayLink(onQueue: magicScrollSerialQueue)
-        self.displayLink = DisplayLink(onQueue: DispatchQueue.main)
+        self._isRunning = true
+           self.displayLink = DisplayLink(onQueue: magicScrollSerialQueue)
+       // self.displayLink = DisplayLink(onQueue: DispatchQueue.main)
         displayLink?.callback = sendEvent
-        displayLink?.start()
         
         /// Raised when a real scroll has occurred
-//        NotificationCenter.default.addObserver(self, selector: #selector(onSystemScrollEvent(notification:)), name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil)
-
-//        NotificationCenter.default.addObserver(self, selector: #selector(onMouseMovedEventNotification(notification:)), name: NSNotification.Name(rawValue: "mouseMovedEventNotification"), object: nil)
+        //        NotificationCenter.default.addObserver(self, selector: #selector(onSystemScrollEvent(notification:)), name: NSNotification.Name(rawValue: "systemScrollEventNotification"), object: nil)
+        
+        //        NotificationCenter.default.addObserver(self, selector: #selector(onMouseMovedEventNotification(notification:)), name: NSNotification.Name(rawValue: "mouseMovedEventNotification"), object: nil)
         
         self.maxFrames = Int(self.scrollDuration / 16)
         eventMonitor = EventMonitor()
@@ -314,6 +310,8 @@ public class MagicScrollController {
     }
     
     public func stop() {
+        print("stop MagicScrollController")
+        self._isRunning = false
         displayLink?.cancel()
         eventMonitor?.stop()
         eventMonitor = nil
