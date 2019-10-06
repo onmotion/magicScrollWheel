@@ -46,8 +46,8 @@ public class MagicScrollController {
             print("curEasingT - ", curEasingT)
             step = Int(Double(maxScheduledPixelsToScroll) * curEasingT) - scrolledPixelsBuffer
             print("scrolledPixelsBuffer - ", scrolledPixelsBuffer)
-            if step < 0 {
-                step = 0
+            if step <= 0 {
+                step = 0 //TODO
             }
             if isSyncNeeded && framesLeft > 0 {
                 isSyncNeeded = false
@@ -60,7 +60,7 @@ public class MagicScrollController {
                     let syncedT = 1.0 - (Double(maxFrames - frame) / Double(maxFrames))
                     syncedEasingT = Double(tf.progress(at: CGFloat(syncedT)))
                     syncedStep = Int(Double(maxScheduledPixelsToScroll) * syncedEasingT) - syncedScrolledPixelsBuffer
-                    print(syncedStep, syncedEasingT)
+                    print("syncedStep calc", syncedStep, syncedEasingT)
                     syncedScrolledPixelsBuffer += syncedStep
                     closestFrame = frame
                     if syncedStep > prevStep{
@@ -81,6 +81,7 @@ public class MagicScrollController {
                 scrolledPixelsBuffer = syncedScrolledPixelsBuffer
                 print("closestFrame ",closestFrame)
                 print("syncedEasingT ",syncedEasingT)
+                print("scheduledPixelsToScroll", scheduledPixelsToScroll)
                 print("maxScheduledPixelsToScroll", maxScheduledPixelsToScroll)
             } else {
                 scrolledPixelsBuffer += step
@@ -109,6 +110,7 @@ public class MagicScrollController {
     
     private var scheduledPixelsToScroll: Int = 0{
         didSet {
+            print("- scheduledPixelsToScroll", scheduledPixelsToScroll)
             if (scheduledPixelsToScroll > oldValue) {
                 self.maxScheduledPixelsToScroll = scheduledPixelsToScroll
             }
@@ -122,14 +124,14 @@ public class MagicScrollController {
     private var lastScrollWheelTime: UInt64 = DispatchTime.now().uptimeNanoseconds
     
     // Settings
+    let settings = Settings.shared
     var scrollDuration = 400 //ms
-    var useSystemDamping = true;
     var pixelsToScrollTextField = 60
     var amplifierSensitivityLevel = 80 // ms
     var amplifierMultiplier = 3.0
     var maxAmplifierLevel = 10.0
-    //    var bezierControlPoint1 = CGPoint.init(x: 0.4, y: 0.8)
-    //    var bezierControlPoint2 = CGPoint.init(x: 0.5, y: 1)
+//        var bezierControlPoint1 = CGPoint.init(x: 0.4, y: 0.5)
+//        var bezierControlPoint2 = CGPoint.init(x: 0.5, y: 1)
     var bezierControlPoint1 = CGPoint.init(x: 0.2, y: 0.5)
     var bezierControlPoint2 = CGPoint.init(x: 0.3, y: 0.9)
     
@@ -157,7 +159,14 @@ public class MagicScrollController {
     }
     
     private var isSyncNeeded = false
-    private var currentPhase: Phase = .acceleration
+    private var currentPhase: Phase = .acceleration {
+        didSet{
+            if oldValue != currentPhase {
+                currentSubphase = .start
+            }
+            
+        }
+    }
     private var currentSubphase: Subphase = .start
     
     
@@ -174,37 +183,43 @@ public class MagicScrollController {
         event.location = location
         event.post(tap: .cgSessionEventTap)
     }
-    
-    
-    
+
     
     /// Adds a bump effect, like using a trackpad or magic mouse.
     ///
     /// - Parameter ev: CGEvent?
     func addSystemDumping(ev: CGEvent?) {
+print("NSEvent phase", currentPhase, currentSubphase)
         if self.currentPhase == .acceleration {
             if self.currentSubphase == .start {
-                //                ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 3)
-                //                ev?.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 0)
-                //                self.postEvent(event: ev!)
+//                ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
+                            //    ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 3)
+                             //   ev?.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 0)
+                              //  self.postEvent(event: ev!)
                 ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 0)
                 ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 1)
                 
                 self.currentSubphase = .inProgress
             } else {
                 ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 2)
+                ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 0)
             }
         } else {
-            if self.currentSubphase == .inProgress {
+            if self.currentSubphase == .start {
                 ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 4)
-                ev?.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 0) // убирает лаг
-                self.postEvent(event: ev!)
-                
+                ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 0)
+                self.deltaY = 0 // убирает лаг
+                self.framesLeft += 1 // extra frame
+            //   ev?.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 0) // убирает лаг
+               // self.postEvent(event: ev!)
+                self.currentSubphase = .inProgress
+            } else if self.currentSubphase == .inProgress {
                 ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
                 ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 1)
                 
                 self.currentSubphase = .end
             } else {
+                ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
                 ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 2)
             }
         }
@@ -221,26 +236,31 @@ public class MagicScrollController {
         }
         self.deltaY = self.stepSize
         
-        if self.framesLeft <= self.maxFrames - Int(Double(self.maxFrames) / 2) { // deceleration
+        if self.framesLeft <= self.maxFrames - Int(Double(self.maxFrames) / 1.8) { // deceleration
             self.currentPhase = .deceleration
         }
         
-        if self.useSystemDamping {
-            self.addSystemDumping(ev: ev)
-        }
+        
         
         //  ev?.setIntegerValueField(.eventSourceUserData, value: 1)
         ev.type = .scrollWheel
         ev.setDoubleValueField(.scrollWheelEventIsContinuous, value: 1)
+        
+        if settings.useSystemDamping {
+            self.addSystemDumping(ev: ev)
+        }
+        
         if self.isShiftPressed {
             ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis2, value: Int64(self.deltaY))
             ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 0)
             //     ev.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis2, value: Int64(self.direction))
         } else {
             // vertical scroll
+            ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis2, value: 0)
             ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: Int64(self.deltaY))
             //   ev.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis1, value: Int64(self.direction))
         }
+        
         
         
         self.framesLeft -= 1
@@ -264,13 +284,16 @@ public class MagicScrollController {
         scrolledPixelsBuffer = 0
         
         self.scrollEvent = event
-        self.direction = self.scrollEvent.getIntegerValueField(.scrollWheelEventPointDeltaAxis1) < 0 ? -1 : 1
+        
+        self.direction = self.scrollEvent.getIntegerValueField(.scrollWheelEventDeltaAxis1) < 0 ? -1 : 1
         self.scheduledPixelsToScroll += Int(Double(self.pixelsToScrollTextField) * self.amplifier)
-        self.isSyncNeeded = true
+        
         
         if self.framesLeft == 0 {
             self.displayLink?.start()
             self.framesLeft = self.maxFrames
+        } else {
+            self.isSyncNeeded = true
         }
         
         if self.currentPhase == .deceleration {

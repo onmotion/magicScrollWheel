@@ -2,7 +2,7 @@
 //  PopoverViewController.swift
 //  magicScrollWheel
 //
-//  Created by Aleksandr Kozhevnikov on 15/09/2019.
+//  Created by Aleksandr Kozhevnikov on 06/10/2019.
 //  Copyright © 2019 Aleksandr Kozhevnikov. All rights reserved.
 //
 
@@ -10,18 +10,18 @@ import Cocoa
 
 class PopoverViewController: NSViewController {
 
-    
     @IBAction func quitButtonPressed(_ sender: NSButton) {
         NSApplication.shared.terminate(self)
     }
     
     @IBAction func pauseButtonPressed(_ sender: NSButton) {
+        print(self.view.identifier.debugDescription)
         let appDelegate = NSApplication.shared.delegate as! AppDelegate
-         _ = appDelegate.toggleMagicScroll() // let isRunned = 
+        _ = appDelegate.toggleMagicScroll() // let isRunned =
     }
     
     @IBAction func okButtonPressed(_ sender: NSButton) {
-       let appDelegate = NSApplication.shared.delegate as! AppDelegate
+        let appDelegate = NSApplication.shared.delegate as! AppDelegate
         appDelegate.popover.performClose(self)
     }
     

@@ -90,6 +90,7 @@ class DisplayLink
      */
     init?(onQueue queue: DispatchQueue = DispatchQueue.main)
     {
+        print("init DisplayLink")
         self.queue = queue
     }
     
@@ -120,12 +121,12 @@ class DisplayLink
         self.source = nil
     }
     
-//    deinit
-//    {
-//        print("deinit DisplayLink")
-//        if running
-//        {
-//            cancel()
-//        }
-//    }
+    deinit
+    {
+        print("deinit DisplayLink")
+        if running
+        {
+            cancel()
+        }
+    }
 }

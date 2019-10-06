@@ -26,6 +26,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             button.action = #selector(showMenuPopup)
         }
         popover.behavior = NSPopover.Behavior.transient;
+        popover.animates = false
         popover.contentViewController = PopoverViewController.freshController()
         self.startMagicScroll()
     }

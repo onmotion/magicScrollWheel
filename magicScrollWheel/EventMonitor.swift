@@ -21,22 +21,24 @@ public class EventMonitor {
         
         if(event.getDoubleValueField(.scrollWheelEventIsContinuous) != 1){
             MagicScrollController.shared.systemScrollEventHandler(event: event)
-            print("""
-                mouseEventSubtype: \(event.getIntegerValueField(.mouseEventSubtype))
-                mouseEventNumber: \(event.getDoubleValueField(.mouseEventNumber))
-                mouseEventClickState: \(event.getDoubleValueField(.mouseEventClickState))
-                mouseEventPressure: \(event.getDoubleValueField(.mouseEventPressure))
-                mouseEventButtonNumber: \(event.getDoubleValueField(.mouseEventButtonNumber))
-                mouseEventDeltaX: \(event.getDoubleValueField(.mouseEventDeltaX))
-                mouseEventDeltaY: \(event.getDoubleValueField(.mouseEventDeltaY))
-                mouseEventInstantMouser: \(event.getDoubleValueField(.mouseEventInstantMouser))
-                mouseEventSubtype: \(event.getDoubleValueField(.mouseEventSubtype))
-                mouseEventWindowUnderMousePointer: \(event.getDoubleValueField(.mouseEventWindowUnderMousePointer))
-                mouseEventWindowUnderMousePointerThatCanHandleThisEvent: \(event.getDoubleValueField(.mouseEventWindowUnderMousePointerThatCanHandleThisEvent))
-                """)
+//            print("""
+//                mouseEventSubtype: \(event.getIntegerValueField(.mouseEventSubtype))
+//                mouseEventNumber: \(event.getDoubleValueField(.mouseEventNumber))
+//                mouseEventClickState: \(event.getDoubleValueField(.mouseEventClickState))
+//                mouseEventPressure: \(event.getDoubleValueField(.mouseEventPressure))
+//                mouseEventButtonNumber: \(event.getDoubleValueField(.mouseEventButtonNumber))
+//                mouseEventDeltaX: \(event.getDoubleValueField(.mouseEventDeltaX))
+//                mouseEventDeltaY: \(event.getDoubleValueField(.mouseEventDeltaY))
+//                mouseEventInstantMouser: \(event.getDoubleValueField(.mouseEventInstantMouser))
+//                mouseEventSubtype: \(event.getDoubleValueField(.mouseEventSubtype))
+//                mouseEventWindowUnderMousePointer: \(event.getDoubleValueField(.mouseEventWindowUnderMousePointer))
+//                mouseEventWindowUnderMousePointerThatCanHandleThisEvent: \(event.getDoubleValueField(.mouseEventWindowUnderMousePointerThatCanHandleThisEvent))
+//                """)
 
             return nil
         } else {
+            print("_____________________________________________\n")
+            print(NSEvent(cgEvent: event)!)
             return Unmanaged.passUnretained(event)
         }
         
@@ -113,6 +115,10 @@ public class EventMonitor {
             CFRunLoopStop(self.runLoop)
         }
         
+    }
+    
+    init() {
+        print("init EventMonitor")
     }
     
     deinit {
