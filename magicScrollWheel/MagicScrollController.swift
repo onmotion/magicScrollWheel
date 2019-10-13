@@ -8,82 +8,245 @@
 
 import Cocoa
 
+
+
+extension MagicScrollController {
+    
+    
+    private var framesLeft: Int {
+        get {
+            
+            return _framesLeft
+        }
+        set {
+            
+            self._framesLeft = newValue
+            
+            if newValue == 0 {
+                self.displayLink?.cancel()
+                self.currentPhase = .acceleration
+                self.currentSubphase = .start
+                self.scrolledPixelsBuffer = 0
+                scheduledPixelsToScroll = 0
+            }
+        }
+    }
+    
+    
+    private var scrolledPixelsBuffer: Int {
+        get {
+            return _scrolledPixelsBuffer
+        }
+        set {
+            
+            self._scrolledPixelsBuffer = newValue
+            
+        }
+    }
+    
+//    private var isSyncNeeded: Bool {
+//        return scrolledPixelsBuffer == 0 && framesLeft < maxFrames
+//    }
+    
+    
+    private var scrollEvent: CGEvent {
+        get {
+            return _scrollEvent
+        }
+        set {
+            
+            self._scrollEvent = newValue
+            
+        }
+    }
+    
+    private var maxScheduledPixelsToScroll: Int {
+        get {
+            return _maxScheduledPixelsToScroll
+        }
+        set {
+            
+            self._maxScheduledPixelsToScroll = newValue
+            
+        }
+    }
+    
+    private var scheduledPixelsToScroll: Int {
+        get {
+            return _scheduledPixelsToScroll
+        }
+        set {
+            
+         //   let oldValue = self._scheduledPixelsToScroll
+            if newValue < pixelsToScrollLimitTextField {
+                self._scheduledPixelsToScroll = newValue
+            }
+            
+            print("- scheduledPixelsToScroll", self._scheduledPixelsToScroll)
+            if (self._scheduledPixelsToScroll > self.maxScheduledPixelsToScroll) {
+                self.maxScheduledPixelsToScroll = self._scheduledPixelsToScroll
+            } else if self._scheduledPixelsToScroll == 0 {
+                self.maxScheduledPixelsToScroll = 0
+            }
+            
+        }
+    }
+    
+    private var currentLocation: CGPoint? {
+        get {
+            var val: CGPoint? = nil
+            currentLocationAccessQueue.sync {
+                val = _currentLocation
+            }
+            return val!
+        }
+        set {
+            currentLocationAccessQueue.async(flags: .barrier) {
+                self._currentLocation = newValue
+            }
+        }
+    }
+    
+    private var deltaY: Int {
+        get {
+            
+            return self.absDeltaY * self.direction
+        }
+        set(val) {
+            
+            self.absDeltaY = abs(val)
+            
+        }
+    }
+    
+    private var currentPhase: Phase {
+        get {
+            return _currentPhase
+        }
+        set {
+            
+            let oldValue = self._currentPhase
+            if oldValue != newValue {
+                self.currentSubphase = .start
+            }
+            self._currentPhase = newValue
+            
+        }
+    }
+    
+    private var currentSubphase: Subphase {
+        get {
+            return _currentSubphase
+        }
+        set {
+            self._currentSubphase = newValue
+        }
+    }
+    
+}
+
 public class MagicScrollController {
     
     static let shared: MagicScrollController = MagicScrollController()
     private var _isRunning = false
     var isRunning: Bool {
-        get {
-            return _isRunning
-        }
+        
+        return _isRunning
+        
     }
+    private var isSyncNeeded = false
     
     private var magicScrollSerialQueue = DispatchQueue(label: "magicScrollSerialQueue", qos: .userInteractive)
+    private var framesLeftAccessQueue = DispatchQueue(label: "framesLeftAccessQueue", attributes: .concurrent)
+    //   private var scrolledPixelsBufferAccessQueue = DispatchQueue(label: "scrolledPixelsBufferAccessQueue", attributes: .concurrent)
+    private var scrollEventAccessQueue = DispatchQueue(label: "scrollEventAccessQueue", attributes: .concurrent)
+      private var isSyncNeededAccessQueue = DispatchQueue(label: "isSyncNeededAccessQueue", attributes: .concurrent)
+    
+    private var scheduledPixelsToScrollAccessQueue = DispatchQueue(label: "scheduledPixelsToScrollAccessQueue", attributes: .concurrent)
+    private var currentLocationAccessQueue = DispatchQueue(label: "currentLocationAccessQueue", attributes: .concurrent)
+    private var deltaYAccessQueue = DispatchQueue(label: "deltaYAccessQueue", attributes: .concurrent)
+    private var phaseAccessQueue = DispatchQueue(label: "phaseAccessQueue", attributes: .concurrent)
     
     var eventMonitor: EventMonitor?
     var displayLink: DisplayLink?
     var tf: TimingFunction
-    private var scrollEvent: CGEvent! = CGEvent(source: nil)
+    private var _scrollEvent: CGEvent! = CGEvent(source: nil)
     
-    private var framesLeft = 0 {
-        didSet {
-            if framesLeft == 0 {
-     
-                self.displayLink?.cancel()
-          
-                self.currentPhase = .acceleration
-                self.currentSubphase = .start
-                scrolledPixelsBuffer = 0
-            }
-        }
-    }
+    private var _framesLeft = 0
     
     private var stepSize: Int {
         get {
-            let t = 1.0 - (Double(framesLeft) / Double(maxFrames))
             var step = 0
-            let curEasingT = Double(tf.progress(at: CGFloat(t)))
-            print("curEasingT - ", curEasingT)
-            step = Int(Double(maxScheduledPixelsToScroll) * curEasingT) - scrolledPixelsBuffer
-            print("scrolledPixelsBuffer - ", scrolledPixelsBuffer)
-            if step <= 0 {
-                step = 0 //TODO
-            }
-            if isSyncNeeded && framesLeft > 0 {
-                isSyncNeeded = false
+            print("- maxScheduledPixelsToScroll", self.maxScheduledPixelsToScroll)
+            if isSyncNeeded {
+                 isSyncNeeded = false
                 var closestFrame = 1;
                 var syncedEasingT = 0.0
                 var syncedStep = 0
+                var peakSyncedStep = 0
+                var peakSyncedClosestFrame = 1
+                var peakSyncedScrolledPixelsBuffer = 0
+                
                 var syncedScrolledPixelsBuffer = 0
-                var prevSyncedStep = 0
+               // var prevSyncedStep = 0
+                
                 for frame in 1...maxFrames {
                     let syncedT = 1.0 - (Double(maxFrames - frame) / Double(maxFrames))
                     syncedEasingT = Double(tf.progress(at: CGFloat(syncedT)))
                     syncedStep = Int(Double(maxScheduledPixelsToScroll) * syncedEasingT) - syncedScrolledPixelsBuffer
                     print("syncedStep calc", syncedStep, syncedEasingT)
                     syncedScrolledPixelsBuffer += syncedStep
-                    closestFrame = frame
-                    if syncedStep > prevStep{
+                    
+                    if syncedStep >= prevStep{ // found step
+                        closestFrame = frame
+                        scrolledPixelsBuffer = syncedScrolledPixelsBuffer
                         break
-                    } else if syncedStep < prevSyncedStep {
-                        syncedStep = prevSyncedStep
+                    } else if frame == maxFrames {
+                        closestFrame = peakSyncedClosestFrame
+                        syncedStep = peakSyncedStep
+                        scrolledPixelsBuffer = peakSyncedScrolledPixelsBuffer
+                        
                         break
                     }
                     
+                    //                    else if syncedStep < prevSyncedStep {
+                    //                        closestFrame = frame - 1
+                    //                        syncedStep = prevSyncedStep
+                    //                        scrolledPixelsBuffer = syncedScrolledPixelsBuffer - syncedStep
+                    //                        break
+                    //                    }
+                    
                     // то что было на предыдущем шаге
                     //  closestSyncedEasingT = syncedEasingT
-                    prevSyncedStep = syncedStep
+                    if syncedStep > peakSyncedStep {
+                        peakSyncedClosestFrame = frame
+                        peakSyncedStep = syncedStep
+                        peakSyncedScrolledPixelsBuffer = syncedScrolledPixelsBuffer
+                    }
+                    
+                  //  prevSyncedStep = syncedStep
                 }
+                scheduledPixelsToScroll = maxScheduledPixelsToScroll - scrolledPixelsBuffer + syncedStep
                 step = syncedStep
                 print("syncedStep", syncedStep)
-                self.framesLeft = maxFrames - closestFrame
+                self.framesLeft = maxFrames - closestFrame + 1
                 //  scrolledPixelsBuffer = Int(Double(maxScheduledPixelsToScroll) * syncedEasingT)
-                scrolledPixelsBuffer = syncedScrolledPixelsBuffer
+                
                 print("closestFrame ",closestFrame)
                 print("syncedEasingT ",syncedEasingT)
                 print("scheduledPixelsToScroll", scheduledPixelsToScroll)
                 print("maxScheduledPixelsToScroll", maxScheduledPixelsToScroll)
             } else {
+                let t = 1.0 - (Double(framesLeft - 1) / Double(maxFrames))
+                
+                let curEasingT = Double(tf.progress(at: CGFloat(t)))
+                print("curEasingT - ", curEasingT)
+                step = Int(Double(maxScheduledPixelsToScroll) * curEasingT) - scrolledPixelsBuffer
+            
+                print("scrolledPixelsBuffer - ", scrolledPixelsBuffer)
+                if step <= 0 {
+                    step = 0 //TODO
+                }
                 scrolledPixelsBuffer += step
             }
             print("framesLeft ", framesLeft)
@@ -96,57 +259,54 @@ public class MagicScrollController {
     private var amplifier: Double {
         get {
             guard self.currentPhase == .acceleration else { return 1 }
-            let currentTime = (UInt64(DispatchTime.now().uptimeNanoseconds) - self.lastScrollWheelTime) / 1_000_000
-            if currentTime < self.amplifierSensitivityLevel {
-                let amplifierCoef = round(log10(Double(self.amplifierSensitivityLevel) / Double(currentTime > 0 ? currentTime : 1)) * 100) / 100
-                let _amplifier = (1 + (amplifierMultiplier * amplifierCoef))
-                guard _amplifier < self.maxAmplifierLevel else { return 1 }
+            let currentTime = CFAbsoluteTimeGetCurrent()
+            let timeDelta = (currentTime - self.lastScrollWheelTime) * 1000
+            self.lastScrollWheelTime = currentTime
+            return 1
+            if timeDelta < self.amplifierSensitivityLevel {
+                let amplifierCoef = round((Double(self.amplifierSensitivityLevel) / timeDelta) * 100) / 100
+                print("amplifierCoef \(amplifierCoef)")
+                let _amplifier = amplifierCoef
+               // let _amplifier = (1 + (amplifierMultiplier * amplifierCoef))
+                guard _amplifier < self.maxAmplifierLevel else { return self.maxAmplifierLevel }
+                print("amplifier \(_amplifier)")
                 return _amplifier
             } else {
+                print("amplifier \(1)")
                 return 1
             }
         }
     }
     
-    private var scheduledPixelsToScroll: Int = 0{
-        didSet {
-            print("- scheduledPixelsToScroll", scheduledPixelsToScroll)
-            if (scheduledPixelsToScroll > oldValue) {
-                self.maxScheduledPixelsToScroll = scheduledPixelsToScroll
-            }
-        }
-    }
+    private var _scheduledPixelsToScroll: Int = 0
     
     private var maxFrames = 0
     private var prevStep = 0
-    private var scrolledPixelsBuffer = 0
-    private var maxScheduledPixelsToScroll = 0
-    private var lastScrollWheelTime: UInt64 = DispatchTime.now().uptimeNanoseconds
+    private var _scrolledPixelsBuffer = 0
+    private var _maxScheduledPixelsToScroll = 0
+    private var lastScrollWheelTime = CFAbsoluteTimeGetCurrent()
     
     // Settings
     let settings = Settings.shared
-    var scrollDuration = 400 //ms
+    var scrollDuration = 360 //ms
     var pixelsToScrollTextField = 60
-    var amplifierSensitivityLevel = 80 // ms
+    var pixelsToScrollLimitTextField = 1200
+    var amplifierSensitivityLevel = 80.0 // ms
     var amplifierMultiplier = 3.0
-    var maxAmplifierLevel = 10.0
-//        var bezierControlPoint1 = CGPoint.init(x: 0.4, y: 0.5)
-//        var bezierControlPoint2 = CGPoint.init(x: 0.5, y: 1)
-    var bezierControlPoint1 = CGPoint.init(x: 0.2, y: 0.5)
-    var bezierControlPoint2 = CGPoint.init(x: 0.3, y: 0.9)
+    var maxAmplifierLevel = 4.0
+    //        var bezierControlPoint1 = CGPoint.init(x: 0.4, y: 0.5)
+    //        var bezierControlPoint2 = CGPoint.init(x: 0.5, y: 1)
+    //ease
+//    var bezierControlPoint1 = CGPoint.init(x: 0.25, y: 0.1)
+//    var bezierControlPoint2 = CGPoint.init(x: 0.3, y: 0.98)
+        var bezierControlPoint1 = CGPoint.init(x: 0.4, y: 0.4)
+        var bezierControlPoint2 = CGPoint.init(x: 0.2, y: 1)
     
     
     private var absDeltaY: Int = 0
-    private var deltaY: Int {
-        get {
-            return self.absDeltaY * self.direction
-        }
-        set(val) {
-            self.absDeltaY = abs(val)
-        }
-    }
     
-    private var currentLocation: CGPoint?
+    
+    private var _currentLocation: CGPoint?
     private var isShiftPressed = false;
     private var direction = 1 {
         willSet{
@@ -158,16 +318,10 @@ public class MagicScrollController {
         }
     }
     
-    private var isSyncNeeded = false
-    private var currentPhase: Phase = .acceleration {
-        didSet{
-            if oldValue != currentPhase {
-                currentSubphase = .start
-            }
-            
-        }
-    }
-    private var currentSubphase: Subphase = .start
+    private var _isSyncNeeded = false
+    private var _currentPhase: Phase = .acceleration
+    
+    private var _currentSubphase: Subphase = .start
     
     
     init() {
@@ -183,19 +337,19 @@ public class MagicScrollController {
         event.location = location
         event.post(tap: .cgSessionEventTap)
     }
-
+    
     
     /// Adds a bump effect, like using a trackpad or magic mouse.
     ///
     /// - Parameter ev: CGEvent?
     func addSystemDumping(ev: CGEvent?) {
-print("NSEvent phase", currentPhase, currentSubphase)
+        print("NSEvent phase", currentPhase, currentSubphase)
         if self.currentPhase == .acceleration {
             if self.currentSubphase == .start {
-//                ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
-                            //    ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 3)
-                             //   ev?.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 0)
-                              //  self.postEvent(event: ev!)
+                //                ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
+                //    ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 3)
+                //   ev?.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 0)
+                //  self.postEvent(event: ev!)
                 ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 0)
                 ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 1)
                 
@@ -210,8 +364,8 @@ print("NSEvent phase", currentPhase, currentSubphase)
                 ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 0)
                 self.deltaY = 0 // убирает лаг
                 self.framesLeft += 1 // extra frame
-            //   ev?.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 0) // убирает лаг
-               // self.postEvent(event: ev!)
+                //   ev?.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 0) // убирает лаг
+                // self.postEvent(event: ev!)
                 self.currentSubphase = .inProgress
             } else if self.currentSubphase == .inProgress {
                 ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
@@ -227,7 +381,8 @@ print("NSEvent phase", currentPhase, currentSubphase)
     
     @objc func sendEvent() {
         
-        guard let ev = self.scrollEvent else { return }
+        //  guard let ev = self.scrollEvent else { return }
+        let ev = self.scrollEvent
         //  let ev = CGEvent.init(source: nil)!
         
         guard self.framesLeft > 0 else {
@@ -266,14 +421,14 @@ print("NSEvent phase", currentPhase, currentSubphase)
         self.framesLeft -= 1
         
         if self.scheduledPixelsToScroll >= Int(self.absDeltaY) {
-            self.scheduledPixelsToScroll -= Int(self.absDeltaY)
+            self.scheduledPixelsToScroll -= Int(self.absDeltaY) // TODO refactor
         }
         
         self.postEvent(event: ev, delay: 0)
         
     }
     
-    /// Raised when real scroll has occurred
+    /// Raised when real scroll has occurred - Concurrent Event queue
     ///
     /// - Parameter event:
     @objc func systemScrollEventHandler(event: CGEvent)
@@ -293,7 +448,7 @@ print("NSEvent phase", currentPhase, currentSubphase)
             self.displayLink?.start()
             self.framesLeft = self.maxFrames
         } else {
-            self.isSyncNeeded = true
+            isSyncNeeded = true
         }
         
         if self.currentPhase == .deceleration {
@@ -301,7 +456,7 @@ print("NSEvent phase", currentPhase, currentSubphase)
             self.currentPhase = .acceleration
         }
         
-        self.lastScrollWheelTime = DispatchTime.now().uptimeNanoseconds
+   //     self.lastScrollWheelTime = DispatchTime.now().uptimeNanoseconds
         
     }
     
@@ -318,8 +473,8 @@ print("NSEvent phase", currentPhase, currentSubphase)
     public func run() {
         print("run MagicScrollController")
         self._isRunning = true
-           self.displayLink = DisplayLink(onQueue: magicScrollSerialQueue)
-       // self.displayLink = DisplayLink(onQueue: DispatchQueue.main)
+        //    self.displayLink = DisplayLink(onQueue: magicScrollSerialQueue)
+        self.displayLink = DisplayLink(onQueue: DispatchQueue.main)
         displayLink?.callback = sendEvent
         
         /// Raised when a real scroll has occurred

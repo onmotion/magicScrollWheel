@@ -705,6 +705,9 @@
                                     <string key="keyEquivalent">q</string>
                                     <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                                 </buttonCell>
+                                <connections>
+                                    <action selector="quitButtonPressed:" target="vV2-g2-nIV" id="EfB-Kg-xGb"/>
+                                </connections>
                             </button>
                             <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iRZ-Nr-3zJ">
                                 <rect key="frame" x="174" y="19" width="103" height="19"/>
@@ -713,6 +716,9 @@
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                                     <font key="font" metaFont="systemBold" size="12"/>
                                 </buttonCell>
+                                <connections>
+                                    <action selector="pauseButtonPressed:" target="vV2-g2-nIV" id="3QE-7p-wtB"/>
+                                </connections>
                             </button>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LXy-KD-8EE">
                                 <rect key="frame" x="355" y="13" width="81" height="32"/>

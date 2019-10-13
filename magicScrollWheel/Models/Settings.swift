@@ -15,7 +15,7 @@ class Settings {
     var useSystemDamping: Bool
     
     private init() {
-        useSystemDamping = true
+        useSystemDamping = false
     }
     
 }
