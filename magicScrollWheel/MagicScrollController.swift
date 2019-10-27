@@ -34,7 +34,7 @@ public class MagicScrollController {
     
     var eventMonitor: EventMonitor?
     var displayLink: DisplayLink?
-    var tf: TimingFunction
+    var tf: CubicBezier
     private var _scrollEvent: CGEvent! = CGEvent(source: nil)
     
     private var _framesLeft = 0
@@ -60,7 +60,8 @@ public class MagicScrollController {
                 
                 for frame in 1...maxFrames {
                     let syncedT = 1.0 - (Double(maxFrames - frame) / Double(maxFrames))
-                    syncedEasingT = Double(tf.progress(at: CGFloat(syncedT)))
+                  //  syncedEasingT = Double(tf.progress(at: CGFloat(syncedT)))
+                    syncedEasingT = Double(tf.easing(syncedT))
                     syncedStep = Int(Double(maxScheduledPixelsToScroll) * syncedEasingT) - syncedScrolledPixelsBuffer
                     print("syncedStep calc", syncedStep, syncedEasingT)
                     syncedScrolledPixelsBuffer += syncedStep
@@ -112,7 +113,8 @@ public class MagicScrollController {
                 print("maxScheduledPixelsToScroll", maxScheduledPixelsToScroll)
             } else {
                 let t = 1.0 - (Double(framesLeft - 1) / Double(maxFrames))
-                let curEasingT = Double(tf.progress(at: CGFloat(t)))
+              //  let curEasingT = Double(tf.progress(at: CGFloat(t)))
+                let curEasingT = Double(tf.easing(t))
                 print("curEasingT - ", curEasingT)
                 step = Int((Double(maxScheduledPixelsToScroll) * curEasingT)) - scrolledPixelsBuffer
             
@@ -121,7 +123,8 @@ public class MagicScrollController {
           //      assert(step >= 0)
                 if step <= 0 && framesLeft > 2 {
                     let nextT = 1.0 - (Double(framesLeft - 2) / Double(maxFrames))
-                    let nextEasingT = Double(tf.progress(at: CGFloat(nextT)))
+                   // let nextEasingT = Double(tf.progress(at: CGFloat(nextT)))
+                    let nextEasingT = Double(tf.easing(nextT))
                     let nextStep = Int(Double(maxScheduledPixelsToScroll) * nextEasingT) - (scrolledPixelsBuffer + step)
                     print("nextStep", nextStep)
                     step = nextStep > 1 ? nextStep : 0
@@ -171,8 +174,8 @@ public class MagicScrollController {
     
     // Settings
     let settings = Settings.shared
-    var scrollDuration = 3600 //ms
-    var pixelsToScrollTextField = 670
+    var scrollDuration = 360 //ms
+    var pixelsToScrollTextField = 60
     var pixelsToScrollLimitTextField = 1200
     var amplifierSensitivityLevel = 80.0 // ms
     var amplifierMultiplier = 3.0
@@ -211,7 +214,8 @@ public class MagicScrollController {
     
     init() {
         print("init MagicScrollController")
-        self.tf = TimingFunction(controlPoint1: bezierControlPoint1, controlPoint2: self.bezierControlPoint2, duration: 1.0)
+        // self.tf = TimingFunction(controlPoint1: bezierControlPoint1, controlPoint2: self.bezierControlPoint2, duration: 1.0)
+        self.tf = CubicBezier.init(controlPoints: (x1: Double(bezierControlPoint1.x), y1: Double(bezierControlPoint1.y), x2: Double(bezierControlPoint2.x), y2: Double(bezierControlPoint2.y)))
     }
     
     private func postEvent(event: CGEvent, delay: UInt32 = 0) {
