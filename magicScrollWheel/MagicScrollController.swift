@@ -10,149 +10,14 @@ import Cocoa
 
 
 
-extension MagicScrollController {
-    
-    
-    private var framesLeft: Int {
-        get {
-            
-            return _framesLeft
-        }
-        set {
-            
-            self._framesLeft = newValue
-            
-            if newValue == 0 {
-                self.displayLink?.cancel()
-                self.currentPhase = .acceleration
-                self.currentSubphase = .start
-                self.scrolledPixelsBuffer = 0
-                scheduledPixelsToScroll = 0
-            }
-        }
-    }
-    
-    
-    private var scrolledPixelsBuffer: Int {
-        get {
-            return _scrolledPixelsBuffer
-        }
-        set {
-            
-            self._scrolledPixelsBuffer = newValue
-            
-        }
-    }
-    
-//    private var isSyncNeeded: Bool {
-//        return scrolledPixelsBuffer == 0 && framesLeft < maxFrames
-//    }
-    
-    
-    private var scrollEvent: CGEvent {
-        get {
-            return _scrollEvent
-        }
-        set {
-            
-            self._scrollEvent = newValue
-            
-        }
-    }
-    
-    private var maxScheduledPixelsToScroll: Int {
-        get {
-            return _maxScheduledPixelsToScroll
-        }
-        set {
-            
-            self._maxScheduledPixelsToScroll = newValue
-            
-        }
-    }
-    
-    private var scheduledPixelsToScroll: Int {
-        get {
-            return _scheduledPixelsToScroll
-        }
-        set {
-            
-         //   let oldValue = self._scheduledPixelsToScroll
-            if newValue < pixelsToScrollLimitTextField {
-                self._scheduledPixelsToScroll = newValue
-            }
-            
-            print("- scheduledPixelsToScroll", self._scheduledPixelsToScroll)
-            if (self._scheduledPixelsToScroll > self.maxScheduledPixelsToScroll) {
-                self.maxScheduledPixelsToScroll = self._scheduledPixelsToScroll
-            } else if self._scheduledPixelsToScroll == 0 {
-                self.maxScheduledPixelsToScroll = 0
-            }
-            
-        }
-    }
-    
-    private var currentLocation: CGPoint? {
-        get {
-            var val: CGPoint? = nil
-            currentLocationAccessQueue.sync {
-                val = _currentLocation
-            }
-            return val!
-        }
-        set {
-            currentLocationAccessQueue.async(flags: .barrier) {
-                self._currentLocation = newValue
-            }
-        }
-    }
-    
-    private var deltaY: Int {
-        get {
-            
-            return self.absDeltaY * self.direction
-        }
-        set(val) {
-            
-            self.absDeltaY = abs(val)
-            
-        }
-    }
-    
-    private var currentPhase: Phase {
-        get {
-            return _currentPhase
-        }
-        set {
-            
-            let oldValue = self._currentPhase
-            if oldValue != newValue {
-                self.currentSubphase = .start
-            }
-            self._currentPhase = newValue
-            
-        }
-    }
-    
-    private var currentSubphase: Subphase {
-        get {
-            return _currentSubphase
-        }
-        set {
-            self._currentSubphase = newValue
-        }
-    }
-    
-}
+
 
 public class MagicScrollController {
     
     static let shared: MagicScrollController = MagicScrollController()
     private var _isRunning = false
     var isRunning: Bool {
-        
         return _isRunning
-        
     }
     private var isSyncNeeded = false
     
@@ -177,6 +42,9 @@ public class MagicScrollController {
     private var stepSize: Int {
         get {
             var step = 0
+            guard maxScheduledPixelsToScroll > 0 else {
+                return 0
+            }
             print("- maxScheduledPixelsToScroll", self.maxScheduledPixelsToScroll)
             if isSyncNeeded {
                  isSyncNeeded = false
@@ -197,11 +65,12 @@ public class MagicScrollController {
                     print("syncedStep calc", syncedStep, syncedEasingT)
                     syncedScrolledPixelsBuffer += syncedStep
                     
-                    if syncedStep >= prevStep{ // found step
+                    if syncedStep > prevStep{ // found step
                         closestFrame = frame
                         scrolledPixelsBuffer = syncedScrolledPixelsBuffer
                         break
-                    } else if frame == maxFrames {
+                    } else
+                    if frame == maxFrames {
                         closestFrame = peakSyncedClosestFrame
                         syncedStep = peakSyncedStep
                         scrolledPixelsBuffer = peakSyncedScrolledPixelsBuffer
@@ -218,7 +87,10 @@ public class MagicScrollController {
                     
                     // то что было на предыдущем шаге
                     //  closestSyncedEasingT = syncedEasingT
+                    
                     if syncedStep > peakSyncedStep {
+                        
+                        
                         peakSyncedClosestFrame = frame
                         peakSyncedStep = syncedStep
                         peakSyncedScrolledPixelsBuffer = syncedScrolledPixelsBuffer
@@ -226,6 +98,8 @@ public class MagicScrollController {
                     
                   //  prevSyncedStep = syncedStep
                 }
+            
+                
                 scheduledPixelsToScroll = maxScheduledPixelsToScroll - scrolledPixelsBuffer + syncedStep
                 step = syncedStep
                 print("syncedStep", syncedStep)
@@ -238,16 +112,24 @@ public class MagicScrollController {
                 print("maxScheduledPixelsToScroll", maxScheduledPixelsToScroll)
             } else {
                 let t = 1.0 - (Double(framesLeft - 1) / Double(maxFrames))
-                
                 let curEasingT = Double(tf.progress(at: CGFloat(t)))
                 print("curEasingT - ", curEasingT)
-                step = Int(Double(maxScheduledPixelsToScroll) * curEasingT) - scrolledPixelsBuffer
+                step = Int((Double(maxScheduledPixelsToScroll) * curEasingT)) - scrolledPixelsBuffer
             
                 print("scrolledPixelsBuffer - ", scrolledPixelsBuffer)
-                if step <= 0 {
-                    step = 0 //TODO
+           
+          //      assert(step >= 0)
+                if step <= 0 && framesLeft > 2 {
+                    let nextT = 1.0 - (Double(framesLeft - 2) / Double(maxFrames))
+                    let nextEasingT = Double(tf.progress(at: CGFloat(nextT)))
+                    let nextStep = Int(Double(maxScheduledPixelsToScroll) * nextEasingT) - (scrolledPixelsBuffer + step)
+                    print("nextStep", nextStep)
+                    step = nextStep > 1 ? nextStep : 0
+                  //  step = 0 //TODO
+                } else {
+                    scrolledPixelsBuffer += step
                 }
-                scrolledPixelsBuffer += step
+                
             }
             print("framesLeft ", framesLeft)
             print("step - ", step)
@@ -283,13 +165,14 @@ public class MagicScrollController {
     private var maxFrames = 0
     private var prevStep = 0
     private var _scrolledPixelsBuffer = 0
+
     private var _maxScheduledPixelsToScroll = 0
     private var lastScrollWheelTime = CFAbsoluteTimeGetCurrent()
     
     // Settings
     let settings = Settings.shared
-    var scrollDuration = 360 //ms
-    var pixelsToScrollTextField = 60
+    var scrollDuration = 3600 //ms
+    var pixelsToScrollTextField = 670
     var pixelsToScrollLimitTextField = 1200
     var amplifierSensitivityLevel = 80.0 // ms
     var amplifierMultiplier = 3.0
@@ -299,8 +182,10 @@ public class MagicScrollController {
     //ease
 //    var bezierControlPoint1 = CGPoint.init(x: 0.25, y: 0.1)
 //    var bezierControlPoint2 = CGPoint.init(x: 0.3, y: 0.98)
-        var bezierControlPoint1 = CGPoint.init(x: 0.4, y: 0.4)
-        var bezierControlPoint2 = CGPoint.init(x: 0.2, y: 1)
+//        var bezierControlPoint1 = CGPoint.init(x: 0.4, y: 0.4)
+//        var bezierControlPoint2 = CGPoint.init(x: 0.2, y: 1)
+    var bezierControlPoint1 = CGPoint.init(x: 0.44, y: 0.32)
+    var bezierControlPoint2 = CGPoint.init(x: 0.41, y: 0.95)
     
     
     private var absDeltaY: Int = 0
@@ -501,8 +386,148 @@ public class MagicScrollController {
         print("deinit MagicScrollController")
         self.stop()
     }
+}
+
+
+
+
+
+
+
+
+
+extension MagicScrollController {
     
     
+    private var framesLeft: Int {
+        get {
+            
+            return _framesLeft
+        }
+        set {
+            
+            self._framesLeft = newValue
+            
+            if newValue == 0 {
+                self.displayLink?.cancel()
+                self.currentPhase = .acceleration
+                self.currentSubphase = .start
+                self.scrolledPixelsBuffer = 0
+                scheduledPixelsToScroll = 0
+            }
+        }
+    }
+    
+    
+    private var scrolledPixelsBuffer: Int {
+        get {
+            return _scrolledPixelsBuffer
+        }
+        set {
+            
+            self._scrolledPixelsBuffer = newValue
+            
+        }
+    }
+    
+    //    private var isSyncNeeded: Bool {
+    //        return scrolledPixelsBuffer == 0 && framesLeft < maxFrames
+    //    }
+    
+    
+    private var scrollEvent: CGEvent {
+        get {
+            return _scrollEvent
+        }
+        set {
+            
+            self._scrollEvent = newValue
+            
+        }
+    }
+    
+    private var maxScheduledPixelsToScroll: Int {
+        get {
+            return _maxScheduledPixelsToScroll
+        }
+        set {
+            
+            self._maxScheduledPixelsToScroll = newValue
+            
+        }
+    }
+    
+    private var scheduledPixelsToScroll: Int {
+        get {
+            return _scheduledPixelsToScroll
+        }
+        set {
+            
+            //   let oldValue = self._scheduledPixelsToScroll
+            if newValue < pixelsToScrollLimitTextField {
+                self._scheduledPixelsToScroll = newValue
+            }
+            
+            print("- scheduledPixelsToScroll", self._scheduledPixelsToScroll)
+            if (self._scheduledPixelsToScroll > self.maxScheduledPixelsToScroll) {
+                self.maxScheduledPixelsToScroll = self._scheduledPixelsToScroll
+            } else if self._scheduledPixelsToScroll == 0 {
+                self.maxScheduledPixelsToScroll = 0
+            }
+            
+        }
+    }
+    
+    private var currentLocation: CGPoint? {
+        get {
+            var val: CGPoint? = nil
+            currentLocationAccessQueue.sync {
+                val = _currentLocation
+            }
+            return val
+        }
+        set {
+            currentLocationAccessQueue.async(flags: .barrier) {
+                self._currentLocation = newValue
+            }
+        }
+    }
+    
+    private var deltaY: Int {
+        get {
+            
+            return self.absDeltaY * self.direction
+        }
+        set(val) {
+            
+            self.absDeltaY = abs(val)
+            
+        }
+    }
+    
+    private var currentPhase: Phase {
+        get {
+            return _currentPhase
+        }
+        set {
+            
+            let oldValue = self._currentPhase
+            if oldValue != newValue {
+                self.currentSubphase = .start
+            }
+            self._currentPhase = newValue
+            
+        }
+    }
+    
+    private var currentSubphase: Subphase {
+        get {
+            return _currentSubphase
+        }
+        set {
+            self._currentSubphase = newValue
+        }
+    }
     
 }
 
