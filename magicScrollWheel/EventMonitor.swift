@@ -26,21 +26,21 @@ public class EventMonitor {
                 MagicScrollController.shared.systemScrollEventHandler(event: event)
             }
             
-//                        print("""
-//                            mouseEventSubtype: \(event.getIntegerValueField(.mouseEventSubtype))
-//                            mouseEventNumber: \(event.getDoubleValueField(.mouseEventNumber))
-//                            mouseEventClickState: \(event.getDoubleValueField(.mouseEventClickState))
-//                            mouseEventPressure: \(event.getDoubleValueField(.mouseEventPressure))
-//                            mouseEventButtonNumber: \(event.getDoubleValueField(.mouseEventButtonNumber))
-//                            mouseEventDeltaX: \(event.getDoubleValueField(.mouseEventDeltaX))
-//                            mouseEventDeltaY: \(event.getDoubleValueField(.mouseEventDeltaY))
-//                            mouseEventInstantMouser: \(event.getDoubleValueField(.mouseEventInstantMouser))
-//                            mouseEventSubtype: \(event.getDoubleValueField(.mouseEventSubtype))
-//                            mouseEventWindowUnderMousePointer: \(event.getDoubleValueField(.mouseEventWindowUnderMousePointer))
-//                            scrollWheelEventDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventDeltaAxis1))
-//                            scrollWheelEventPointDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventPointDeltaAxis1))
-//                            scrollWheelEventFixedPtDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1))
-//                            """)
+            //                        print("""
+            //                            mouseEventSubtype: \(event.getIntegerValueField(.mouseEventSubtype))
+            //                            mouseEventNumber: \(event.getDoubleValueField(.mouseEventNumber))
+            //                            mouseEventClickState: \(event.getDoubleValueField(.mouseEventClickState))
+            //                            mouseEventPressure: \(event.getDoubleValueField(.mouseEventPressure))
+            //                            mouseEventButtonNumber: \(event.getDoubleValueField(.mouseEventButtonNumber))
+            //                            mouseEventDeltaX: \(event.getDoubleValueField(.mouseEventDeltaX))
+            //                            mouseEventDeltaY: \(event.getDoubleValueField(.mouseEventDeltaY))
+            //                            mouseEventInstantMouser: \(event.getDoubleValueField(.mouseEventInstantMouser))
+            //                            mouseEventSubtype: \(event.getDoubleValueField(.mouseEventSubtype))
+            //                            mouseEventWindowUnderMousePointer: \(event.getDoubleValueField(.mouseEventWindowUnderMousePointer))
+            //                            scrollWheelEventDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventDeltaAxis1))
+            //                            scrollWheelEventPointDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventPointDeltaAxis1))
+            //                            scrollWheelEventFixedPtDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1))
+            //                            """)
             
             return nil
         } else {
@@ -62,20 +62,24 @@ public class EventMonitor {
     private func createEvantTap(forEventMask eventMask: CGEventMask, withOptions options: CGEventTapOptions = .defaultTap, callback: @escaping CGEventTapCallBack) -> CFMachPort? {
         
         guard let eventTap = CGEvent.tapCreate(tap: .cgSessionEventTap, place: .tailAppendEventTap, options: options, eventsOfInterest: eventMask, callback: callback, userInfo: nil) else {
-            print("Couldn't create event tap!");
-            let alert = NSAlert()
-            alert.alertStyle = NSAlert.Style.critical
-            alert.informativeText = "You must grant accessibility control for this app"
-            alert.messageText = "Couldn't create event tap"
-            alert.addButton(withTitle: "Open Preferences")
-            alert.addButton(withTitle: "Cancel")
-            
-            let modalAction = alert.runModal()
-            if (modalAction == NSApplication.ModalResponse.alertFirstButtonReturn) {
-                let prefpaneUrl = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
-                NSWorkspace.shared.open(prefpaneUrl)
+            DispatchQueue.main.async {
+                print("Couldn't create event tap!");
+                let alert = NSAlert()
+                alert.alertStyle = NSAlert.Style.critical
+                alert.informativeText = "You must grant accessibility control for this app"
+                alert.messageText = "Couldn't create event tap"
+                alert.addButton(withTitle: "Open Preferences")
+                alert.addButton(withTitle: "Cancel")
+                
+                let modalAction = alert.runModal()
+                
+                if (modalAction == NSApplication.ModalResponse.alertFirstButtonReturn) {
+                    let prefpaneUrl = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
+                    NSWorkspace.shared.open(prefpaneUrl)
+                }
             }
             return nil
+            
         }
         
         return eventTap
@@ -89,11 +93,16 @@ public class EventMonitor {
             
             /// Run Loop for mouse events
             let scrollEventMask: CGEventMask = (1 << CGEventType.scrollWheel.rawValue)
-            let mouseMoveEventMask: CGEventMask = (1 << CGEventType.mouseMoved.rawValue)
-                | (1 << CGEventType.leftMouseDragged.rawValue)
-                | (1 << CGEventType.rightMouseDragged.rawValue)
-                | (1 << CGEventType.otherMouseDragged.rawValue)
-                | (1 << CGEventType.flagsChanged.rawValue)
+            let mouseMoveEventMasks: [CGEventMask] = [
+                (1 << CGEventType.mouseMoved.rawValue)
+                , (1 << CGEventType.leftMouseDragged.rawValue)
+                , (1 << CGEventType.rightMouseDragged.rawValue)
+                , (1 << CGEventType.otherMouseDragged.rawValue)
+                , (1 << CGEventType.flagsChanged.rawValue)]
+            var mouseMoveEventMask: CGEventMask = 0b0
+            mouseMoveEventMasks.forEach( { item in
+                mouseMoveEventMask = mouseMoveEventMask | item
+            })
             
             if let scrollEventTap = self.createEvantTap(forEventMask: scrollEventMask, callback: self.scrollEventRunLoopCallback) {
                 self.scrollRunLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, scrollEventTap, 0)

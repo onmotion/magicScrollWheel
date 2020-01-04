@@ -35,7 +35,7 @@ class PopoverViewController: NSViewController {
     
     // Storyboard instantiation
     static func freshController() -> PopoverViewController {
-        let storyboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Main"), bundle: nil)
+        let storyboard = NSStoryboard(name: NSStoryboard.Name( "Main"), bundle: nil)
         let identifier = NSStoryboard.SceneIdentifier("PopoverViewController")
         guard let vc = storyboard.instantiateController(withIdentifier: identifier) as? PopoverViewController else {
             fatalError("PopoverViewController not found - Check Main.storyboard")

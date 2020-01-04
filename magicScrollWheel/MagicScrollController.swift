@@ -8,10 +8,6 @@
 
 import Cocoa
 
-
-
-
-
 public class MagicScrollController {
     
     static let shared: MagicScrollController = MagicScrollController()
@@ -23,9 +19,8 @@ public class MagicScrollController {
     
     private var magicScrollSerialQueue = DispatchQueue(label: "magicScrollSerialQueue", qos: .userInteractive)
     private var framesLeftAccessQueue = DispatchQueue(label: "framesLeftAccessQueue", attributes: .concurrent)
-    //   private var scrolledPixelsBufferAccessQueue = DispatchQueue(label: "scrolledPixelsBufferAccessQueue", attributes: .concurrent)
     private var scrollEventAccessQueue = DispatchQueue(label: "scrollEventAccessQueue", attributes: .concurrent)
-      private var isSyncNeededAccessQueue = DispatchQueue(label: "isSyncNeededAccessQueue", attributes: .concurrent)
+    private var isSyncNeededAccessQueue = DispatchQueue(label: "isSyncNeededAccessQueue", attributes: .concurrent)
     
     private var scheduledPixelsToScrollAccessQueue = DispatchQueue(label: "scheduledPixelsToScrollAccessQueue", attributes: .concurrent)
     private var currentLocationAccessQueue = DispatchQueue(label: "currentLocationAccessQueue", attributes: .concurrent)
@@ -47,7 +42,7 @@ public class MagicScrollController {
             }
             print("- maxScheduledPixelsToScroll", self.maxScheduledPixelsToScroll)
             if isSyncNeeded {
-                 isSyncNeeded = false
+                isSyncNeeded = false
                 var closestFrame = 1;
                 var syncedEasingT = 0.0
                 var syncedStep = 0
@@ -56,11 +51,11 @@ public class MagicScrollController {
                 var peakSyncedScrolledPixelsBuffer = 0
                 
                 var syncedScrolledPixelsBuffer = 0
-               // var prevSyncedStep = 0
+                // var prevSyncedStep = 0
                 
                 for frame in 1...maxFrames {
                     let syncedT = 1.0 - (Double(maxFrames - frame) / Double(maxFrames))
-                  //  syncedEasingT = Double(tf.progress(at: CGFloat(syncedT)))
+                    //  syncedEasingT = Double(tf.progress(at: CGFloat(syncedT)))
                     syncedEasingT = Double(tf.easing(syncedT))
                     syncedStep = Int(Double(maxScheduledPixelsToScroll) * syncedEasingT) - syncedScrolledPixelsBuffer
                     print("syncedStep calc", syncedStep, syncedEasingT)
@@ -71,12 +66,11 @@ public class MagicScrollController {
                         scrolledPixelsBuffer = syncedScrolledPixelsBuffer
                         break
                     } else
-                    if frame == maxFrames {
-                        closestFrame = peakSyncedClosestFrame
-                        syncedStep = peakSyncedStep
-                        scrolledPixelsBuffer = peakSyncedScrolledPixelsBuffer
-                        
-                        break
+                        if frame == maxFrames {
+                            closestFrame = peakSyncedClosestFrame
+                            syncedStep = peakSyncedStep
+                            scrolledPixelsBuffer = peakSyncedScrolledPixelsBuffer
+                            break
                     }
                     
                     //                    else if syncedStep < prevSyncedStep {
@@ -90,22 +84,25 @@ public class MagicScrollController {
                     //  closestSyncedEasingT = syncedEasingT
                     
                     if syncedStep > peakSyncedStep {
-                        
-                        
                         peakSyncedClosestFrame = frame
                         peakSyncedStep = syncedStep
                         peakSyncedScrolledPixelsBuffer = syncedScrolledPixelsBuffer
                     }
                     
-                  //  prevSyncedStep = syncedStep
+                    //  prevSyncedStep = syncedStep
                 }
-            
+                
                 
                 scheduledPixelsToScroll = maxScheduledPixelsToScroll - scrolledPixelsBuffer + syncedStep
                 step = syncedStep
                 print("syncedStep", syncedStep)
                 self.framesLeft = maxFrames - closestFrame + 1
-                //  scrolledPixelsBuffer = Int(Double(maxScheduledPixelsToScroll) * syncedEasingT)
+//                if closestFrame < Int(Double(maxFrames) * 0.7) {
+//                    self.framesLeft = maxFrames - closestFrame + 1
+//                } else{
+//                    self.framesLeft = Int(Double(maxFrames) * 0.7)
+//                }
+                
                 
                 print("closestFrame ",closestFrame)
                 print("syncedEasingT ",syncedEasingT)
@@ -113,22 +110,22 @@ public class MagicScrollController {
                 print("maxScheduledPixelsToScroll", maxScheduledPixelsToScroll)
             } else {
                 let t = 1.0 - (Double(framesLeft - 1) / Double(maxFrames))
-              //  let curEasingT = Double(tf.progress(at: CGFloat(t)))
+                //  let curEasingT = Double(tf.progress(at: CGFloat(t)))
                 let curEasingT = Double(tf.easing(t))
                 print("curEasingT - ", curEasingT)
                 step = Int((Double(maxScheduledPixelsToScroll) * curEasingT)) - scrolledPixelsBuffer
-            
+                
                 print("scrolledPixelsBuffer - ", scrolledPixelsBuffer)
-           
-          //      assert(step >= 0)
+                
+                //      assert(step >= 0)
                 if step <= 0 && framesLeft > 2 {
                     let nextT = 1.0 - (Double(framesLeft - 2) / Double(maxFrames))
-                   // let nextEasingT = Double(tf.progress(at: CGFloat(nextT)))
+                    // let nextEasingT = Double(tf.progress(at: CGFloat(nextT)))
                     let nextEasingT = Double(tf.easing(nextT))
                     let nextStep = Int(Double(maxScheduledPixelsToScroll) * nextEasingT) - (scrolledPixelsBuffer + step)
                     print("nextStep", nextStep)
                     step = nextStep > 1 ? nextStep : 0
-                  //  step = 0 //TODO
+                    //  step = 0 //TODO
                 } else {
                     scrolledPixelsBuffer += step
                 }
@@ -143,6 +140,7 @@ public class MagicScrollController {
     
     private var amplifier: Double {
         get {
+            return 1;
             guard self.currentPhase == .acceleration else { return 1 }
             let currentTime = CFAbsoluteTimeGetCurrent()
             let timeDelta = (currentTime - self.lastScrollWheelTime) * 1000
@@ -152,7 +150,7 @@ public class MagicScrollController {
                 let amplifierCoef = round((Double(self.amplifierSensitivityLevel) / timeDelta) * 100) / 100
                 print("amplifierCoef \(amplifierCoef)")
                 let _amplifier = amplifierCoef
-               // let _amplifier = (1 + (amplifierMultiplier * amplifierCoef))
+                // let _amplifier = (1 + (amplifierMultiplier * amplifierCoef))
                 guard _amplifier < self.maxAmplifierLevel else { return self.maxAmplifierLevel }
                 print("amplifier \(_amplifier)")
                 return _amplifier
@@ -168,7 +166,7 @@ public class MagicScrollController {
     private var maxFrames = 0
     private var prevStep = 0
     private var _scrolledPixelsBuffer = 0
-
+    
     private var _maxScheduledPixelsToScroll = 0
     private var lastScrollWheelTime = CFAbsoluteTimeGetCurrent()
     
@@ -183,10 +181,10 @@ public class MagicScrollController {
     //        var bezierControlPoint1 = CGPoint.init(x: 0.4, y: 0.5)
     //        var bezierControlPoint2 = CGPoint.init(x: 0.5, y: 1)
     //ease
-//    var bezierControlPoint1 = CGPoint.init(x: 0.25, y: 0.1)
-//    var bezierControlPoint2 = CGPoint.init(x: 0.3, y: 0.98)
-//        var bezierControlPoint1 = CGPoint.init(x: 0.4, y: 0.4)
-//        var bezierControlPoint2 = CGPoint.init(x: 0.2, y: 1)
+    //    var bezierControlPoint1 = CGPoint.init(x: 0.25, y: 0.1)
+    //    var bezierControlPoint2 = CGPoint.init(x: 0.3, y: 0.98)
+    //        var bezierControlPoint1 = CGPoint.init(x: 0.4, y: 0.4)
+    //        var bezierControlPoint2 = CGPoint.init(x: 0.2, y: 1)
     var bezierControlPoint1 = CGPoint.init(x: 0.44, y: 0.32)
     var bezierControlPoint2 = CGPoint.init(x: 0.41, y: 0.95)
     
@@ -345,7 +343,7 @@ public class MagicScrollController {
             self.currentPhase = .acceleration
         }
         
-   //     self.lastScrollWheelTime = DispatchTime.now().uptimeNanoseconds
+        //     self.lastScrollWheelTime = DispatchTime.now().uptimeNanoseconds
         
     }
     
@@ -391,11 +389,6 @@ public class MagicScrollController {
         self.stop()
     }
 }
-
-
-
-
-
 
 
 
