@@ -25,7 +25,7 @@ class PopoverViewController: NSViewController {
         appDelegate.popover.performClose(self)
     }
     
-    @IBOutlet weak var durationTF: RoundedTextField!
+    
     
     
     override func viewDidLoad() {

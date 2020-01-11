@@ -85,6 +85,7 @@
 		88D361A02251408700426432 /* magicScrollWheel */ = {
 			isa = PBXGroup;
 			children = (
+				88D361A72251408700426432 /* Main.storyboard */,
 				88E54089234A25D50028C651 /* ViewControllers */,
 				88E54086234A25150028C651 /* Models */,
 				883D770323376E0700D66A8D /* Views */,
@@ -93,7 +94,6 @@
 				88D361B1225140C200426432 /* EventMonitor.swift */,
 				885CCF85227EF43300B27620 /* DisplayLink.swift */,
 				88D361A52251408700426432 /* Assets.xcassets */,
-				88D361A72251408700426432 /* Main.storyboard */,
 				88D361AA2251408700426432 /* Info.plist */,
 				88D361AB2251408700426432 /* magicScrollWheel.entitlements */,
 				88E7EEA12340EF1100151D57 /* Enums.swift */,
@@ -280,7 +280,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -333,7 +333,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -351,7 +351,7 @@
 				DEVELOPMENT_TEAM = 63Z7MK537K;
 				INFOPLIST_FILE = magicScrollWheel/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = onmotion.magicScrollWheel;
 				PRODUCT_NAME = "Magic Scroll Wheel";
 				SWIFT_VERSION = 5.0;
@@ -369,7 +369,7 @@
 				DEVELOPMENT_TEAM = 63Z7MK537K;
 				INFOPLIST_FILE = magicScrollWheel/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = onmotion.magicScrollWheel;
 				PRODUCT_NAME = "Magic Scroll Wheel";
 				SWIFT_VERSION = 5.0;

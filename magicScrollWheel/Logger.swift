@@ -8,8 +8,17 @@
 
 import Foundation
 
-func print(object: Any) {
-    Logger.log(object)
+public func print(_ items: String..., filename: String = #file, function : String = #function, line: Int = #line, separator: String = " ", terminator: String = "\n") {
+    Logger.log(items)
+}
+public func print(_ items: Any..., filename: String = #file, function : String = #function, line: Int = #line, separator: String = " ", terminator: String = "\n") {
+    Logger.log(items)
+}
+public func print(_ items: Any...) {
+    Logger.log(items)
+}
+public func print(_ items: Any..., separator: String = " ", terminator: String = "\n") {
+    Logger.log(items)
 }
 
 /// Disable print() in production mode
@@ -23,7 +32,7 @@ class Logger {
         #endif
     }()
     
-    public static func log(_ items: Any...) {
+    public static func log(_ items: [Any]) {
         if self.enabled {
             let stringItem = items.map{"\($0)"}.joined(separator: ", ")
             Swift.print("\(stringItem)", terminator: "\n")
