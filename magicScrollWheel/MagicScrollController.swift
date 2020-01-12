@@ -35,6 +35,7 @@ public class MagicScrollController {
     private var _framesLeft = 0
     private var extraFrameRepeatCounter = 0
     private var extraFrameRepeatStep: Int?
+    private var peakStepFrame = 1
     
     private var stepSize: Int {
         get {
@@ -300,7 +301,7 @@ var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
         }
         self.deltaY = self.stepSize
         
-        if self.framesLeft <= self.maxFrames - Int(Double(self.maxFrames) / 1.8) { // deceleration
+        if self.framesLeft <= Int(Double(self.maxFrames) * 0.46) { // deceleration
             self.currentPhase = .deceleration
         }
 
@@ -348,6 +349,12 @@ var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
             self.scheduledPixelsToScroll -= Int(self.absDeltaY) // TODO refactor
         }
         
+        // 123|4|43322111 = 3
+//        if currentPhase == .acceleration && abs(prevDeltaY) < absDeltaY {
+//            peakStepFrame = currentFrame
+//            print("peakStepFrame", peakStepFrame)
+//        }
+        
         self.prevDeltaY = deltaY
         self.postEvent(event: ev, delay: 0)
         
@@ -363,8 +370,7 @@ var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
         print(event)
         scrolledPixelsBuffer = 0
         
-        self.scrollEvent = event.copy()!
-        
+        self.scrollEvent = event
         
         self.direction = self.scrollEvent.getIntegerValueField(.scrollWheelEventDeltaAxis1) < 0 ? -1 : 1
         self.scheduledPixelsToScroll += Int(Double(self.pixelsToScrollTextField) * self.amplifier)
@@ -481,9 +487,7 @@ extension MagicScrollController {
             return _scrollEvent
         }
         set {
-            
             self._scrollEvent = newValue
-            
         }
     }
     
@@ -560,6 +564,12 @@ extension MagicScrollController {
         }
         set {
             self._currentSubphase = newValue
+        }
+    }
+    
+    private var currentFrame: Int {
+        get {
+            return maxFrames - framesLeft
         }
     }
     
