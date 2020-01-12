@@ -18,7 +18,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let statusItem = NSStatusBar.system.statusItem(withLength:NSStatusItem.squareLength)
     let popover = NSPopover()
     
+    
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        self.startApp()
+    }
+    
+    public func startApp() {
+        guard AXIsProcessTrusted() else {
+            let windowController = NSStoryboard(name: "AccessibilityRequest", bundle: nil).instantiateInitialController() as! NSWindowController
+            windowController.window?.setIsVisible(true)
+            return
+        }
         
         if let button = statusItem.button {
             button.image = NSImage(named:NSImage.Name("StatusBarButtonImage"))
@@ -38,9 +48,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         MagicScrollController.shared.stop()
     }
     
-    @objc func showMenuPopup() {
-        print("menu should be showed")
-        
+    @objc func showMenuPopup() { 
         if popover.isShown {
             popover.performClose(self)
         } else {
@@ -62,7 +70,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
     }
-    
+
     
 }
 

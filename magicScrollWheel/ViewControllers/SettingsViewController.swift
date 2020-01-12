@@ -9,8 +9,7 @@
 import Cocoa
 
 class SettingsViewController: NSViewController, NSTextFieldDelegate {
-    
-    let settings = Settings.shared
+
     
     @IBOutlet weak var scrollDurationTextField: RoundedTextField!
     
@@ -18,14 +17,14 @@ class SettingsViewController: NSViewController, NSTextFieldDelegate {
     
 
     @IBAction func onUseSystemDumpingChange(_ sender: NSButton) {
-        settings.useSystemDamping = sender.intValue == 1
+        Settings.shared.useBounceEffect = sender.intValue == 1
     }
     @IBAction func onEmitateTrackpadTaleChange(_ sender: NSButton) {
-        settings.emitateTrackpadTale = sender.intValue == 1
+        Settings.shared.emitateTrackpadTale = sender.intValue == 1
     }
     
     @IBAction func onScrollDurationChange(_ sender: NSTextField) {
-        settings.scrollDuration = Int(sender.intValue)
+        Settings.shared.scrollDuration = Int(sender.intValue)
         NotificationCenter.default.post(name: NSNotification.Name("scrollDurationChanged"), object: nil)
     }
 
@@ -33,9 +32,9 @@ class SettingsViewController: NSViewController, NSTextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do view setup here.
-        useSystemDumpingCheckbox.integerValue = settings.useSystemDamping.hashValue
+        useSystemDumpingCheckbox.integerValue = Settings.shared.useBounceEffect ? 1 : 0
         scrollDurationTextField.delegate = self;
-        scrollDurationTextField.stringValue = String(settings.scrollDuration)
+        scrollDurationTextField.stringValue = String(Settings.shared.scrollDuration)
     }
     
 }

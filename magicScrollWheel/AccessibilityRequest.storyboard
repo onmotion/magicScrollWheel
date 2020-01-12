@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="hXb-pT-HJh">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15702"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Window Controller-->
+        <scene sceneID="OdA-q9-Hus">
+            <objects>
+                <windowController storyboardIdentifier="AccessibilityRequestWindowController" id="hXb-pT-HJh" sceneMemberID="viewController">
+                    <window key="window" title="Magic Scroll Wheel" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" titlebarAppearsTransparent="YES" id="kVJ-52-kC0">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="294" y="313" width="480" height="270"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
+                    </window>
+                    <connections>
+                        <segue destination="ZxV-1y-QzT" kind="relationship" relationship="window.shadowedContentViewController" id="bJs-hB-HSQ"/>
+                    </connections>
+                </windowController>
+                <customObject id="IbO-dn-VnE" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-224" y="-476"/>
+        </scene>
+        <!--Accessibility Control Access Request-->
+        <scene sceneID="erp-Ez-NDQ">
+            <objects>
+                <viewController title="Accessibility Control Access Request" identifier="AccessibilityRequest" storyboardIdentifier="AccessibilityRequest" id="ZxV-1y-QzT" customClass="AccessibilityRequestViewController" customModule="Magic_Scroll_Wheel" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="1ZQ-vi-6M8">
+                        <rect key="frame" x="0.0" y="0.0" width="900" height="600"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <visualEffectView blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="pFL-Ew-bHI">
+                                <rect key="frame" x="0.0" y="0.0" width="900" height="600"/>
+                                <subviews>
+                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ze0-VP-O8Y">
+                                        <rect key="frame" x="361" y="48" width="178" height="32"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="32" id="OQj-1b-cpi"/>
+                                            <constraint firstAttribute="width" constant="178" id="Uyi-l9-JnV"/>
+                                        </constraints>
+                                        <buttonCell key="cell" type="square" title="Grant" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="89Q-Nv-Yj0">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="onGrantButtonClick:" target="ZxV-1y-QzT" id="cdI-Xk-UV9"/>
+                                        </connections>
+                                    </button>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jhv-If-OlE">
+                                        <rect key="frame" x="18" y="467" width="42" height="16"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <textFieldCell key="cell" lineBreakMode="clipping" title="Step 1" id="eBA-wY-2Sj">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="mAi-7h-bSj">
+                                        <rect key="frame" x="248" y="467" width="44" height="16"/>
+                                        <textFieldCell key="cell" lineBreakMode="clipping" title="Step 2" id="ne5-dP-fE2">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cjG-g8-arc">
+                                        <rect key="frame" x="18" y="411" width="199" height="32"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <textFieldCell key="cell" selectable="YES" title="Press button Grant" id="VIY-fV-Ovv">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4MY-05-fgg">
+                                        <rect key="frame" x="248" y="411" width="199" height="32"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <textFieldCell key="cell" selectable="YES" title="Unlock Access" id="7uy-Ww-wOs">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="vJa-vb-QdJ">
+                                        <rect key="frame" x="250" y="177" width="282" height="233"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="233" id="GxI-tz-peK"/>
+                                            <constraint firstAttribute="width" constant="282" id="rew-HJ-bpE"/>
+                                        </constraints>
+                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageAlignment="left" imageScaling="proportionallyDown" image="step2" id="Dkr-Yo-qEM"/>
+                                    </imageView>
+                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="w0j-QB-oAq">
+                                        <rect key="frame" x="603" y="411" width="199" height="32"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <textFieldCell key="cell" selectable="YES" title="Set the checkbox on" id="cG2-Y1-S1T">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kVw-eP-V6a">
+                                        <rect key="frame" x="603" y="467" width="44" height="16"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <textFieldCell key="cell" lineBreakMode="clipping" title="Step 3" id="eS4-L5-CZi">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sFY-Op-exk">
+                                        <rect key="frame" x="605" y="177" width="269" height="233"/>
+                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageAlignment="left" imageScaling="proportionallyDown" image="step3" id="mSR-Ko-G8B"/>
+                                    </imageView>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7dy-iP-Fvx">
+                                        <rect key="frame" x="264" y="533" width="372" height="24"/>
+                                        <textFieldCell key="cell" lineBreakMode="clipping" title="Accessibility Control Access Request" id="Q0p-sQ-Bq3">
+                                            <font key="font" metaFont="systemBold" size="21"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="ze0-VP-O8Y" firstAttribute="centerX" secondItem="pFL-Ew-bHI" secondAttribute="centerX" id="760-k8-41G"/>
+                                    <constraint firstItem="vJa-vb-QdJ" firstAttribute="leading" secondItem="mAi-7h-bSj" secondAttribute="leading" id="7qZ-Xr-XiG"/>
+                                    <constraint firstItem="vJa-vb-QdJ" firstAttribute="leading" secondItem="pFL-Ew-bHI" secondAttribute="leading" constant="250" id="MOI-s4-slK"/>
+                                    <constraint firstAttribute="bottom" secondItem="ze0-VP-O8Y" secondAttribute="bottom" constant="48" id="P1x-Op-3W1"/>
+                                    <constraint firstItem="mAi-7h-bSj" firstAttribute="top" secondItem="7dy-iP-Fvx" secondAttribute="bottom" constant="50" id="UBd-Xu-sJo"/>
+                                    <constraint firstItem="ze0-VP-O8Y" firstAttribute="centerX" secondItem="7dy-iP-Fvx" secondAttribute="centerX" id="Zui-Xd-fg2"/>
+                                    <constraint firstItem="7dy-iP-Fvx" firstAttribute="top" secondItem="pFL-Ew-bHI" secondAttribute="top" constant="43" id="bBO-i5-zph"/>
+                                    <constraint firstItem="sFY-Op-exk" firstAttribute="leading" secondItem="vJa-vb-QdJ" secondAttribute="trailing" constant="73" id="dcj-UY-nKR"/>
+                                    <constraint firstItem="ze0-VP-O8Y" firstAttribute="top" secondItem="vJa-vb-QdJ" secondAttribute="bottom" constant="97" id="geN-u6-OPr"/>
+                                    <constraint firstItem="vJa-vb-QdJ" firstAttribute="top" secondItem="sFY-Op-exk" secondAttribute="top" id="u6g-za-EA3"/>
+                                    <constraint firstItem="vJa-vb-QdJ" firstAttribute="bottom" secondItem="sFY-Op-exk" secondAttribute="bottom" id="uYt-Y8-go1"/>
+                                </constraints>
+                            </visualEffectView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="pFL-Ew-bHI" firstAttribute="top" secondItem="1ZQ-vi-6M8" secondAttribute="top" id="IdP-ia-0xd"/>
+                            <constraint firstAttribute="trailing" secondItem="pFL-Ew-bHI" secondAttribute="trailing" id="YcE-gA-PEz"/>
+                            <constraint firstItem="pFL-Ew-bHI" firstAttribute="leading" secondItem="1ZQ-vi-6M8" secondAttribute="leading" id="bsy-Zg-crQ"/>
+                            <constraint firstAttribute="bottom" secondItem="pFL-Ew-bHI" secondAttribute="bottom" id="wIG-XD-Pb1"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <customObject id="YgP-ul-UIN" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-224" y="77"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="step2" width="671" height="572"/>
+        <image name="step3" width="668" height="571"/>
+    </resources>
+</document>

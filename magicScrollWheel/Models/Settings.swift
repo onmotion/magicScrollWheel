@@ -12,13 +12,12 @@ class Settings {
     
     static let shared = Settings()
     
-    var scrollDuration = 500 //ms
-    var useSystemDamping: Bool = false
-    var emitateTrackpadTale: Bool = true
+    var scrollDuration = 450 //ms
+    var useBounceEffect: Bool = false
+    var emitateTrackpadTale: Bool = false
     
     private init() {
-//        useSystemDamping = false
-//        emitateTrackpadTale = false
+//        useBounceEffect = false
     }
     
 }

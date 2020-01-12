@@ -10,7 +10,10 @@
 		881F232E2337808A008DA53A /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 881F232D2337808A008DA53A /* RoundedTextField.swift */; };
 		883D770523376E3E00D66A8D /* BezierView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883D770423376E3E00D66A8D /* BezierView.swift */; };
 		885CCF86227EF43300B27620 /* DisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 885CCF85227EF43300B27620 /* DisplayLink.swift */; };
+		88999EBB23CB1EA800C90937 /* NumberTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88999EBA23CB1EA800C90937 /* NumberTextField.swift */; };
 		889CDE342365E95D00C259F4 /* CubicBezier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889CDE332365E95D00C259F4 /* CubicBezier.swift */; };
+		88AA0FB623CB5884001A9B18 /* AccessibilityRequest.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 88AA0FB523CB5884001A9B18 /* AccessibilityRequest.storyboard */; };
+		88AA0FB823CB5EAB001A9B18 /* AccessibilityRequestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AA0FB723CB5EAB001A9B18 /* AccessibilityRequestViewController.swift */; };
 		88D361A22251408700426432 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D361A12251408700426432 /* AppDelegate.swift */; };
 		88D361A42251408700426432 /* MagicScrollController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D361A32251408700426432 /* MagicScrollController.swift */; };
 		88D361A62251408700426432 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88D361A52251408700426432 /* Assets.xcassets */; };
@@ -28,7 +31,10 @@
 		881F232D2337808A008DA53A /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		883D770423376E3E00D66A8D /* BezierView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BezierView.swift; sourceTree = "<group>"; };
 		885CCF85227EF43300B27620 /* DisplayLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLink.swift; sourceTree = "<group>"; };
+		88999EBA23CB1EA800C90937 /* NumberTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberTextField.swift; sourceTree = "<group>"; };
 		889CDE332365E95D00C259F4 /* CubicBezier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CubicBezier.swift; sourceTree = "<group>"; };
+		88AA0FB523CB5884001A9B18 /* AccessibilityRequest.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AccessibilityRequest.storyboard; sourceTree = "<group>"; };
+		88AA0FB723CB5EAB001A9B18 /* AccessibilityRequestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityRequestViewController.swift; sourceTree = "<group>"; };
 		88D3619E2251408700426432 /* Magic Scroll Wheel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Magic Scroll Wheel.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		88D361A12251408700426432 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		88D361A32251408700426432 /* MagicScrollController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicScrollController.swift; sourceTree = "<group>"; };
@@ -62,6 +68,7 @@
 				883D770423376E3E00D66A8D /* BezierView.swift */,
 				881F232D2337808A008DA53A /* RoundedTextField.swift */,
 				88E5407F234A15400028C651 /* CustomView.swift */,
+				88999EBA23CB1EA800C90937 /* NumberTextField.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -85,7 +92,11 @@
 		88D361A02251408700426432 /* magicScrollWheel */ = {
 			isa = PBXGroup;
 			children = (
+				88D361AA2251408700426432 /* Info.plist */,
+				88D361AB2251408700426432 /* magicScrollWheel.entitlements */,
+				88D361A52251408700426432 /* Assets.xcassets */,
 				88D361A72251408700426432 /* Main.storyboard */,
+				88AA0FB523CB5884001A9B18 /* AccessibilityRequest.storyboard */,
 				88E54089234A25D50028C651 /* ViewControllers */,
 				88E54086234A25150028C651 /* Models */,
 				883D770323376E0700D66A8D /* Views */,
@@ -93,9 +104,6 @@
 				88D361A32251408700426432 /* MagicScrollController.swift */,
 				88D361B1225140C200426432 /* EventMonitor.swift */,
 				885CCF85227EF43300B27620 /* DisplayLink.swift */,
-				88D361A52251408700426432 /* Assets.xcassets */,
-				88D361AA2251408700426432 /* Info.plist */,
-				88D361AB2251408700426432 /* magicScrollWheel.entitlements */,
 				88E7EEA12340EF1100151D57 /* Enums.swift */,
 				88E7EEA32341129300151D57 /* Logger.swift */,
 				889CDE332365E95D00C259F4 /* CubicBezier.swift */,
@@ -116,6 +124,7 @@
 			children = (
 				88E5407B234A11170028C651 /* PopoverViewController.swift */,
 				88E54081234A20590028C651 /* SettingsViewController.swift */,
+				88AA0FB723CB5EAB001A9B18 /* AccessibilityRequestViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -189,6 +198,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				88D361A62251408700426432 /* Assets.xcassets in Resources */,
+				88AA0FB623CB5884001A9B18 /* AccessibilityRequest.storyboard in Resources */,
 				88D361A92251408700426432 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -202,6 +212,7 @@
 			files = (
 				885CCF86227EF43300B27620 /* DisplayLink.swift in Sources */,
 				88E5407D234A11170028C651 /* PopoverViewController.swift in Sources */,
+				88999EBB23CB1EA800C90937 /* NumberTextField.swift in Sources */,
 				88D361B2225140C200426432 /* EventMonitor.swift in Sources */,
 				88E54088234A252A0028C651 /* Settings.swift in Sources */,
 				881F232E2337808A008DA53A /* RoundedTextField.swift in Sources */,
@@ -210,6 +221,7 @@
 				88E7EEA42341129300151D57 /* Logger.swift in Sources */,
 				883D770523376E3E00D66A8D /* BezierView.swift in Sources */,
 				88E7EEA22340EF1100151D57 /* Enums.swift in Sources */,
+				88AA0FB823CB5EAB001A9B18 /* AccessibilityRequestViewController.swift in Sources */,
 				88D361A22251408700426432 /* AppDelegate.swift in Sources */,
 				88E54082234A20590028C651 /* SettingsViewController.swift in Sources */,
 				889CDE342365E95D00C259F4 /* CubicBezier.swift in Sources */,

@@ -782,11 +782,11 @@ DQ
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                 <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="100" id="3gy-1A-rRk"/>
                             </stepper>
-                            <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2b6-hv-xPO" customClass="RoundedTextField" customModule="Magic_Scroll_Wheel" customModuleProvider="target">
+                            <textField toolTip="Number" focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2b6-hv-xPO" customClass="RoundedTextField" customModule="Magic_Scroll_Wheel" customModuleProvider="target">
                                 <rect key="frame" x="144" y="187" width="66" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" focusRingType="none" drawsBackground="YES" id="cb8-n3-Yig">
-                                    <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="Loe-zX-BEN"/>
+                                    <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" formatWidth="-1" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="Loe-zX-BEN"/>
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -800,7 +800,7 @@ DQ
                                     <action selector="onScrollDurationChange:" target="c1Y-Lp-bh4" id="17W-i9-k2C"/>
                                 </connections>
                             </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="M4R-gM-Sd8">
+                            <textField toolTip="Scroll duration in ms" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="M4R-gM-Sd8">
                                 <rect key="frame" x="18" y="190" width="120" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Duration (ms):" id="aqw-6H-y1E">
@@ -812,7 +812,7 @@ DQ
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V7x-s3-eg1">
                                 <rect key="frame" x="272" y="185" width="160" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="check" title="Use System Dumping" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="LVO-pi-7lH">
+                                <buttonCell key="cell" type="check" title="Edge Bounce Effect" bezelStyle="regularSquare" imagePosition="left" inset="2" id="LVO-pi-7lH">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -831,6 +831,16 @@ DQ
                                     <action selector="onEmitateTrackpadTaleChange:" target="c1Y-Lp-bh4" id="DgV-Tu-Yd7"/>
                                 </connections>
                             </button>
+                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pDG-Th-8ak">
+                                <rect key="frame" x="97" y="111" width="96" height="21"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="xU9-Kc-fmE">
+                                    <numberFormatter key="formatter" formatterBehavior="default10_4" usesGroupingSeparator="NO" formatWidth="-1" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" id="8dk-aa-h0W"/>
+                                    <font key="font" usesAppearanceFont="YES"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                     </view>
                     <connections>

@@ -45,14 +45,14 @@ public class MagicScrollController {
             guard maxScheduledPixelsToScroll > 0 else {
                 return 0
             }
-           
+            
             if isSyncNeeded {
                 isSyncNeeded = false
                 var closestFrame = 1;
                 var syncedEasingT = 0.0
                 var syncedStep = 0
                 var syncedScrolledPixelsBuffer = 0
-
+                
                 var syncFramesLeft = Int(Double(maxFrames) * 0.80) // 80%
                 if syncFramesLeft < framesLeft {
                     syncFramesLeft = framesLeft - 1
@@ -73,7 +73,7 @@ public class MagicScrollController {
                 step = syncedStep
                 print("syncedStep", syncedStep)
                 self.framesLeft = maxFrames - closestFrame + 1
-
+                
                 print("closestFrame ",closestFrame)
                 print("syncedEasingT ",syncedEasingT)
                 print("maxScheduledPixelsToScroll", maxScheduledPixelsToScroll)
@@ -97,7 +97,7 @@ public class MagicScrollController {
                     print("nextStep", nextStep)
                     if nextStep > 1 {
                         step = nextStep
-                      //  scheduledPixelsToScroll += step
+                        //  scheduledPixelsToScroll += step
                     } else {
                         step = 0
                     }
@@ -116,12 +116,12 @@ public class MagicScrollController {
     
     private var amplifier: Double {
         get {
-          //  return 1;
+            //  return 1;
             guard self.currentPhase == .acceleration else { return 1 }
             let currentTime = CFAbsoluteTimeGetCurrent()
             let timeDelta = (currentTime - self.lastScrollWheelTime) * 1000
             self.lastScrollWheelTime = currentTime
-  
+            
             if timeDelta < self.amplifierSensitivityLevel {
                 let amplifierCoef = round((Double(self.amplifierSensitivityLevel) / timeDelta) * 100) / 100
                 print("amplifierCoef \(amplifierCoef)")
@@ -149,23 +149,23 @@ public class MagicScrollController {
     
     // Settings
     let settings = Settings.shared
-
+    
     var pixelsToScrollTextField = 60
     var pixelsToScrollLimitTextField = 1200
     var amplifierSensitivityLevel = 80.0 // ms
     var amplifierMultiplier = 3.0
     var maxAmplifierLevel = 18.0
-var bezierControlPoint1 = CGPoint.init(x: 0.34, y: 0.42)
-var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
+    var bezierControlPoint1 = CGPoint.init(x: 0.34, y: 0.42)
+    var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
     
     //preset 1
-//        var bezierControlPoint1 = CGPoint.init(x: 0.13, y: 0.14)
-//        var bezierControlPoint2 = CGPoint.init(x: 0.1, y: 0.98)
+    //        var bezierControlPoint1 = CGPoint.init(x: 0.13, y: 0.14)
+    //        var bezierControlPoint2 = CGPoint.init(x: 0.1, y: 0.98)
     
-//            var bezierControlPoint1 = CGPoint.init(x: 0.42, y: 0)
-//            var bezierControlPoint2 = CGPoint.init(x: 0.58, y: 1)
-//    var bezierControlPoint1 = CGPoint.init(x: 0.44, y: 0.32)
-//    var bezierControlPoint2 = CGPoint.init(x: 0.41, y: 0.95)
+    //            var bezierControlPoint1 = CGPoint.init(x: 0.42, y: 0)
+    //            var bezierControlPoint2 = CGPoint.init(x: 0.58, y: 1)
+    //    var bezierControlPoint1 = CGPoint.init(x: 0.44, y: 0.32)
+    //    var bezierControlPoint2 = CGPoint.init(x: 0.41, y: 0.95)
     
     
     
@@ -194,7 +194,7 @@ var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
         print("init MagicScrollController")
         // self.tf = TimingFunction(controlPoint1: bezierControlPoint1, controlPoint2: self.bezierControlPoint2, duration: 1.0)
         self.tf = CubicBezier.init(controlPoints: (x1: Double(bezierControlPoint1.x), y1: Double(bezierControlPoint1.y), x2: Double(bezierControlPoint2.x), y2: Double(bezierControlPoint2.y)))
-
+        
     }
     
     private func postEvent(event: CGEvent, delay: UInt32 = 0) {
@@ -228,7 +228,7 @@ var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
         if absPrevDeltaY >= 1 && absPrevDeltaY < 25 {
             if absPrevDeltaY == 1 { // repeat 7 times
                 addExtraFrame(absPrevDeltaY: absPrevDeltaY, count: 6)
-
+                
             } else if absPrevDeltaY <= 6 { // repeat 3 times
                 addExtraFrame(absPrevDeltaY: absPrevDeltaY, count: 2)
             } else if absPrevDeltaY <= 8 { // repeat 2 times
@@ -236,7 +236,7 @@ var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
             } else {
                 self.deltaY = absPrevDeltaY - 1 // smooze stop
             }
-
+            
             if framesLeft == 1 {
                 self.framesLeft += 1 // extra frame
             }
@@ -250,10 +250,10 @@ var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
         print("NSEvent phase", currentPhase, currentSubphase)
         if self.currentPhase == .acceleration {
             if self.currentSubphase == .start {
-//                                ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
-//                    ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 3)
-//                   ev?.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 0)
-//                  self.postEvent(event: ev!)
+                //                                ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
+                //                    ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 3)
+                //                   ev?.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 0)
+                //                  self.postEvent(event: ev!)
                 
                 ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 0)
                 ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 1)
@@ -271,7 +271,7 @@ var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
                 scrolledPixelsBuffer += self.absDeltaY
                 self.deltaY = 0 // убирает лаг
                 self.framesLeft += 1 // extra frame
-      
+                
                 self.currentSubphase = .inProgress
             } else if self.currentSubphase == .inProgress {
                 ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
@@ -281,7 +281,11 @@ var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
             } else {
                 ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
                 ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 2)
-                fixTrackpadTale()
+                if settings.emitateTrackpadTale {
+                    fixTrackpadTale()
+                }
+                
+                
                 if framesLeft == 1 {
                     ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 3) // momentumPhase=Ended
                 }
@@ -293,6 +297,7 @@ var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
         
         //  guard let ev = self.scrollEvent else { return }
         let ev = self.scrollEvent
+        
         //  let ev = CGEvent.init(source: nil)!
         
         guard self.framesLeft > 0 else {
@@ -304,27 +309,27 @@ var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
         if self.framesLeft <= Int(Double(self.maxFrames) * 0.46) { // deceleration
             self.currentPhase = .deceleration
         }
-
-       //   ev.setIntegerValueField(.eventSourceUserData, value: 1)
+        
+        //   ev.setIntegerValueField(.eventSourceUserData, value: 1)
         ev.type = .scrollWheel
         ev.setDoubleValueField(.scrollWheelEventIsContinuous, value: 1)
         ev.setDoubleValueField(.scrollWheelEventScrollCount, value: 1)
         
-        if settings.useSystemDamping {
+        if settings.useBounceEffect {
             self.addSystemDumping(ev: ev)
         }
         
-        if settings.useSystemDamping && framesLeft > 2 && absDeltaY == 0 {
+        if settings.useBounceEffect && framesLeft > 2 && absDeltaY == 0 {
             self.deltaY = 1
         }
         
         // smpoth end ...4321
         let absPrevDeltaY = abs(prevDeltaY)
-//        if framesLeft == 1 && absPrevDeltaY > 1 {
-//            self.framesLeft += 1 // extra frame
-//            self.deltaY = absPrevDeltaY - 1
-//            extraFrameRepeatStep = absDeltaY
-//        }
+        //        if framesLeft == 1 && absPrevDeltaY > 1 {
+        //            self.framesLeft += 1 // extra frame
+        //            self.deltaY = absPrevDeltaY - 1
+        //            extraFrameRepeatStep = absDeltaY
+        //        }
         
         // prevent possible lag in the end
         if framesLeft == 1 && absPrevDeltaY == 0 {
@@ -333,27 +338,28 @@ var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
         
         self.framesLeft -= 1
         
-        if self.isShiftPressed {
+        if self.isShiftPressed { // horizontal scroll
             ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis2, value: Int64(self.deltaY))
             ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 0)
-            //     ev.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis2, value: Int64(self.direction))
-        } else {
-            // vertical scroll
-            ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis2, value: 0)
+            ev.setIntegerValueField(.scrollWheelEventDeltaAxis1, value: 0)
+            ev.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis1, value: 0)
+        } else { // vertical scroll
             ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: Int64(self.deltaY))
-            //   ev.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis1, value: Int64(self.direction))
+            ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis2, value: 0)
+            ev.setIntegerValueField(.scrollWheelEventDeltaAxis2, value: 0)
+            ev.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis2, value: 0)
         }
         
-
+        
         if self.scheduledPixelsToScroll >= Int(self.absDeltaY) && extraFrameRepeatStep == nil {
             self.scheduledPixelsToScroll -= Int(self.absDeltaY) // TODO refactor
         }
         
         // 123|4|43322111 = 3
-//        if currentPhase == .acceleration && abs(prevDeltaY) < absDeltaY {
-//            peakStepFrame = currentFrame
-//            print("peakStepFrame", peakStepFrame)
-//        }
+        //        if currentPhase == .acceleration && abs(prevDeltaY) < absDeltaY {
+        //            peakStepFrame = currentFrame
+        //            print("peakStepFrame", peakStepFrame)
+        //        }
         
         self.prevDeltaY = deltaY
         self.postEvent(event: ev, delay: 0)
@@ -365,16 +371,24 @@ var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
     /// - Parameter event:
     @objc func systemScrollEventHandler(event: CGEvent)
     {
-        print("🌴onSystemScrollEvent🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴")
-        print("_____________________________________________\n")
-        print(event)
+        print("🌴onSystemScrollEvent🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴\n_____________________________________________\n")
         scrolledPixelsBuffer = 0
         
         self.scrollEvent = event
         
-        self.direction = self.scrollEvent.getIntegerValueField(.scrollWheelEventDeltaAxis1) < 0 ? -1 : 1
-        self.scheduledPixelsToScroll += Int(Double(self.pixelsToScrollTextField) * self.amplifier)
+        if isShiftPressed {
+            var deltaAxis = event.getIntegerValueField(.scrollWheelEventDeltaAxis2)
+            if deltaAxis == 0 {
+                deltaAxis = event.getIntegerValueField(.scrollWheelEventDeltaAxis1)
+            }
+            self.direction = deltaAxis > 0 ? 1 : -1
+        } else {
+            let deltaAxis = event.getIntegerValueField(.scrollWheelEventDeltaAxis1)
+            self.direction = deltaAxis > 0 ? 1 : -1
+        }
         
+        print("event.getIntegerValueField(.scrollWheelEventDeltaAxis1)", event.getIntegerValueField(.scrollWheelEventDeltaAxis1))
+        self.scheduledPixelsToScroll += Int(Double(self.pixelsToScrollTextField) * self.amplifier)
         
         if self.framesLeft == 0 {
             self.displayLink?.start()
@@ -387,9 +401,6 @@ var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
             self.currentSubphase = .start
             self.currentPhase = .acceleration
         }
-        
-        //     self.lastScrollWheelTime = DispatchTime.now().uptimeNanoseconds
-        
     }
     
     /// Raised on mouse event with mask: [.mouseMoved, .leftMouseDragged, .rightMouseDragged, .otherMouseDragged, .flagsChanged]
@@ -416,7 +427,7 @@ var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
         //    self.displayLink = DisplayLink(onQueue: magicScrollSerialQueue)
         self.displayLink = DisplayLink(onQueue: DispatchQueue.main)
         displayLink?.callback = sendEvent
-
+        
         NotificationCenter.default.addObserver(self, selector: #selector(onScrollDurationChanged), name: NSNotification.Name(rawValue: "scrollDurationChanged"), object: nil)
         
         self.calcMaxFrames()
@@ -507,7 +518,7 @@ extension MagicScrollController {
             return _scheduledPixelsToScroll
         }
         set {
-                self._scheduledPixelsToScroll = newValue < pixelsToScrollLimitTextField ? newValue : pixelsToScrollLimitTextField
+            self._scheduledPixelsToScroll = newValue < pixelsToScrollLimitTextField ? newValue : pixelsToScrollLimitTextField
             
             print("- scheduledPixelsToScroll", self._scheduledPixelsToScroll)
             if (self._scheduledPixelsToScroll > self.maxScheduledPixelsToScroll) {

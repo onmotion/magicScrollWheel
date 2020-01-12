@@ -8,6 +8,7 @@
 
 
 import Cocoa
+import EventKit
 
 public class EventMonitor {
     
@@ -20,34 +21,38 @@ public class EventMonitor {
     private var runLoop = CFRunLoopGetCurrent()
     
     private let scrollEventRunLoopCallback: CGEventTapCallBack = { (proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>?  in
-    
         
-        if(event.getDoubleValueField(.scrollWheelEventIsContinuous) != 1){
+        if(event.getDoubleValueField(.scrollWheelEventIsContinuous) != 1){ // Non Continuous event (like simple mouse)
             DispatchQueue.main.async {
                 MagicScrollController.shared.systemScrollEventHandler(event: event.copy()!)
             }
             
-//                                    print("""
-//                                        mouseEventSubtype: \(event.getIntegerValueField(.mouseEventSubtype))
-//                                        mouseEventNumber: \(event.getDoubleValueField(.mouseEventNumber))
-//                                        mouseEventClickState: \(event.getDoubleValueField(.mouseEventClickState))
-//                                        mouseEventPressure: \(event.getDoubleValueField(.mouseEventPressure))
-//                                        mouseEventButtonNumber: \(event.getDoubleValueField(.mouseEventButtonNumber))
-//                                        mouseEventDeltaX: \(event.getDoubleValueField(.mouseEventDeltaX))
-//                                        mouseEventDeltaY: \(event.getDoubleValueField(.mouseEventDeltaY))
-//                                        mouseEventInstantMouser: \(event.getDoubleValueField(.mouseEventInstantMouser))
-//                                        mouseEventSubtype: \(event.getDoubleValueField(.mouseEventSubtype))
-//                                        mouseEventWindowUnderMousePointer: \(event.getDoubleValueField(.mouseEventWindowUnderMousePointer))
-//                                        scrollWheelEventDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventDeltaAxis1))
-//                                        scrollWheelEventPointDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventPointDeltaAxis1))
-//                                        scrollWheelEventFixedPtDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1))
-//                                        """)
-            
+//            print("""
+//                mouseEventSubtype: \(event.getIntegerValueField(.mouseEventSubtype))
+//                mouseEventNumber: \(event.getDoubleValueField(.mouseEventNumber))
+//                mouseEventClickState: \(event.getDoubleValueField(.mouseEventClickState))
+//                mouseEventPressure: \(event.getDoubleValueField(.mouseEventPressure))
+//                mouseEventButtonNumber: \(event.getDoubleValueField(.mouseEventButtonNumber))
+//                mouseEventDeltaX: \(event.getDoubleValueField(.mouseEventDeltaX))
+//                mouseEventDeltaY: \(event.getDoubleValueField(.mouseEventDeltaY))
+//                mouseEventInstantMouser: \(event.getDoubleValueField(.mouseEventInstantMouser))
+//                mouseEventSubtype: \(event.getDoubleValueField(.mouseEventSubtype))
+//                mouseEventWindowUnderMousePointer: \(event.getDoubleValueField(.mouseEventWindowUnderMousePointer))
+//                scrollWheelEventDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventDeltaAxis1))
+//                scrollWheelEventDeltaAxis2: \(event.getDoubleValueField(.scrollWheelEventDeltaAxis2))
+//                scrollWheelEventPointDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventPointDeltaAxis1))
+//                scrollWheelEventPointDeltaAxis2: \(event.getDoubleValueField(.scrollWheelEventPointDeltaAxis2))
+//                scrollWheelEventFixedPtDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1))
+//                """)
+          //  return Unmanaged.passUnretained(event)
             return nil
         } else {
+            #if DEBUG
+            autoreleasepool{
+                print(NSEvent(cgEvent: event.copy()!)!, "\n_____________________________________________\n") //possible memory leaks wo using autoreleasepool
+            }
+            #endif
             
-            print(NSEvent(cgEvent: event)!)
-            print("_____________________________________________\n")
             return Unmanaged.passUnretained(event)
         }
         
@@ -70,21 +75,21 @@ public class EventMonitor {
                 let alert = NSAlert()
                 alert.alertStyle = NSAlert.Style.critical
                 alert.informativeText = "You must grant accessibility control for this app"
-                alert.messageText = "Couldn't create event tap"
+                alert.messageText = "Accessibility Control access request"
                 alert.addButton(withTitle: "Open Preferences")
                 alert.addButton(withTitle: "Cancel")
-
+                
                 let modalAction = alert.runModal()
-
+                
                 if (modalAction == NSApplication.ModalResponse.alertFirstButtonReturn) {
                     let prefpaneUrl = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
                     NSWorkspace.shared.open(prefpaneUrl)
                 }
             }
+           
             return nil
-            
         }
-
+        
         return eventTap
     }
     
