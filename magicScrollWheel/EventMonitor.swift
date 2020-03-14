@@ -44,12 +44,12 @@ public class EventMonitor {
 //                scrollWheelEventPointDeltaAxis2: \(event.getDoubleValueField(.scrollWheelEventPointDeltaAxis2))
 //                scrollWheelEventFixedPtDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1))
 //                """)
-          //  return Unmanaged.passUnretained(event)
+//            return Unmanaged.passUnretained(event)
             return nil
         } else {
             #if DEBUG
             autoreleasepool{
-                print(NSEvent(cgEvent: event.copy()!)!, "\n_____________________________________________\n") //possible memory leaks wo using autoreleasepool
+                print(NSEvent(cgEvent: event.copy()!)!, "\n_____________________________________________\n") //possible memory leaks w/o using autoreleasepool
             }
             #endif
             

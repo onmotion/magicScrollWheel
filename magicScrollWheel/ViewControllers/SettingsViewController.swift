@@ -12,6 +12,7 @@ class SettingsViewController: NSViewController, NSTextFieldDelegate {
 
     
     @IBOutlet weak var scrollDurationTextField: RoundedTextField!
+    @IBOutlet weak var accelerationMultiplierTextField: RoundedTextField!
     
     @IBOutlet weak var useSystemDumpingCheckbox: NSButton!
     
@@ -27,6 +28,10 @@ class SettingsViewController: NSViewController, NSTextFieldDelegate {
         Settings.shared.scrollDuration = Int(sender.intValue)
         NotificationCenter.default.post(name: NSNotification.Name("scrollDurationChanged"), object: nil)
     }
+    
+    @IBAction func onAccelerationMultiplierChange(_ sender: NSTextField) {
+        Settings.shared.accelerationMultiplier = Double(sender.doubleValue)
+    }
 
     
     override func viewDidLoad() {
@@ -35,6 +40,7 @@ class SettingsViewController: NSViewController, NSTextFieldDelegate {
         useSystemDumpingCheckbox.integerValue = Settings.shared.useBounceEffect ? 1 : 0
         scrollDurationTextField.delegate = self;
         scrollDurationTextField.stringValue = String(Settings.shared.scrollDuration)
+        accelerationMultiplierTextField.stringValue = String(Settings.shared.accelerationMultiplier)
     }
     
 }

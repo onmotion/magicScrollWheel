@@ -40,6 +40,7 @@ public class MagicScrollController {
     private var stepSize: Int {
         get {
             var step = 0
+            
             print("- maxScheduledPixelsToScroll", self.maxScheduledPixelsToScroll)
             print("-- scheduledPixelsToScroll", self.scheduledPixelsToScroll)
             guard maxScheduledPixelsToScroll > 0 else {
@@ -47,6 +48,7 @@ public class MagicScrollController {
             }
             
             if isSyncNeeded {
+                maxScheduledPixelsToScroll = scheduledPixelsToScroll
                 isSyncNeeded = false
                 var closestFrame = 1;
                 var syncedEasingT = 0.0
@@ -74,6 +76,7 @@ public class MagicScrollController {
                 print("syncedStep", syncedStep)
                 self.framesLeft = maxFrames - closestFrame + 1
                 
+                print("maxFrames ",maxFrames)
                 print("closestFrame ",closestFrame)
                 print("syncedEasingT ",syncedEasingT)
                 print("maxScheduledPixelsToScroll", maxScheduledPixelsToScroll)
@@ -113,29 +116,29 @@ public class MagicScrollController {
             return step
         }
     }
-    
-    private var amplifier: Double {
-        get {
-            //  return 1;
-            guard self.currentPhase == .acceleration else { return 1 }
-            let currentTime = CFAbsoluteTimeGetCurrent()
-            let timeDelta = (currentTime - self.lastScrollWheelTime) * 1000
-            self.lastScrollWheelTime = currentTime
-            
-            if timeDelta < self.amplifierSensitivityLevel {
-                let amplifierCoef = round((Double(self.amplifierSensitivityLevel) / timeDelta) * 100) / 100
-                print("amplifierCoef \(amplifierCoef)")
-                let _amplifier = amplifierCoef
-                // let _amplifier = (1 + (amplifierMultiplier * amplifierCoef))
-                guard _amplifier < self.maxAmplifierLevel else { return self.maxAmplifierLevel }
-                print("amplifier \(_amplifier)")
-                return _amplifier
-            } else {
-                print("amplifier \(1)")
-                return 1
-            }
-        }
-    }
+    private var amplifier = 1.0
+//    private var amplifier: Double {
+//        get {
+//            //  return 1;
+//            guard self.currentPhase == .acceleration else { return 1 }
+//            let currentTime = CFAbsoluteTimeGetCurrent()
+//            let timeDelta = (currentTime - self.lastScrollWheelTime) * 1000
+//            self.lastScrollWheelTime = currentTime
+//
+//            if timeDelta < self.amplifierSensitivityLevel {
+//                let amplifierCoef = round((Double(self.amplifierSensitivityLevel) / timeDelta) * 100) / 100
+//                print("amplifierCoef \(amplifierCoef)")
+//                let _amplifier = amplifierCoef
+//                // let _amplifier = (1 + (amplifierMultiplier * amplifierCoef))
+//                guard _amplifier < self.maxAmplifierLevel else { return self.maxAmplifierLevel }
+//                print("amplifier \(_amplifier)")
+//                return _amplifier
+//            } else {
+//                print("amplifier \(1)")
+//                return 1
+//            }
+//        }
+//    }
     
     private var _scheduledPixelsToScroll: Int = 0
     
@@ -375,6 +378,10 @@ public class MagicScrollController {
         scrolledPixelsBuffer = 0
         
         self.scrollEvent = event
+      //  self.amplifier = 1
+        let scrollWheelEventDeltaAxis1 =  abs(Double(event.getIntegerValueField(.scrollWheelEventDeltaAxis1))) * settings.accelerationMultiplier
+        self.amplifier = scrollWheelEventDeltaAxis1 > 1 ? scrollWheelEventDeltaAxis1 : 1
+        print("let scrollWheelEventDeltaAxis1", scrollWheelEventDeltaAxis1)
         
         if isShiftPressed {
             var deltaAxis = event.getIntegerValueField(.scrollWheelEventDeltaAxis2)
