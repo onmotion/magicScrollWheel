@@ -210,6 +210,7 @@ public class MagicScrollController {
     }
     
     private func addExtraFrame(absPrevDeltaY: Int, count: Int) {
+        
         if extraFrameRepeatStep != absPrevDeltaY {
             extraFrameRepeatStep = absPrevDeltaY
             extraFrameRepeatCounter = count
@@ -231,12 +232,12 @@ public class MagicScrollController {
         if absPrevDeltaY >= 1 && absPrevDeltaY < 25 {
             if absPrevDeltaY == 1 { // repeat 7 times
                 addExtraFrame(absPrevDeltaY: absPrevDeltaY, count: 6)
-                
             } else if absPrevDeltaY <= 6 { // repeat 3 times
                 addExtraFrame(absPrevDeltaY: absPrevDeltaY, count: 2)
             } else if absPrevDeltaY <= 8 { // repeat 2 times
                 addExtraFrame(absPrevDeltaY: absPrevDeltaY, count: 1)
             } else {
+                
                 self.deltaY = absPrevDeltaY - 1 // smooze stop
             }
             
@@ -271,9 +272,9 @@ public class MagicScrollController {
                 
                 ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 4)
                 ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 0)
-                scrolledPixelsBuffer += self.absDeltaY
-                self.deltaY = 0 // убирает лаг
-                self.framesLeft += 1 // extra frame
+//                scrolledPixelsBuffer += self.absDeltaY
+//                self.deltaY = 0 // убирает лаг
+//                self.framesLeft += 1 // extra frame
                 
                 self.currentSubphase = .inProgress
             } else if self.currentSubphase == .inProgress {
@@ -323,6 +324,7 @@ public class MagicScrollController {
         }
         
         if settings.useBounceEffect && framesLeft > 2 && absDeltaY == 0 {
+          //  print("step!", self.deltaY)
             self.deltaY = 1
         }
         
@@ -353,16 +355,9 @@ public class MagicScrollController {
             ev.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis2, value: 0)
         }
         
-        
         if self.scheduledPixelsToScroll >= Int(self.absDeltaY) && extraFrameRepeatStep == nil {
             self.scheduledPixelsToScroll -= Int(self.absDeltaY) // TODO refactor
         }
-        
-        // 123|4|43322111 = 3
-        //        if currentPhase == .acceleration && abs(prevDeltaY) < absDeltaY {
-        //            peakStepFrame = currentFrame
-        //            print("peakStepFrame", peakStepFrame)
-        //        }
         
         self.prevDeltaY = deltaY
         self.postEvent(event: ev, delay: 0)
@@ -376,6 +371,7 @@ public class MagicScrollController {
     {
         print("🌴onSystemScrollEvent🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴\n_____________________________________________\n")
         scrolledPixelsBuffer = 0
+        extraFrameRepeatStep = nil // force nil tale emitation
         
         self.scrollEvent = event
       //  self.amplifier = 1
