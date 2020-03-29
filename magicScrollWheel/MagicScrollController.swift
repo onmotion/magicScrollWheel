@@ -132,7 +132,7 @@ public class MagicScrollController {
     let settings = Settings.shared
     
     var pixelsToScrollTextField = 60
-    var pixelsToScrollLimitTextField = 1200
+    var pixelsToScrollLimitTextField = 30000
     var maxAmplifierLevel = 18.0
     var bezierControlPoint1 = CGPoint.init(x: 0.34, y: 0.42)
     var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
@@ -292,7 +292,7 @@ public class MagicScrollController {
         //   ev.setIntegerValueField(.eventSourceUserData, value: 1)
         ev.type = .scrollWheel
         ev.setDoubleValueField(.scrollWheelEventIsContinuous, value: 1)
-        ev.setDoubleValueField(.scrollWheelEventScrollCount, value: 1)
+     //   ev.setDoubleValueField(.scrollWheelEventScrollCount, value: 1)
         
         if settings.useBounceEffect {
             self.addSystemDumping(ev: ev)
