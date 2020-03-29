@@ -36,6 +36,7 @@ public class MagicScrollController {
     private var extraFrameRepeatCounter = 0
     private var extraFrameRepeatStep: Int?
     private var peakStepFrame = 1
+    private var count: Int64 = 0
     
     private var stepSize: Int {
         get {
@@ -184,44 +185,7 @@ public class MagicScrollController {
         event.location = location
         event.post(tap: .cgSessionEventTap)
     }
-    
-    private func addExtraFrame(absPrevDeltaY: Int, count: Int) {
-        print("addExtraFrame")
-        if extraFrameRepeatStep != absPrevDeltaY {
-            extraFrameRepeatStep = absPrevDeltaY
-            extraFrameRepeatCounter = count
-        } else  {
-            extraFrameRepeatCounter -= 1
-        }
-        if extraFrameRepeatCounter > 0 {
-            self.deltaY = absPrevDeltaY
-        } else {
-            extraFrameRepeatStep = nil
-            self.deltaY = absPrevDeltaY - 1
-        }
-    }
-    
-    /// Add smooth tale like trackpad do
-    ///
-    private func fixTrackpadTale() {
-        let absPrevDeltaY = abs(prevDeltaY)
-        if absPrevDeltaY >= 1 && absPrevDeltaY < 25 {
-            if absPrevDeltaY == 1 { // repeat 7 times
-                addExtraFrame(absPrevDeltaY: absPrevDeltaY, count: 6)
-            } else if absPrevDeltaY <= 6 { // repeat 3 times
-                addExtraFrame(absPrevDeltaY: absPrevDeltaY, count: 2)
-            } else if absPrevDeltaY <= 9 { // repeat 2 times
-                addExtraFrame(absPrevDeltaY: absPrevDeltaY, count: 1)
-            } else {
-                
-                self.deltaY = absPrevDeltaY - 1 // smooze stop
-            }
-            
-            if framesLeft == 1 {
-                self.framesLeft += 1 // extra frame
-            }
-        }
-    }
+
     
     /// Adds a bump effect, like using a trackpad or magic mouse.
     ///
@@ -246,27 +210,36 @@ public class MagicScrollController {
         } else {
             if self.currentSubphase == .start {
                 
+                            ev?.setIntegerValueField(.scrollWheelEventDeltaAxis1, value: 0)
+                            ev?.setDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1, value: 0.0)
                 ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 4)
                 ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 0)
-                scrolledPixelsBuffer += self.absDeltaY
-                self.deltaY = 0 // убирает лаг
-                self.framesLeft += 1 // extra frame
+                ev?.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 0)
+                self.postEvent(event: ev!)
+                //                scrolledPixelsBuffer += self.absDeltaY
+                //                self.deltaY = 0 // убирает лаг
+                //                self.framesLeft += 1 // extra frame
+                
+                ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
+                ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 1)
+        
                 
                 self.currentSubphase = .inProgress
             } else if self.currentSubphase == .inProgress {
                 ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
-                ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 1)
-             
+                 ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 2)
+                
                 self.currentSubphase = .end
             } else {
                 ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
-                ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 2)
-                if settings.emitateTrackpadTale {
-                    fixTrackpadTale()
+                  ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 2)
+          
+                if framesLeft == 2 {
+                    self.deltaY = 0
                 }
-                
                 if framesLeft == 1 {
-                    ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 3) // momentumPhase=Ended
+                       ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 3) // momentumPhase=Ended
+                    self.deltaY = 0
                 }
             }
         }
@@ -292,12 +265,13 @@ public class MagicScrollController {
         //   ev.setIntegerValueField(.eventSourceUserData, value: 1)
         ev.type = .scrollWheel
         ev.setDoubleValueField(.scrollWheelEventIsContinuous, value: 1)
-     //   ev.setDoubleValueField(.scrollWheelEventScrollCount, value: 1)
+    
+        ev.setIntegerValueField(.scrollWheelEventScrollCount, value: self.count)
         
         if settings.useBounceEffect {
             self.addSystemDumping(ev: ev)
             if self.currentSubphase == .end && framesLeft > 2 && absDeltaY == 0 {
-                self.deltaY = 1
+                //   self.deltaY = 1
             }
         }
         
@@ -313,15 +287,21 @@ public class MagicScrollController {
         self.framesLeft -= 1
         
         if self.isShiftPressed { // horizontal scroll
+                 
             ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis2, value: Int64(self.deltaY))
             ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: 0)
             ev.setIntegerValueField(.scrollWheelEventDeltaAxis1, value: 0)
             ev.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis1, value: 0)
         } else { // vertical scroll
+//            ev.setIntegerValueField(.scrollWheelEventDeltaAxis1, value: 0)
+//            ev.setDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1, value: 0.0)
+            
             ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis1, value: Int64(self.deltaY))
             ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis2, value: 0)
             ev.setIntegerValueField(.scrollWheelEventDeltaAxis2, value: 0)
             ev.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis2, value: 0)
+            
+            
         }
         
         if self.scheduledPixelsToScroll >= Int(self.absDeltaY) && extraFrameRepeatStep == nil {
@@ -340,10 +320,9 @@ public class MagicScrollController {
     {
         print("🌴onSystemScrollEvent🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴\n_____________________________________________\n")
         scrolledPixelsBuffer = 0
-        extraFrameRepeatStep = nil // force nil tale emitation
         
         self.scrollEvent = event
-
+        
         let scrollWheelEventDeltaAxis1 =  abs(Double(event.getIntegerValueField(.scrollWheelEventDeltaAxis1))) * settings.accelerationMultiplier
         self.amplifier = scrollWheelEventDeltaAxis1 >= 2 ? scrollWheelEventDeltaAxis1 : 1
         print("let scrollWheelEventDeltaAxis1", scrollWheelEventDeltaAxis1)
@@ -367,6 +346,7 @@ public class MagicScrollController {
             self.framesLeft = self.maxFrames
         } else {
             isSyncNeeded = true
+            self.count += 1
         }
         
         if self.currentPhase == .deceleration {
@@ -444,6 +424,7 @@ extension MagicScrollController {
                 self.currentSubphase = .start
                 self.scrolledPixelsBuffer = 0
                 scheduledPixelsToScroll = 0
+                self.count = 0
             }
         }
     }

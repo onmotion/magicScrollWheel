@@ -52,23 +52,17 @@ public class EventMonitor {
                 print(NSEvent(cgEvent: event.copy()!)!, "\n_____________________________________________\n") //possible memory leaks w/o using autoreleasepool
             }
             #endif
-//            print("""
-//                mouseEventSubtype: \(event.getIntegerValueField(.mouseEventSubtype))
-//                mouseEventNumber: \(event.getDoubleValueField(.mouseEventNumber))
-//                mouseEventClickState: \(event.getDoubleValueField(.mouseEventClickState))
-//                mouseEventPressure: \(event.getDoubleValueField(.mouseEventPressure))
-//                mouseEventButtonNumber: \(event.getDoubleValueField(.mouseEventButtonNumber))
-//                mouseEventDeltaX: \(event.getDoubleValueField(.mouseEventDeltaX))
-//                mouseEventDeltaY: \(event.getDoubleValueField(.mouseEventDeltaY))
-//                mouseEventInstantMouser: \(event.getDoubleValueField(.mouseEventInstantMouser))
-//                mouseEventSubtype: \(event.getDoubleValueField(.mouseEventSubtype))
-//                mouseEventWindowUnderMousePointer: \(event.getDoubleValueField(.mouseEventWindowUnderMousePointer))
-//                scrollWheelEventDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventDeltaAxis1))
-//                scrollWheelEventDeltaAxis2: \(event.getDoubleValueField(.scrollWheelEventDeltaAxis2))
-//                scrollWheelEventPointDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventPointDeltaAxis1))
-//                scrollWheelEventPointDeltaAxis2: \(event.getDoubleValueField(.scrollWheelEventPointDeltaAxis2))
-//                scrollWheelEventFixedPtDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1))
-//                """)
+            print("""
+                
+                scrollWheelEventDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventDeltaAxis1))
+                scrollWheelEventDeltaAxis2: \(event.getDoubleValueField(.scrollWheelEventDeltaAxis2))
+                scrollWheelEventPointDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventPointDeltaAxis1))
+                scrollWheelEventPointDeltaAxis2: \(event.getDoubleValueField(.scrollWheelEventPointDeltaAxis2))
+                scrollWheelEventFixedPtDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1))
+                scrollWheelEventFixedPtDeltaAxis2: \(event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis2))
+                scrollWheelEventInstantMouser: \(event.getDoubleValueField(.scrollWheelEventInstantMouser))
+                
+                """)
             
             return Unmanaged.passUnretained(event)
         }
