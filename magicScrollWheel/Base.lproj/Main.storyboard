@@ -789,17 +789,6 @@
                                     <action selector="onUseSystemDumpingChange:" target="c1Y-Lp-bh4" id="gdu-xY-nUv"/>
                                 </connections>
                             </button>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="U5M-HC-pHm">
-                                <rect key="frame" x="260" y="187" width="160" height="25"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="check" title="Emitate Trackpad Tale" bezelStyle="regularSquare" imagePosition="left" inset="2" id="ca4-GB-lNw">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="onEmitateTrackpadTaleChange:" target="c1Y-Lp-bh4" id="DgV-Tu-Yd7"/>
-                                </connections>
-                            </button>
                             <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Z3J-MK-tCf">
                                 <rect key="frame" x="340" y="127" width="19" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>

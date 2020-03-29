@@ -12,9 +12,8 @@ class Settings {
     
     static let shared = Settings()
     
-    var scrollDuration = 550  //ms
+    var scrollDuration = 650  //ms
     var useBounceEffect: Bool = true
-    var emitateTrackpadTale: Bool = false
     var accelerationMultiplier = 1.0
     
     private init() {

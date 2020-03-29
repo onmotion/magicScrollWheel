@@ -18,14 +18,7 @@ public class MagicScrollController {
     private var isSyncNeeded = false
     
     private var magicScrollSerialQueue = DispatchQueue(label: "magicScrollSerialQueue", qos: .userInteractive)
-    private var framesLeftAccessQueue = DispatchQueue(label: "framesLeftAccessQueue", attributes: .concurrent)
-    private var scrollEventAccessQueue = DispatchQueue(label: "scrollEventAccessQueue", attributes: .concurrent)
-    private var isSyncNeededAccessQueue = DispatchQueue(label: "isSyncNeededAccessQueue", attributes: .concurrent)
-    
-    private var scheduledPixelsToScrollAccessQueue = DispatchQueue(label: "scheduledPixelsToScrollAccessQueue", attributes: .concurrent)
     private var currentLocationAccessQueue = DispatchQueue(label: "currentLocationAccessQueue", attributes: .concurrent)
-    private var deltaYAccessQueue = DispatchQueue(label: "deltaYAccessQueue", attributes: .concurrent)
-    private var phaseAccessQueue = DispatchQueue(label: "phaseAccessQueue", attributes: .concurrent)
     
     var eventMonitor: EventMonitor?
     var displayLink: DisplayLink?

@@ -21,9 +21,6 @@ class SettingsViewController: NSViewController, NSTextFieldDelegate {
     @IBAction func onUseSystemDumpingChange(_ sender: NSButton) {
         Settings.shared.useBounceEffect = sender.intValue == 1
     }
-    @IBAction func onEmitateTrackpadTaleChange(_ sender: NSButton) {
-        Settings.shared.emitateTrackpadTale = sender.intValue == 1
-    }
     
     @IBAction func onScrollDurationChange(_ sender: Any) {
         guard let sender = sender as? NSTextField != nil ? (sender as? NSTextField) : (sender as? NSSlider) else {
