@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16096"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -849,7 +849,7 @@
                             <textField toolTip="Number" focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Y6C-Bd-SrH" customClass="RoundedTextField" customModule="Magic_Scroll_Wheel" customModuleProvider="target">
                                 <rect key="frame" x="274" y="93" width="66" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" focusRingType="none" drawsBackground="YES" id="Prg-9Y-iLh">
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" focusRingType="none" drawsBackground="YES" id="Prg-9Y-iLh">
                                     <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" formatWidth="-1" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="pJw-oe-6vK" customClass="DecimalNumberFormatter" customModule="Magic_Scroll_Wheel" customModuleProvider="target"/>
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -867,7 +867,10 @@
                             <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vzD-85-8ft">
                                 <rect key="frame" x="142" y="94" width="120" height="19"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <sliderCell key="cell" state="on" alignment="left" minValue="10" maxValue="200" doubleValue="70" tickMarkPosition="above" sliderType="linear" id="HhQ-6t-8Ua"/>
+                                <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="10" maxValue="300" doubleValue="100" tickMarkPosition="above" sliderType="linear" id="HhQ-6t-8Ua"/>
+                                <connections>
+                                    <action selector="onAccelerationMultiplierChange:" target="c1Y-Lp-bh4" id="PAv-R7-Wis"/>
+                                </connections>
                             </slider>
                             <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jbK-7e-OPP">
                                 <rect key="frame" x="142" y="132" width="120" height="19"/>
@@ -880,6 +883,7 @@
                         </subviews>
                     </view>
                     <connections>
+                        <outlet property="accelerationMultiplierSlider" destination="vzD-85-8ft" id="Hxd-pe-XK4"/>
                         <outlet property="accelerationMultiplierTextField" destination="Y6C-Bd-SrH" id="qB2-oO-iOw"/>
                         <outlet property="scrollDurationSlider" destination="jbK-7e-OPP" id="4z5-i7-Cbp"/>
                         <outlet property="scrollDurationTextField" destination="2b6-hv-xPO" id="7dJ-hw-nhZ"/>

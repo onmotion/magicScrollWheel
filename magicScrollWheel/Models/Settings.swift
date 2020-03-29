@@ -15,7 +15,7 @@ class Settings {
     var scrollDuration = 550  //ms
     var useBounceEffect: Bool = true
     var emitateTrackpadTale: Bool = false
-    var accelerationMultiplier = 1
+    var accelerationMultiplier = 1.0
     
     private init() {
 

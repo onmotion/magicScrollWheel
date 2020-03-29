@@ -15,6 +15,7 @@ class SettingsViewController: NSViewController, NSTextFieldDelegate {
     @IBOutlet weak var accelerationMultiplierTextField: RoundedTextField!
     
     @IBOutlet weak var useSystemDumpingCheckbox: NSButton!
+    @IBOutlet weak var accelerationMultiplierSlider: NSSlider!
     
 
     @IBAction func onUseSystemDumpingChange(_ sender: NSButton) {
@@ -35,8 +36,19 @@ class SettingsViewController: NSViewController, NSTextFieldDelegate {
         NotificationCenter.default.post(name: NSNotification.Name("scrollDurationChanged"), object: nil)
     }
     
-    @IBAction func onAccelerationMultiplierChange(_ sender: NSTextField) {
-        Settings.shared.accelerationMultiplier = Double(sender.doubleValue)
+    @IBAction func onAccelerationMultiplierChange(_ sender: Any) {
+        guard let sender = sender as? NSTextField != nil ? (sender as? NSTextField) : (sender as? NSSlider) else {
+            return
+        }
+        if sender.isKind(of: NSSlider.self) {
+            Settings.shared.accelerationMultiplier = Double(sender.doubleValue / 100)
+        } else {
+            Settings.shared.accelerationMultiplier = Double(sender.doubleValue)
+        }
+        Settings.shared.accelerationMultiplier =  Double(round(10 * Settings.shared.accelerationMultiplier) / 10)
+        print(Settings.shared.accelerationMultiplier)
+        accelerationMultiplierSlider.intValue = Int32(Settings.shared.accelerationMultiplier * 100)
+        accelerationMultiplierTextField.doubleValue = Settings.shared.accelerationMultiplier
     }
 
     

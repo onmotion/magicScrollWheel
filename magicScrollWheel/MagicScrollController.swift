@@ -256,7 +256,7 @@ public class MagicScrollController {
             } else if self.currentSubphase == .inProgress {
                 ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
                 ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 1)
-                
+             
                 self.currentSubphase = .end
             } else {
                 ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
@@ -264,7 +264,6 @@ public class MagicScrollController {
                 if settings.emitateTrackpadTale {
                     fixTrackpadTale()
                 }
-                
                 
                 if framesLeft == 1 {
                     ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 3) // momentumPhase=Ended
@@ -297,12 +296,11 @@ public class MagicScrollController {
         
         if settings.useBounceEffect {
             self.addSystemDumping(ev: ev)
+            if self.currentSubphase == .end && framesLeft > 2 && absDeltaY == 0 {
+                self.deltaY = 1
+            }
         }
         
-        if settings.useBounceEffect && framesLeft > 2 && absDeltaY == 0 {
-          //  print("step!", self.deltaY)
-            self.deltaY = 1
-        }
         
         // smpoth end ...4321
         let absPrevDeltaY = abs(prevDeltaY)
