@@ -10,7 +10,7 @@ import Cocoa
 
 class SettingsViewController: NSViewController, NSTextFieldDelegate {
 
-    
+    @IBOutlet weak var scrollDurationSlider: NSSlider!
     @IBOutlet weak var scrollDurationTextField: RoundedTextField!
     @IBOutlet weak var accelerationMultiplierTextField: RoundedTextField!
     
@@ -24,8 +24,14 @@ class SettingsViewController: NSViewController, NSTextFieldDelegate {
         Settings.shared.emitateTrackpadTale = sender.intValue == 1
     }
     
-    @IBAction func onScrollDurationChange(_ sender: NSTextField) {
-        Settings.shared.scrollDuration = Int(sender.intValue)
+    @IBAction func onScrollDurationChange(_ sender: Any) {
+        guard let sender = sender as? NSTextField != nil ? (sender as? NSTextField) : (sender as? NSSlider) else {
+            return
+        }
+        Settings.shared.scrollDuration = Int(sender.intValue).round50down
+        scrollDurationSlider.intValue = Int32(Settings.shared.scrollDuration)
+        scrollDurationTextField.intValue = Int32(Settings.shared.scrollDuration)
+
         NotificationCenter.default.post(name: NSNotification.Name("scrollDurationChanged"), object: nil)
     }
     

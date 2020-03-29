@@ -117,28 +117,6 @@ public class MagicScrollController {
         }
     }
     private var amplifier = 1.0
-//    private var amplifier: Double {
-//        get {
-//            //  return 1;
-//            guard self.currentPhase == .acceleration else { return 1 }
-//            let currentTime = CFAbsoluteTimeGetCurrent()
-//            let timeDelta = (currentTime - self.lastScrollWheelTime) * 1000
-//            self.lastScrollWheelTime = currentTime
-//
-//            if timeDelta < self.amplifierSensitivityLevel {
-//                let amplifierCoef = round((Double(self.amplifierSensitivityLevel) / timeDelta) * 100) / 100
-//                print("amplifierCoef \(amplifierCoef)")
-//                let _amplifier = amplifierCoef
-//                // let _amplifier = (1 + (amplifierMultiplier * amplifierCoef))
-//                guard _amplifier < self.maxAmplifierLevel else { return self.maxAmplifierLevel }
-//                print("amplifier \(_amplifier)")
-//                return _amplifier
-//            } else {
-//                print("amplifier \(1)")
-//                return 1
-//            }
-//        }
-//    }
     
     private var _scheduledPixelsToScroll: Int = 0
     
@@ -155,8 +133,6 @@ public class MagicScrollController {
     
     var pixelsToScrollTextField = 60
     var pixelsToScrollLimitTextField = 1200
-    var amplifierSensitivityLevel = 80.0 // ms
-    var amplifierMultiplier = 3.0
     var maxAmplifierLevel = 18.0
     var bezierControlPoint1 = CGPoint.init(x: 0.34, y: 0.42)
     var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
@@ -210,7 +186,7 @@ public class MagicScrollController {
     }
     
     private func addExtraFrame(absPrevDeltaY: Int, count: Int) {
-        
+        print("addExtraFrame")
         if extraFrameRepeatStep != absPrevDeltaY {
             extraFrameRepeatStep = absPrevDeltaY
             extraFrameRepeatCounter = count
@@ -234,7 +210,7 @@ public class MagicScrollController {
                 addExtraFrame(absPrevDeltaY: absPrevDeltaY, count: 6)
             } else if absPrevDeltaY <= 6 { // repeat 3 times
                 addExtraFrame(absPrevDeltaY: absPrevDeltaY, count: 2)
-            } else if absPrevDeltaY <= 8 { // repeat 2 times
+            } else if absPrevDeltaY <= 9 { // repeat 2 times
                 addExtraFrame(absPrevDeltaY: absPrevDeltaY, count: 1)
             } else {
                 
@@ -272,9 +248,9 @@ public class MagicScrollController {
                 
                 ev?.setIntegerValueField(.scrollWheelEventScrollPhase, value: 4)
                 ev?.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 0)
-//                scrolledPixelsBuffer += self.absDeltaY
-//                self.deltaY = 0 // убирает лаг
-//                self.framesLeft += 1 // extra frame
+                scrolledPixelsBuffer += self.absDeltaY
+                self.deltaY = 0 // убирает лаг
+                self.framesLeft += 1 // extra frame
                 
                 self.currentSubphase = .inProgress
             } else if self.currentSubphase == .inProgress {
@@ -330,11 +306,6 @@ public class MagicScrollController {
         
         // smpoth end ...4321
         let absPrevDeltaY = abs(prevDeltaY)
-        //        if framesLeft == 1 && absPrevDeltaY > 1 {
-        //            self.framesLeft += 1 // extra frame
-        //            self.deltaY = absPrevDeltaY - 1
-        //            extraFrameRepeatStep = absDeltaY
-        //        }
         
         // prevent possible lag in the end
         if framesLeft == 1 && absPrevDeltaY == 0 {
@@ -374,9 +345,9 @@ public class MagicScrollController {
         extraFrameRepeatStep = nil // force nil tale emitation
         
         self.scrollEvent = event
-      //  self.amplifier = 1
+
         let scrollWheelEventDeltaAxis1 =  abs(Double(event.getIntegerValueField(.scrollWheelEventDeltaAxis1))) * settings.accelerationMultiplier
-        self.amplifier = scrollWheelEventDeltaAxis1 > 1 ? scrollWheelEventDeltaAxis1 : 1
+        self.amplifier = scrollWheelEventDeltaAxis1 >= 2 ? scrollWheelEventDeltaAxis1 : 1
         print("let scrollWheelEventDeltaAxis1", scrollWheelEventDeltaAxis1)
         
         if isShiftPressed {
