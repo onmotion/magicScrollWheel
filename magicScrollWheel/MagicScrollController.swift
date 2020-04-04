@@ -42,7 +42,7 @@ public class MagicScrollController {
             }
             
             if isSyncNeeded {
-                maxScheduledPixelsToScroll = scheduledPixelsToScroll
+              //  maxScheduledPixelsToScroll = scheduledPixelsToScroll
                 isSyncNeeded = false
                 var closestFrame = 1;
                 var syncedEasingT = 0.0
@@ -65,6 +65,13 @@ public class MagicScrollController {
                         syncFramesLeft = maxFrames - frame
                         break
                     }
+                }
+                
+                if syncedStep < abs(prevStep) {
+                    // убрать лаг
+                    print("syncedStep \(syncedStep) < abs(prevStep) \(abs(prevStep)) need sync!")
+                 //   isSyncNeeded = true
+                    syncedStep = abs(prevStep)
                 }
                 
                 scrolledPixelsBuffer = syncedScrolledPixelsBuffer
@@ -316,16 +323,19 @@ public class MagicScrollController {
     @objc func systemScrollEventHandler(event: CGEvent)
     {
         print("🌴onSystemScrollEvent🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴\n_____________________________________________\n")
-        scrolledPixelsBuffer = 0
+       // scrolledPixelsBuffer = 0
         
         self.scrollEvent = event
         
         let scrollWheelEventDeltaAxis1 =  abs(Double(event.getIntegerValueField(.scrollWheelEventDeltaAxis1))) * settings.accelerationMultiplier
-        self.amplifier = scrollWheelEventDeltaAxis1 >= 2 ? scrollWheelEventDeltaAxis1 : 1
-        if self.amplifier > 5 {
-            self.amplifier = 5
+      //  self.amplifier = scrollWheelEventDeltaAxis1 >= 2 ? scrollWheelEventDeltaAxis1 : 1
+        self.amplifier = pow((scrollWheelEventDeltaAxis1 * 2), 2.0) / 30
+        if self.amplifier < 1 {
+            self.amplifier = 1
         }
-        print("let scrollWheelEventDeltaAxis1", scrollWheelEventDeltaAxis1)
+     
+        print("let scrollWheelEventDeltaAxis1 amplifier", scrollWheelEventDeltaAxis1)
+        print("self.amplifier", self.amplifier)
         
         var deltaAxis: Int64 = 0
         if isShiftPressed {
@@ -344,6 +354,7 @@ public class MagicScrollController {
         if self.framesLeft == 0 {
             self.displayLink?.start()
             self.framesLeft = self.maxFrames
+            scrolledPixelsBuffer = 0
         } else {
             isSyncNeeded = true
             self.count += 1
@@ -425,6 +436,8 @@ extension MagicScrollController {
                 self.scrolledPixelsBuffer = 0
                 scheduledPixelsToScroll = 0
                 self.count = 0
+                prevDeltaY = 0
+                prevStep = 0
             }
         }
     }
