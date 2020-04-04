@@ -12,7 +12,7 @@ class Settings {
     
     static let shared = Settings()
     
-    var scrollDuration = 650  //ms
+    var scrollDuration = 550  //ms
     var useBounceEffect: Bool = true
     var accelerationMultiplier = 1.0
     

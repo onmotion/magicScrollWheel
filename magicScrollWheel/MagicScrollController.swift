@@ -61,6 +61,10 @@ public class MagicScrollController {
                     syncedStep = Int(Double(maxScheduledPixelsToScroll) * syncedEasingT) - syncedScrolledPixelsBuffer
                     print("syncedStep calc", syncedStep, syncedEasingT)
                     syncedScrolledPixelsBuffer += syncedStep
+                    if frame > 1 && syncedStep > abs(prevStep) {
+                        syncFramesLeft = maxFrames - frame
+                        break
+                    }
                 }
                 
                 scrolledPixelsBuffer = syncedScrolledPixelsBuffer
@@ -127,7 +131,7 @@ public class MagicScrollController {
     
     var pixelsToScrollTextField = 60
     var pixelsToScrollLimitTextField = 30000
-    var maxAmplifierLevel = 18.0
+    var maxAmplifierLevel = 3.0
     var bezierControlPoint1 = CGPoint.init(x: 0.34, y: 0.42)
     var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
     
@@ -318,18 +322,21 @@ public class MagicScrollController {
         
         let scrollWheelEventDeltaAxis1 =  abs(Double(event.getIntegerValueField(.scrollWheelEventDeltaAxis1))) * settings.accelerationMultiplier
         self.amplifier = scrollWheelEventDeltaAxis1 >= 2 ? scrollWheelEventDeltaAxis1 : 1
+        if self.amplifier > 5 {
+            self.amplifier = 5
+        }
         print("let scrollWheelEventDeltaAxis1", scrollWheelEventDeltaAxis1)
         
+        var deltaAxis: Int64 = 0
         if isShiftPressed {
-            var deltaAxis = event.getIntegerValueField(.scrollWheelEventDeltaAxis2)
+            deltaAxis = event.getIntegerValueField(.scrollWheelEventDeltaAxis2)
             if deltaAxis == 0 {
                 deltaAxis = event.getIntegerValueField(.scrollWheelEventDeltaAxis1)
             }
-            self.direction = deltaAxis > 0 ? 1 : -1
         } else {
-            let deltaAxis = event.getIntegerValueField(.scrollWheelEventDeltaAxis1)
-            self.direction = deltaAxis > 0 ? 1 : -1
+            deltaAxis = event.getIntegerValueField(.scrollWheelEventDeltaAxis1)
         }
+        self.direction = deltaAxis > 0 ? 1 : -1
         
         print("event.getIntegerValueField(.scrollWheelEventDeltaAxis1)", event.getIntegerValueField(.scrollWheelEventDeltaAxis1))
         self.scheduledPixelsToScroll += Int(Double(self.pixelsToScrollTextField) * self.amplifier)

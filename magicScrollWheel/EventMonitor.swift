@@ -52,17 +52,15 @@ public class EventMonitor {
                 print(NSEvent(cgEvent: event.copy()!)!, "\n_____________________________________________\n") //possible memory leaks w/o using autoreleasepool
             }
             #endif
-            print("""
-                
-                scrollWheelEventDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventDeltaAxis1))
-                scrollWheelEventDeltaAxis2: \(event.getDoubleValueField(.scrollWheelEventDeltaAxis2))
-                scrollWheelEventPointDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventPointDeltaAxis1))
-                scrollWheelEventPointDeltaAxis2: \(event.getDoubleValueField(.scrollWheelEventPointDeltaAxis2))
-                scrollWheelEventFixedPtDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1))
-                scrollWheelEventFixedPtDeltaAxis2: \(event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis2))
-                scrollWheelEventInstantMouser: \(event.getDoubleValueField(.scrollWheelEventInstantMouser))
-                
-                """)
+//            print("""
+//                scrollWheelEventDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventDeltaAxis1))
+//                scrollWheelEventDeltaAxis2: \(event.getDoubleValueField(.scrollWheelEventDeltaAxis2))
+//                scrollWheelEventPointDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventPointDeltaAxis1))
+//                scrollWheelEventPointDeltaAxis2: \(event.getDoubleValueField(.scrollWheelEventPointDeltaAxis2))
+//                scrollWheelEventFixedPtDeltaAxis1: \(event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis1))
+//                scrollWheelEventFixedPtDeltaAxis2: \(event.getDoubleValueField(.scrollWheelEventFixedPtDeltaAxis2))
+//                scrollWheelEventInstantMouser: \(event.getDoubleValueField(.scrollWheelEventInstantMouser))
+//                """)
             
             return Unmanaged.passUnretained(event)
         }
