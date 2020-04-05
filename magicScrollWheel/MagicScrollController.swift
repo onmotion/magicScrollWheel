@@ -30,6 +30,25 @@ public class MagicScrollController {
     private var extraFrameRepeatStep: Int?
     private var peakStepFrame = 1
     private var count: Int64 = 0
+    private var stepBuffer = 0
+    
+    private func calcStepDelta(t: Double, prevT: Double) -> Int {
+        let curEasingT = Double(tf.easing(t))
+        print("curEasingT - ", curEasingT)
+        let prevEasingT = Double(tf.easing(prevT))
+        print("prevEasingT - ", prevEasingT)
+
+        let easedScrolledPixelsByPrevFrame = prevEasingT * Double(maxScheduledPixelsToScroll)
+        let easedScrolledPixelsByCurrentFrame = curEasingT * Double(maxScheduledPixelsToScroll)
+        print("easedScrolledPixelsByPrevFrame", easedScrolledPixelsByPrevFrame)
+        print("easedScrolledPixelsByCurrentFrame", easedScrolledPixelsByCurrentFrame)
+        let step = (easedScrolledPixelsByCurrentFrame - easedScrolledPixelsByPrevFrame) + Double(stepBuffer)
+        stepBuffer = 0
+        if step > 0 && step < 1 {
+            stepBuffer += 1
+        }
+        return Int(step)
+    }
     
     private var stepSize: Int {
         get {
@@ -41,13 +60,11 @@ public class MagicScrollController {
                 return 0
             }
             
-            if isSyncNeeded {
-              //  maxScheduledPixelsToScroll = scheduledPixelsToScroll
+            if isSyncNeeded{
+                maxScheduledPixelsToScroll = scheduledPixelsToScroll
                 isSyncNeeded = false
                 var closestFrame = 1;
-                var syncedEasingT = 0.0
                 var syncedStep = 0
-                var syncedScrolledPixelsBuffer = 0
                 
                 var syncFramesLeft = Int(Double(maxFrames) * 0.80) // 80%
                 if syncFramesLeft < framesLeft {
@@ -56,25 +73,23 @@ public class MagicScrollController {
                 
                 for frame in 1...(maxFrames - syncFramesLeft) {
                     let syncedT = 1.0 - (Double(maxFrames - frame) / Double(maxFrames))
-                    //  syncedEasingT = Double(tf.progress(at: CGFloat(syncedT)))
-                    syncedEasingT = Double(tf.easing(syncedT))
-                    syncedStep = Int(Double(maxScheduledPixelsToScroll) * syncedEasingT) - syncedScrolledPixelsBuffer
-                    print("syncedStep calc", syncedStep, syncedEasingT)
-                    syncedScrolledPixelsBuffer += syncedStep
+                    let prevSyncedT = 1.0 - (Double(maxFrames - (frame + 1)) / Double(maxFrames))
+                    syncedStep = calcStepDelta(t: syncedT, prevT: prevSyncedT)
+                    
                     if frame > 1 && syncedStep > abs(prevStep) {
                         syncFramesLeft = maxFrames - frame
                         break
                     }
                 }
                 
-                if syncedStep < abs(prevStep) {
-                    // убрать лаг
-                    print("syncedStep \(syncedStep) < abs(prevStep) \(abs(prevStep)) need sync!")
-                 //   isSyncNeeded = true
-                    syncedStep = abs(prevStep)
-                }
+//                if syncedStep < abs(prevStep) {
+//                    // убрать лаг
+//                    print("syncedStep \(syncedStep) < abs(prevStep) \(abs(prevStep)) need sync!")
+//                 //   isSyncNeeded = true
+//                    syncedStep = abs(prevStep)
+//                }
                 
-                scrolledPixelsBuffer = syncedScrolledPixelsBuffer
+
                 closestFrame = (maxFrames - syncFramesLeft)
                 scheduledPixelsToScroll = maxScheduledPixelsToScroll - scrolledPixelsBuffer + syncedStep
                 step = syncedStep
@@ -83,36 +98,14 @@ public class MagicScrollController {
                 
                 print("maxFrames ",maxFrames)
                 print("closestFrame ",closestFrame)
-                print("syncedEasingT ",syncedEasingT)
                 print("maxScheduledPixelsToScroll", maxScheduledPixelsToScroll)
             } else {
+                print("maxFrames", maxFrames)
                 let t = 1.0 - (Double(framesLeft - 1) / Double(maxFrames))
-                //  let curEasingT = Double(tf.progress(at: CGFloat(t)))
-                let curEasingT = Double(tf.easing(t))
-                print("curEasingT - ", curEasingT)
-                step = Int((Double(maxScheduledPixelsToScroll) * curEasingT)) - scrolledPixelsBuffer
-                
-                print("scrolledPixelsBuffer - ", scrolledPixelsBuffer)
-                
-                //      assert(step >= 0)
-                
-                
-                if step <= 0 && framesLeft > 2 && false {
-                    let nextT = 1.0 - (Double(framesLeft - 2) / Double(maxFrames))
-                    // let nextEasingT = Double(tf.progress(at: CGFloat(nextT)))
-                    let nextEasingT = Double(tf.easing(nextT))
-                    let nextStep = Int(Double(maxScheduledPixelsToScroll) * nextEasingT) - (scrolledPixelsBuffer + step)
-                    print("nextStep", nextStep)
-                    if nextStep > 1 {
-                        step = nextStep
-                        //  scheduledPixelsToScroll += step
-                    } else {
-                        step = 0
-                    }
-                    //  step = 0 //TODO
-                } else {
-                    scrolledPixelsBuffer += step
-                }
+                print("current real t", t)
+                let prevRealT = 1.0 - (Double(framesLeft) / Double(maxFrames))
+                print("prev real t", prevRealT)
+                step = calcStepDelta(t: t, prevT: prevRealT)
                 
             }
             print("framesLeft ", framesLeft)
@@ -313,6 +306,7 @@ public class MagicScrollController {
         }
         
         self.prevDeltaY = deltaY
+        print("deltaY", deltaY)
         self.postEvent(event: ev, delay: 0)
         
     }
@@ -329,7 +323,8 @@ public class MagicScrollController {
         
         let scrollWheelEventDeltaAxis1 =  abs(Double(event.getIntegerValueField(.scrollWheelEventDeltaAxis1))) * settings.accelerationMultiplier
       //  self.amplifier = scrollWheelEventDeltaAxis1 >= 2 ? scrollWheelEventDeltaAxis1 : 1
-        self.amplifier = pow((scrollWheelEventDeltaAxis1 * 2), 2.0) / 30
+      //  self.amplifier = pow((scrollWheelEventDeltaAxis1 * 2), 2.0) / 40
+        self.amplifier = log2(scrollWheelEventDeltaAxis1)
         if self.amplifier < 1 {
             self.amplifier = 1
         }
@@ -357,7 +352,8 @@ public class MagicScrollController {
             scrolledPixelsBuffer = 0
         } else {
             isSyncNeeded = true
-            self.count += 1
+            
+           // self.count += 1
         }
         
         if self.currentPhase == .deceleration {
@@ -453,12 +449,7 @@ extension MagicScrollController {
             
         }
     }
-    
-    //    private var isSyncNeeded: Bool {
-    //        return scrolledPixelsBuffer == 0 && framesLeft < maxFrames
-    //    }
-    
-    
+
     private var scrollEvent: CGEvent {
         get {
             return _scrollEvent
