@@ -38,14 +38,14 @@ class SettingsViewController: NSViewController, NSTextFieldDelegate {
             return
         }
         if sender.isKind(of: NSSlider.self) {
-            Settings.shared.accelerationMultiplier = Double(sender.doubleValue / 100)
+            Settings.shared.accelerationMultiplier = Float(Double(sender.doubleValue / 100))
         } else {
-            Settings.shared.accelerationMultiplier = Double(sender.doubleValue)
+            Settings.shared.accelerationMultiplier = Float(Double(sender.doubleValue))
         }
-        Settings.shared.accelerationMultiplier =  Double(round(10 * Settings.shared.accelerationMultiplier) / 10)
+        Settings.shared.accelerationMultiplier =  Float(Double(round(10 * Settings.shared.accelerationMultiplier) / 10))
         print(Settings.shared.accelerationMultiplier)
         accelerationMultiplierSlider.intValue = Int32(Settings.shared.accelerationMultiplier * 100)
-        accelerationMultiplierTextField.doubleValue = Settings.shared.accelerationMultiplier
+        accelerationMultiplierTextField.doubleValue = Double(Settings.shared.accelerationMultiplier)
     }
 
     
