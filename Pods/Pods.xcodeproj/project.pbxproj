@@ -1,0 +1,613 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1489880829442A251EED05F3FA328C37 /* BoundingBoxHierarchy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D18F10A4902D9382F13AC2D14E71B61D /* BoundingBoxHierarchy.swift */; };
+		24A31AC2EA020A5885673DEE63E81F0F /* Pods-magicScrollWheel-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 0FF420BAC6933BAC4D3B88477B850FD7 /* Pods-magicScrollWheel-umbrella.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		2613D623F9403E9E6E3B2F6797AC522C /* LineSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78222B701708970D9D058D445E4067A7 /* LineSegment.swift */; };
+		2931B14DA9C503742B13FF228C61BE47 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BC9AE39F45E764361D7FE564B1A6B8 /* Utils.swift */; };
+		36CCCDAA85C83A69F66563228F761334 /* AugmentedGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDEA55ABDF7A4F2D1509F82E25D8EAA5 /* AugmentedGraph.swift */; };
+		38EF51F8DB241A12F0FB750610219A3D /* PathComponent+WindingCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = E446B5BC0CE67E9A5A0DB927E6B813F9 /* PathComponent+WindingCount.swift */; };
+		4C3B1CA96918C27FD3EEB14FEC489E76 /* Pods-magicScrollWheel-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DB4E79AFF5B9E88476D257CF2F1AF35 /* Pods-magicScrollWheel-dummy.m */; };
+		657B41C895F8F2CD4AB8B0931762F97A /* BezierKit-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = A0BB1901FA2DE2A7410660C064FD72DF /* BezierKit-dummy.m */; };
+		6D80C3EFAA6E826A30D57E0AD2074D6D /* CGPoint+Overloads.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA131E00869AC94BD418863FCAC1AAA /* CGPoint+Overloads.swift */; };
+		6E84905043EBD946484E429F35332E17 /* Path+Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = E410F1ED19BFF46E01BD5FB99013980D /* Path+Data.swift */; };
+		835782A43337DA2A60EA67D2F1EE7844 /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18ADAC9F135668265D3C10305E60FD8 /* Types.swift */; };
+		8693559A96A0139E48CF9F827CA7EBBC /* Path.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF20C0F16A3EA3D21F7385D769B22F1 /* Path.swift */; };
+		8EE00669E27CD15A5F70B9F5E073F9E7 /* CubicCurve.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BE456563E6417E127585D907EE26BF /* CubicCurve.swift */; };
+		958DE941363EF86C4D8BFF9A12DE38C7 /* BezierCurve.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04096A981098AB743E67009126A2AD88 /* BezierCurve.swift */; };
+		9FB87DE0D9CF8A4528889BE108EABD27 /* Draw.swift in Sources */ = {isa = PBXBuildFile; fileRef = 700003B28283AAFBF0D443EF415C602A /* Draw.swift */; };
+		B5A3E5136A873F830DF632D9E6269311 /* QuadraticCurve.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00C61BAA7B98DA88C161314367E0747 /* QuadraticCurve.swift */; };
+		BC607F803688389847FB28C6E9031C56 /* BezierCurve+Intersection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2985DF5CDA141486EF3FA303E9C90D9D /* BezierCurve+Intersection.swift */; };
+		CB2C884BE6ED9063230BD26682561F77 /* PathComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A840A09CF6DF2C52D5F951255FAF444 /* PathComponent.swift */; };
+		CE098179C1B4043E1C38FC937E71EA95 /* Shape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 288CA3BDD4AB5AA61DF3FE2D7175A1C6 /* Shape.swift */; };
+		E6CD0830D2D16AD233F5A61595F79AB4 /* BezierKit-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = DA239052322B218F6D21FC882E496F13 /* BezierKit-umbrella.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		F6E2C5BD7280A11CF8186FB1F8EBB52A /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639E39F2E779C5D0DD626CE17EA439AE /* Lock.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		93A5030BEFA0A4FD3EB1679AF3BDED57 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D1C6AC0A86237B8776213A3DAF3E9785;
+			remoteInfo = BezierKit;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		00B6926631BC3807476989231844086F /* BezierKit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = BezierKit.debug.xcconfig; sourceTree = "<group>"; };
+		04096A981098AB743E67009126A2AD88 /* BezierCurve.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BezierCurve.swift; path = BezierKit/Library/BezierCurve.swift; sourceTree = "<group>"; };
+		0FF420BAC6933BAC4D3B88477B850FD7 /* Pods-magicScrollWheel-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-magicScrollWheel-umbrella.h"; sourceTree = "<group>"; };
+		19BE456563E6417E127585D907EE26BF /* CubicCurve.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CubicCurve.swift; path = BezierKit/Library/CubicCurve.swift; sourceTree = "<group>"; };
+		1CA131E00869AC94BD418863FCAC1AAA /* CGPoint+Overloads.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "CGPoint+Overloads.swift"; path = "BezierKit/Library/CGPoint+Overloads.swift"; sourceTree = "<group>"; };
+		21BC9AE39F45E764361D7FE564B1A6B8 /* Utils.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Utils.swift; path = BezierKit/Library/Utils.swift; sourceTree = "<group>"; };
+		2457653120337328963C713E26F98245 /* Pods-magicScrollWheel-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-magicScrollWheel-acknowledgements.markdown"; sourceTree = "<group>"; };
+		288CA3BDD4AB5AA61DF3FE2D7175A1C6 /* Shape.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Shape.swift; path = BezierKit/Library/Shape.swift; sourceTree = "<group>"; };
+		2985DF5CDA141486EF3FA303E9C90D9D /* BezierCurve+Intersection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "BezierCurve+Intersection.swift"; path = "BezierKit/Library/BezierCurve+Intersection.swift"; sourceTree = "<group>"; };
+		2DB4E79AFF5B9E88476D257CF2F1AF35 /* Pods-magicScrollWheel-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-magicScrollWheel-dummy.m"; sourceTree = "<group>"; };
+		5A840A09CF6DF2C52D5F951255FAF444 /* PathComponent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PathComponent.swift; path = BezierKit/Library/PathComponent.swift; sourceTree = "<group>"; };
+		639E39F2E779C5D0DD626CE17EA439AE /* Lock.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Lock.swift; path = BezierKit/Library/Lock.swift; sourceTree = "<group>"; };
+		700003B28283AAFBF0D443EF415C602A /* Draw.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Draw.swift; path = BezierKit/Library/Draw.swift; sourceTree = "<group>"; };
+		78222B701708970D9D058D445E4067A7 /* LineSegment.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LineSegment.swift; path = BezierKit/Library/LineSegment.swift; sourceTree = "<group>"; };
+		82BB1AB98B83DDA3F36254B32D90A8EB /* BezierKit-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "BezierKit-prefix.pch"; sourceTree = "<group>"; };
+		8F8BBF2373E34FE4020787351549DBE1 /* Pods-magicScrollWheel.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-magicScrollWheel.release.xcconfig"; sourceTree = "<group>"; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		A0BB1901FA2DE2A7410660C064FD72DF /* BezierKit-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "BezierKit-dummy.m"; sourceTree = "<group>"; };
+		A591E417C15244B3A293504F08965E88 /* libPods-magicScrollWheel.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libPods-magicScrollWheel.a"; path = "libPods-magicScrollWheel.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A888B562708683A8759D7AFB66862717 /* libBezierKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libBezierKit.a; path = libBezierKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		AEA71720FD65EE324124C9C3BAE09444 /* BezierKit.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = BezierKit.modulemap; sourceTree = "<group>"; };
+		B00C61BAA7B98DA88C161314367E0747 /* QuadraticCurve.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = QuadraticCurve.swift; path = BezierKit/Library/QuadraticCurve.swift; sourceTree = "<group>"; };
+		BFA953F203458D592AE945A20D6E8B4D /* Pods-magicScrollWheel.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-magicScrollWheel.debug.xcconfig"; sourceTree = "<group>"; };
+		BFF20C0F16A3EA3D21F7385D769B22F1 /* Path.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Path.swift; path = BezierKit/Library/Path.swift; sourceTree = "<group>"; };
+		CDEA55ABDF7A4F2D1509F82E25D8EAA5 /* AugmentedGraph.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AugmentedGraph.swift; path = BezierKit/Library/AugmentedGraph.swift; sourceTree = "<group>"; };
+		D18F10A4902D9382F13AC2D14E71B61D /* BoundingBoxHierarchy.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BoundingBoxHierarchy.swift; path = BezierKit/Library/BoundingBoxHierarchy.swift; sourceTree = "<group>"; };
+		D9B293D1AC782D03FB70C90758B94306 /* Pods-magicScrollWheel-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-magicScrollWheel-acknowledgements.plist"; sourceTree = "<group>"; };
+		DA239052322B218F6D21FC882E496F13 /* BezierKit-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "BezierKit-umbrella.h"; sourceTree = "<group>"; };
+		E410F1ED19BFF46E01BD5FB99013980D /* Path+Data.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Path+Data.swift"; path = "BezierKit/Library/Path+Data.swift"; sourceTree = "<group>"; };
+		E446B5BC0CE67E9A5A0DB927E6B813F9 /* PathComponent+WindingCount.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "PathComponent+WindingCount.swift"; path = "BezierKit/Library/PathComponent+WindingCount.swift"; sourceTree = "<group>"; };
+		E77B2E4106A251879658104DED8FE0F2 /* Pods-magicScrollWheel.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-magicScrollWheel.modulemap"; sourceTree = "<group>"; };
+		F18ADAC9F135668265D3C10305E60FD8 /* Types.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Types.swift; path = BezierKit/Library/Types.swift; sourceTree = "<group>"; };
+		F4C981B2E3F898350D7BFA720D1BD71A /* BezierKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = BezierKit.release.xcconfig; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8515F1D997B5F931B3DCE4D7779D0690 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A03B6189E62453282CEDB4CCDEE187AE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1B985779BABDC3B33749FC0745E03D97 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7D782126CF55127E504F084BAAEDD76D /* BezierKit */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		74C4F88251FEDA4E9A30DE39BFC18848 /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				967EC7B45529269EB2ED4BD579FB2BD9 /* Pods-magicScrollWheel */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		7D782126CF55127E504F084BAAEDD76D /* BezierKit */ = {
+			isa = PBXGroup;
+			children = (
+				CDEA55ABDF7A4F2D1509F82E25D8EAA5 /* AugmentedGraph.swift */,
+				04096A981098AB743E67009126A2AD88 /* BezierCurve.swift */,
+				2985DF5CDA141486EF3FA303E9C90D9D /* BezierCurve+Intersection.swift */,
+				D18F10A4902D9382F13AC2D14E71B61D /* BoundingBoxHierarchy.swift */,
+				1CA131E00869AC94BD418863FCAC1AAA /* CGPoint+Overloads.swift */,
+				19BE456563E6417E127585D907EE26BF /* CubicCurve.swift */,
+				700003B28283AAFBF0D443EF415C602A /* Draw.swift */,
+				78222B701708970D9D058D445E4067A7 /* LineSegment.swift */,
+				639E39F2E779C5D0DD626CE17EA439AE /* Lock.swift */,
+				BFF20C0F16A3EA3D21F7385D769B22F1 /* Path.swift */,
+				E410F1ED19BFF46E01BD5FB99013980D /* Path+Data.swift */,
+				5A840A09CF6DF2C52D5F951255FAF444 /* PathComponent.swift */,
+				E446B5BC0CE67E9A5A0DB927E6B813F9 /* PathComponent+WindingCount.swift */,
+				B00C61BAA7B98DA88C161314367E0747 /* QuadraticCurve.swift */,
+				288CA3BDD4AB5AA61DF3FE2D7175A1C6 /* Shape.swift */,
+				F18ADAC9F135668265D3C10305E60FD8 /* Types.swift */,
+				21BC9AE39F45E764361D7FE564B1A6B8 /* Utils.swift */,
+				84101299BFE5AEF9CBA6D7A32D10BC72 /* Support Files */,
+			);
+			name = BezierKit;
+			path = BezierKit;
+			sourceTree = "<group>";
+		};
+		84101299BFE5AEF9CBA6D7A32D10BC72 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				AEA71720FD65EE324124C9C3BAE09444 /* BezierKit.modulemap */,
+				A0BB1901FA2DE2A7410660C064FD72DF /* BezierKit-dummy.m */,
+				82BB1AB98B83DDA3F36254B32D90A8EB /* BezierKit-prefix.pch */,
+				DA239052322B218F6D21FC882E496F13 /* BezierKit-umbrella.h */,
+				00B6926631BC3807476989231844086F /* BezierKit.debug.xcconfig */,
+				F4C981B2E3F898350D7BFA720D1BD71A /* BezierKit.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/BezierKit";
+			sourceTree = "<group>";
+		};
+		967EC7B45529269EB2ED4BD579FB2BD9 /* Pods-magicScrollWheel */ = {
+			isa = PBXGroup;
+			children = (
+				E77B2E4106A251879658104DED8FE0F2 /* Pods-magicScrollWheel.modulemap */,
+				2457653120337328963C713E26F98245 /* Pods-magicScrollWheel-acknowledgements.markdown */,
+				D9B293D1AC782D03FB70C90758B94306 /* Pods-magicScrollWheel-acknowledgements.plist */,
+				2DB4E79AFF5B9E88476D257CF2F1AF35 /* Pods-magicScrollWheel-dummy.m */,
+				0FF420BAC6933BAC4D3B88477B850FD7 /* Pods-magicScrollWheel-umbrella.h */,
+				BFA953F203458D592AE945A20D6E8B4D /* Pods-magicScrollWheel.debug.xcconfig */,
+				8F8BBF2373E34FE4020787351549DBE1 /* Pods-magicScrollWheel.release.xcconfig */,
+			);
+			name = "Pods-magicScrollWheel";
+			path = "Target Support Files/Pods-magicScrollWheel";
+			sourceTree = "<group>";
+		};
+		CF1408CF629C7361332E53B88F7BD30C = {
+			isa = PBXGroup;
+			children = (
+				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
+				D89477F20FB1DE18A04690586D7808C4 /* Frameworks */,
+				1B985779BABDC3B33749FC0745E03D97 /* Pods */,
+				E65EC1E20CF35057A283E76011576617 /* Products */,
+				74C4F88251FEDA4E9A30DE39BFC18848 /* Targets Support Files */,
+			);
+			sourceTree = "<group>";
+		};
+		D89477F20FB1DE18A04690586D7808C4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E65EC1E20CF35057A283E76011576617 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A888B562708683A8759D7AFB66862717 /* libBezierKit.a */,
+				A591E417C15244B3A293504F08965E88 /* libPods-magicScrollWheel.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		13D7FC12F39DFBD17CE407817C83F82F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24A31AC2EA020A5885673DEE63E81F0F /* Pods-magicScrollWheel-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C7C03E9FFAC192127D1CA169D1914F88 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E6CD0830D2D16AD233F5A61595F79AB4 /* BezierKit-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D1C6AC0A86237B8776213A3DAF3E9785 /* BezierKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0DE27694CB47EE021744A6576185EB04 /* Build configuration list for PBXNativeTarget "BezierKit" */;
+			buildPhases = (
+				C7C03E9FFAC192127D1CA169D1914F88 /* Headers */,
+				9277E49CF1665AE74534AE21E689E4FE /* Sources */,
+				8515F1D997B5F931B3DCE4D7779D0690 /* Frameworks */,
+				E0EB405B8DB2E4B645713DD0B325A4A0 /* Copy generated compatibility header */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BezierKit;
+			productName = BezierKit;
+			productReference = A888B562708683A8759D7AFB66862717 /* libBezierKit.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		D7BA7A4A532101DE47232CD14CE1216B /* Pods-magicScrollWheel */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E27849184BCF482A08EF4EBCA777DBDA /* Build configuration list for PBXNativeTarget "Pods-magicScrollWheel" */;
+			buildPhases = (
+				13D7FC12F39DFBD17CE407817C83F82F /* Headers */,
+				B83AB1A992EB6D74FAC2F526D22E8DB0 /* Sources */,
+				A03B6189E62453282CEDB4CCDEE187AE /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				16BADF05BD091F96FDB16E183AE5710A /* PBXTargetDependency */,
+			);
+			name = "Pods-magicScrollWheel";
+			productName = "Pods-magicScrollWheel";
+			productReference = A591E417C15244B3A293504F08965E88 /* libPods-magicScrollWheel.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BFDFE7DC352907FC980B868725387E98 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1100;
+				LastUpgradeCheck = 1100;
+			};
+			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
+			productRefGroup = E65EC1E20CF35057A283E76011576617 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D1C6AC0A86237B8776213A3DAF3E9785 /* BezierKit */,
+				D7BA7A4A532101DE47232CD14CE1216B /* Pods-magicScrollWheel */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		E0EB405B8DB2E4B645713DD0B325A4A0 /* Copy generated compatibility header */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DERIVED_SOURCES_DIR}/${PRODUCT_MODULE_NAME}-Swift.h",
+				"${PODS_ROOT}/Headers/Public/BezierKit/BezierKit.modulemap",
+				"${PODS_ROOT}/Headers/Public/BezierKit/BezierKit-umbrella.h",
+			);
+			name = "Copy generated compatibility header";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}.modulemap",
+				"${BUILT_PRODUCTS_DIR}/BezierKit-umbrella.h",
+				"${BUILT_PRODUCTS_DIR}/Swift Compatibility Header/${PRODUCT_MODULE_NAME}-Swift.h",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "COMPATIBILITY_HEADER_PATH=\"${BUILT_PRODUCTS_DIR}/Swift Compatibility Header/${PRODUCT_MODULE_NAME}-Swift.h\"\nMODULE_MAP_PATH=\"${BUILT_PRODUCTS_DIR}/${PRODUCT_MODULE_NAME}.modulemap\"\n\nditto \"${DERIVED_SOURCES_DIR}/${PRODUCT_MODULE_NAME}-Swift.h\" \"${COMPATIBILITY_HEADER_PATH}\"\nditto \"${PODS_ROOT}/Headers/Public/BezierKit/BezierKit.modulemap\" \"${MODULE_MAP_PATH}\"\nditto \"${PODS_ROOT}/Headers/Public/BezierKit/BezierKit-umbrella.h\" \"${BUILT_PRODUCTS_DIR}\"\nprintf \"\\n\\nmodule ${PRODUCT_MODULE_NAME}.Swift {\\n  header \\\"${COMPATIBILITY_HEADER_PATH}\\\"\\n  requires objc\\n}\\n\" >> \"${MODULE_MAP_PATH}\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9277E49CF1665AE74534AE21E689E4FE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36CCCDAA85C83A69F66563228F761334 /* AugmentedGraph.swift in Sources */,
+				BC607F803688389847FB28C6E9031C56 /* BezierCurve+Intersection.swift in Sources */,
+				958DE941363EF86C4D8BFF9A12DE38C7 /* BezierCurve.swift in Sources */,
+				657B41C895F8F2CD4AB8B0931762F97A /* BezierKit-dummy.m in Sources */,
+				1489880829442A251EED05F3FA328C37 /* BoundingBoxHierarchy.swift in Sources */,
+				6D80C3EFAA6E826A30D57E0AD2074D6D /* CGPoint+Overloads.swift in Sources */,
+				8EE00669E27CD15A5F70B9F5E073F9E7 /* CubicCurve.swift in Sources */,
+				9FB87DE0D9CF8A4528889BE108EABD27 /* Draw.swift in Sources */,
+				2613D623F9403E9E6E3B2F6797AC522C /* LineSegment.swift in Sources */,
+				F6E2C5BD7280A11CF8186FB1F8EBB52A /* Lock.swift in Sources */,
+				6E84905043EBD946484E429F35332E17 /* Path+Data.swift in Sources */,
+				8693559A96A0139E48CF9F827CA7EBBC /* Path.swift in Sources */,
+				38EF51F8DB241A12F0FB750610219A3D /* PathComponent+WindingCount.swift in Sources */,
+				CB2C884BE6ED9063230BD26682561F77 /* PathComponent.swift in Sources */,
+				B5A3E5136A873F830DF632D9E6269311 /* QuadraticCurve.swift in Sources */,
+				CE098179C1B4043E1C38FC937E71EA95 /* Shape.swift in Sources */,
+				835782A43337DA2A60EA67D2F1EE7844 /* Types.swift in Sources */,
+				2931B14DA9C503742B13FF228C61BE47 /* Utils.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B83AB1A992EB6D74FAC2F526D22E8DB0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4C3B1CA96918C27FD3EEB14FEC489E76 /* Pods-magicScrollWheel-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		16BADF05BD091F96FDB16E183AE5710A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = BezierKit;
+			target = D1C6AC0A86237B8776213A3DAF3E9785 /* BezierKit */;
+			targetProxy = 93A5030BEFA0A4FD3EB1679AF3BDED57 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0849408F5875C4C6B27888B043657EDF /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F4C981B2E3F898350D7BFA720D1BD71A /* BezierKit.release.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				EXECUTABLE_PREFIX = lib;
+				GCC_PREFIX_HEADER = "Target Support Files/BezierKit/BezierKit-prefix.pch";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MODULEMAP_FILE = Headers/Public/BezierKit/BezierKit.modulemap;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_MODULE_NAME = BezierKit;
+				PRODUCT_NAME = BezierKit;
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		2AE0D8B39827576460938522CAB2F560 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_RELEASE=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Release;
+		};
+		390DA8B295345444A6F3E08647C77E49 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8F8BBF2373E34FE4020787351549DBE1 /* Pods-magicScrollWheel.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				EXECUTABLE_PREFIX = lib;
+				MACH_O_TYPE = staticlib;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MODULEMAP_FILE = "Target Support Files/Pods-magicScrollWheel/Pods-magicScrollWheel.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		816C679D58750316935F7386A438309D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_DEBUG=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Debug;
+		};
+		D707C6EFD2BA132B6BCD1E0156B5530F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 00B6926631BC3807476989231844086F /* BezierKit.debug.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				EXECUTABLE_PREFIX = lib;
+				GCC_PREFIX_HEADER = "Target Support Files/BezierKit/BezierKit-prefix.pch";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MODULEMAP_FILE = Headers/Public/BezierKit/BezierKit.modulemap;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_MODULE_NAME = BezierKit;
+				PRODUCT_NAME = BezierKit;
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		DC3E16DB8DF4B961DCBEF03283022C34 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BFA953F203458D592AE945A20D6E8B4D /* Pods-magicScrollWheel.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				EXECUTABLE_PREFIX = lib;
+				MACH_O_TYPE = staticlib;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MODULEMAP_FILE = "Target Support Files/Pods-magicScrollWheel/Pods-magicScrollWheel.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0DE27694CB47EE021744A6576185EB04 /* Build configuration list for PBXNativeTarget "BezierKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D707C6EFD2BA132B6BCD1E0156B5530F /* Debug */,
+				0849408F5875C4C6B27888B043657EDF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				816C679D58750316935F7386A438309D /* Debug */,
+				2AE0D8B39827576460938522CAB2F560 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E27849184BCF482A08EF4EBCA777DBDA /* Build configuration list for PBXNativeTarget "Pods-magicScrollWheel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DC3E16DB8DF4B961DCBEF03283022C34 /* Debug */,
+				390DA8B295345444A6F3E08647C77E49 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+}

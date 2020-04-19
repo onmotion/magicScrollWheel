@@ -1,0 +1,6 @@
+module BezierKit {
+  umbrella header "BezierKit-umbrella.h"
+
+  export *
+  module * { export * }
+}

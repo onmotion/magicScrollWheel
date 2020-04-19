@@ -1,0 +1,6 @@
+module Pods_magicScrollWheel {
+  umbrella header "Pods-magicScrollWheel-umbrella.h"
+
+  export *
+  module * { export * }
+}

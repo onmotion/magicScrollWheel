@@ -160,17 +160,6 @@ public class MagicScrollController {
     var pixelsToScrollTextField = 40
     var pixelsToScrollLimitTextField = 30000
     var maxAmplifierLevel = 3.0
-//    var bezierControlPoint1 = CGPoint.init(x: 0.34, y: 0.42)
-//    var bezierControlPoint2 = CGPoint.init(x: 0.25, y: 1)
-    
-
-    
-var bezierControlPoint1 = CGPoint.init(x: 0.3, y: 0.4)
-var bezierControlPoint2 = CGPoint.init(x: 0.37, y: 1)
-//        var bezierControlPoint1 = CGPoint.init(x: 0.44, y: 0.32)
-//        var bezierControlPoint2 = CGPoint.init(x: 0.41, y: 0.95)
-    
-    
     
     private var absDeltaY: Int = 0
     
@@ -196,8 +185,11 @@ var bezierControlPoint2 = CGPoint.init(x: 0.37, y: 1)
     init() {
         print("init MagicScrollController")
         // self.tf = TimingFunction(controlPoint1: bezierControlPoint1, controlPoint2: self.bezierControlPoint2, duration: 1.0)
-        self.tf = CubicBezier.init(controlPoints: (x1: Double(bezierControlPoint1.x), y1: Double(bezierControlPoint1.y), x2: Double(bezierControlPoint2.x), y2: Double(bezierControlPoint2.y)))
-        
+        self.tf = CubicBezier.init(controlPoints: (x1: Double(settings.bezierControlPoint1.x), y1: Double(settings.bezierControlPoint1.y), x2: Double(settings.bezierControlPoint2.x), y2: Double(settings.bezierControlPoint2.y)))
+    }
+    
+    @objc private func updateTF() {
+        self.tf = CubicBezier.init(controlPoints: (x1: Double(settings.bezierControlPoint1.x), y1: Double(settings.bezierControlPoint1.y), x2: Double(settings.bezierControlPoint2.x), y2: Double(settings.bezierControlPoint2.y)))
     }
     
     private func postEvent(event: CGEvent, delay: UInt32 = 0) {
@@ -423,6 +415,7 @@ var bezierControlPoint2 = CGPoint.init(x: 0.37, y: 1)
         displayLink?.callback = sendEvent
         
         NotificationCenter.default.addObserver(self, selector: #selector(onScrollDurationChanged), name: NSNotification.Name(rawValue: "scrollDurationChanged"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateTF), name: NSNotification.Name(rawValue: "updateTfNeeded"), object: nil)
         
         self.calcMaxFrames()
         eventMonitor = EventMonitor()

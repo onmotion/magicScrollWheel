@@ -58,4 +58,14 @@ class SettingsViewController: NSViewController, NSTextFieldDelegate {
         accelerationMultiplierTextField.stringValue = String(Settings.shared.accelerationMultiplier)
     }
     
+    // Storyboard instantiation
+    static func freshController() -> SettingsViewController {
+        let storyboard = NSStoryboard(name: NSStoryboard.Name( "Main"), bundle: nil)
+        let identifier = NSStoryboard.SceneIdentifier("SettingsViewController")
+        guard let vc = storyboard.instantiateController(withIdentifier: identifier) as? SettingsViewController else {
+            fatalError("SettingsViewController not found - Check Main.storyboard")
+        }
+        return vc
+    }
+    
 }
