@@ -12,9 +12,9 @@ class Settings {
     
     static let shared = Settings()
     
-    var scrollDuration = 450  //ms
+    var scrollDuration = 400  //ms
     var useBounceEffect: Bool = true
-    var accelerationMultiplier: Float = 1.0
+    var accelerationMultiplier: Float = 3.0
     
     private init() {
 

@@ -16,6 +16,7 @@ public class MagicScrollController {
         return _isRunning
     }
     private var isSyncNeeded = false
+    private var syncRepeat = 0
     
     private var magicScrollSerialQueue = DispatchQueue(label: "magicScrollSerialQueue", qos: .userInteractive)
     private var currentLocationAccessQueue = DispatchQueue(label: "currentLocationAccessQueue", attributes: .concurrent)
@@ -65,7 +66,7 @@ public class MagicScrollController {
             }
             
             if isSyncNeeded{
-                maxScheduledPixelsToScroll = scheduledPixelsToScroll
+              //  maxScheduledPixelsToScroll = scheduledPixelsToScroll
                 isSyncNeeded = false
           
                 var syncedStep = 0
@@ -73,7 +74,7 @@ public class MagicScrollController {
         
                 var maxSyncStep = SyncStep(step: 0, frame: 1, scrolledPixelsBuffer: 0)
                 
-                var syncMaxFrame = Int(Float(maxFrames) * 0.80) // 80%
+                var syncMaxFrame = Int(Float(maxFrames) * 0.60) // 70%
                 if syncMaxFrame < framesLeft {
                     syncMaxFrame = framesLeft - 1
                 }
@@ -98,14 +99,25 @@ public class MagicScrollController {
                     }
                 }
                 
-//                if syncedStep < abs(prevStep) {
-//                    // убрать лаг
-//                    print("syncedStep \(syncedStep) < abs(prevStep) \(abs(prevStep)) need sync!")
-//                 //   isSyncNeeded = true
-//                    syncedStep = abs(prevStep)
-//                }
+                if maxSyncStep.step < (abs(prevStep) - 1) {
+                    // убрать лаг
+                    print("syncedStep \(maxSyncStep.step) < abs(prevStep) \(abs(prevStep)) need sync!")
+                    isSyncNeeded = true
+                    maxSyncStep.step = abs(prevStep) - 1
+                    syncRepeat += 1
+                    maxSyncStep.frame += syncRepeat
+                    
+         
+                    scheduledPixelsToScroll = scheduledPixelsToScroll - maxSyncStep.step
+//                    maxSyncStep.frame += 1
+                } else {
+                    syncRepeat = 0
+                    scheduledPixelsToScroll = maxScheduledPixelsToScroll - maxSyncStep.scrolledPixelsBuffer + maxSyncStep.step
+                }
                 
-                scheduledPixelsToScroll = maxScheduledPixelsToScroll - maxSyncStep.scrolledPixelsBuffer + maxSyncStep.step
+        
+                
+             //   scheduledPixelsToScroll = maxScheduledPixelsToScroll - (maxSyncStep.scrolledPixelsBuffer + maxSyncStep.step)
                 print("scheduledPixelsToScroll", scheduledPixelsToScroll)
                 print("maxScheduledPixelsToScroll", maxScheduledPixelsToScroll)
                 step = maxSyncStep.step
@@ -287,7 +299,6 @@ var bezierControlPoint2 = CGPoint.init(x: 0.37, y: 1)
         }
         
         
-        // smpoth end ...4321
         let absPrevDeltaY = abs(prevDeltaY)
         
         // prevent possible lag in the end
@@ -332,6 +343,7 @@ var bezierControlPoint2 = CGPoint.init(x: 0.37, y: 1)
     {
         print("🌴onSystemScrollEvent🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴🌴\n_____________________________________________\n")
        // scrolledPixelsBuffer = 0
+        self.syncRepeat = 0
         
         self.scrollEvent = event
         
@@ -353,10 +365,11 @@ var bezierControlPoint2 = CGPoint.init(x: 0.37, y: 1)
         } else {
             deltaAxis = event.getIntegerValueField(.scrollWheelEventDeltaAxis1)
         }
+        let oldDirection = self.direction
         self.direction = deltaAxis > 0 ? 1 : -1
         
         self.scheduledPixelsToScroll += Int(Float(self.pixelsToScrollTextField) * self.amplifier)
-     //   self.maxScheduledPixelsToScroll = self.scheduledPixelsToScroll
+        self.maxScheduledPixelsToScroll = self.scheduledPixelsToScroll
 //let requestedScrollPixels = Int(Float(self.pixelsToScrollTextField) * self.amplifier)
 //        if requestedScrollPixels < self.maxScheduledPixelsToScroll && scheduledPixelsToScroll <  self.maxScheduledPixelsToScroll {
 //            self.maxScheduledPixelsToScroll += requestedScrollPixels
@@ -372,8 +385,9 @@ var bezierControlPoint2 = CGPoint.init(x: 0.37, y: 1)
             self.framesLeft = self.maxFrames
             scrolledPixelsBuffer = 0
         } else {
-            isSyncNeeded = true
-            
+           
+            isSyncNeeded = oldDirection == self.direction
+    
            // self.count += 1
         }
         
@@ -444,7 +458,7 @@ extension MagicScrollController {
         }
         set {
             
-            self._framesLeft = newValue
+            self._framesLeft = max(newValue, 0)
             
             if newValue == 0 {
                 self.displayLink?.cancel()
