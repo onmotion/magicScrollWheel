@@ -314,8 +314,7 @@ public class MagicScrollController {
             ev.setIntegerValueField(.scrollWheelEventPointDeltaAxis2, value: 0)
             ev.setIntegerValueField(.scrollWheelEventDeltaAxis2, value: 0)
             ev.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis2, value: 0)
-            
-            
+
         }
         
         if self.scheduledPixelsToScroll >= Int(self.absDeltaY) {

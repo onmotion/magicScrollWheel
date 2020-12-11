@@ -17,4 +17,8 @@ class CustomView: NSView {
         // Drawing code here.
     }
     
+    override var wantsDefaultClipping: Bool {
+        return false
+    }
+    
 }

@@ -18,6 +18,10 @@ class BezierView: NSView, DraggableDelegate {
     var selectedDraggable: Draggable?
     var lastMouseLocation: CGPoint?
     
+     override var wantsDefaultClipping: Bool {
+           return false
+       }
+    
     func draggable(_ draggable: Draggable, didUpdateLocation location: CGPoint) {
      //   self.resetCursorRects()
   
@@ -53,14 +57,13 @@ class BezierView: NSView, DraggableDelegate {
 //    var bezierControlPoint2 = CGPoint.init(x: 0.37, y: 1)
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        self.wantsLayer = true
+        
   
         self.addDraggable(initialLocation: CGPoint(x: 0, y: 0), radius: 0, controlPointIndex: nil)
         self.addDraggable(initialLocation: CGPoint(x: self.bounds.width * settings.bezierControlPoint1.x, y: self.bounds.height * settings.bezierControlPoint1.y), radius: 10, controlPointIndex: 1)
         self.addDraggable(initialLocation: CGPoint(x: self.bounds.width * settings.bezierControlPoint2.x, y: self.bounds.height * settings.bezierControlPoint2.y), radius: 10, controlPointIndex: 2)
         self.addDraggable(initialLocation: CGPoint(x: self.bounds.width, y: self.bounds.height), radius: 0, controlPointIndex: nil)
     }
-    
     
     override func draw(_ dirtyRect: NSRect) {
         let context: CGContext = NSGraphicsContext.current!.cgContext
@@ -98,7 +101,7 @@ class BezierView: NSView, DraggableDelegate {
         print("mouseDown")
         let location = self.convert(event.locationInWindow, from: PopoverViewController.freshController().view)
 
-        for (i, d) in self.draggables.enumerated() {
+        for (_, d) in self.draggables.enumerated() {
             
             if d.containsLocation(location) {
         
@@ -149,12 +152,14 @@ class BezierView: NSView, DraggableDelegate {
         self.lastMouseLocation = nil
     }
 
-    
     override func prepareForInterfaceBuilder() {
         layer?.backgroundColor = backgroundColor.cgColor
     }
     
     override func awakeFromNib() {
+        super.awakeFromNib()
+        self.wantsLayer = true
+        self.layer?.masksToBounds = false
         layer?.backgroundColor = backgroundColor.cgColor
     }
     

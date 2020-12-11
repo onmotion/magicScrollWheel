@@ -85,6 +85,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		88108C49247ABA5900C84052 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				8887FA43244C81DD00F57A52 /* Draw.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		883D770323376E0700D66A8D /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -126,8 +134,9 @@
 				88E54089234A25D50028C651 /* ViewControllers */,
 				88E54086234A25150028C651 /* Models */,
 				883D770323376E0700D66A8D /* Views */,
-				88DD4E9B241E3E7600C03F0E /* Formatters */,
 				88D361A32251408700426432 /* MagicScrollController.swift */,
+				88DD4E9B241E3E7600C03F0E /* Formatters */,
+				88108C49247ABA5900C84052 /* Extensions */,
 				88D361B1225140C200426432 /* EventMonitor.swift */,
 				885CCF85227EF43300B27620 /* DisplayLink.swift */,
 				88E7EEA12340EF1100151D57 /* Enums.swift */,
@@ -135,7 +144,6 @@
 				889CDE332365E95D00C259F4 /* CubicBezier.swift */,
 				88DD4E9E241E4A5400C03F0E /* Extensions.swift */,
 				8887FA41244C739900F57A52 /* Draggable.swift */,
-				8887FA43244C81DD00F57A52 /* Draw.swift */,
 			);
 			path = magicScrollWheel;
 			sourceTree = "<group>";
